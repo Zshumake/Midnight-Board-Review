@@ -180,20 +180,50 @@ function saveCurrentPosition() {
     }
 }
 
+// Track valid play request to prevent race conditions
+let playPromise = undefined;
+
 function playAudio() {
     // Enforce playback speed before playing
     const currentSpeed = parseFloat(ui.speedSelect.value) || 1.0;
     ui.audio.playbackRate = currentSpeed;
 
-    ui.audio.play();
-    ui.setPlaying(true);
+    playPromise = ui.audio.play();
+
+    if (playPromise !== undefined) {
+        playPromise.then(_ => {
+            // Play started successfully
+            ui.setPlaying(true);
+        })
+            .catch(error => {
+                // Auto-play was prevented or interrupted
+                if (error.name === 'AbortError') {
+                    // Ignore aborts (likely panic pause)
+                } else {
+                    ui.showError("Playback error: " + error.message);
+                }
+                ui.setPlaying(false);
+            });
+    }
+
     const episode = episodes[currentIndex];
     ui.updateListPlayStates(episode.title, true, state);
 }
 
 function pauseAudio() {
-    ui.audio.pause();
-    ui.setPlaying(false);
+    if (playPromise !== undefined) {
+        playPromise.then(_ => {
+            ui.audio.pause();
+            ui.setPlaying(false);
+        })
+            .catch(error => {
+                // Play was likely aborted safely
+            });
+    } else {
+        ui.audio.pause();
+        ui.setPlaying(false);
+    }
+
     const episode = episodes[currentIndex];
     ui.updateListPlayStates(episode.title, false, state);
 }
