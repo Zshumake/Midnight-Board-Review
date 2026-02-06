@@ -201,6 +201,18 @@ function pauseAudio() {
 function skip(amount) {
     ui.audio.currentTime = Math.max(0, Math.min(ui.audio.duration || 0, ui.audio.currentTime + amount));
     saveCurrentPosition();
+    saveCurrentPosition();
+}
+
+/**
+ * Modular Navigation
+ */
+function playNext() {
+    loadEpisode((currentIndex + 1) % episodes.length);
+}
+
+function playPrev() {
+    loadEpisode((currentIndex - 1 + episodes.length) % episodes.length);
 }
 
 function updateMediaSession(episode) {
@@ -216,8 +228,8 @@ function updateMediaSession(episode) {
         navigator.mediaSession.setActionHandler('pause', pauseAudio);
         navigator.mediaSession.setActionHandler('seekbackward', () => skip(-10));
         navigator.mediaSession.setActionHandler('seekforward', () => skip(10));
-        navigator.mediaSession.setActionHandler('previoustrack', () => loadEpisode((currentIndex - 1 + episodes.length) % episodes.length));
-        navigator.mediaSession.setActionHandler('nexttrack', () => loadEpisode((currentIndex + 1) % episodes.length));
+        navigator.mediaSession.setActionHandler('previoustrack', playPrev);
+        navigator.mediaSession.setActionHandler('nexttrack', playNext);
     }
 }
 
@@ -226,10 +238,15 @@ function setupEventListeners() {
         if (ui.audio.paused) playAudio(); else pauseAudio();
     });
 
-    ui.prevBtn.addEventListener('click', () => loadEpisode((currentIndex - 1 + episodes.length) % episodes.length));
-    ui.nextBtn.addEventListener('click', () => loadEpisode((currentIndex + 1) % episodes.length));
+    ui.prevBtn.addEventListener('click', playPrev);
+    ui.nextBtn.addEventListener('click', playNext);
     ui.skipBackBtn.addEventListener('click', () => skip(-10));
     ui.skipFwdBtn.addEventListener('click', () => skip(10));
+
+    // Autoplay: Next track when current ends
+    ui.audio.addEventListener('ended', playNext);
+
+    // Speed Control Sync
 
     // Speed Control Sync
     ui.speedSelect.addEventListener('change', () => {
