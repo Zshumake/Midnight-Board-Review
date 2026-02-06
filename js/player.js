@@ -95,9 +95,15 @@ function loadEpisode(index) {
         // Save duration for library progress tracking
         state.setDuration(episode.title, ui.audio.duration);
 
-        // Restore position if available
+        // Check for Auto-Restart: If finished or near end, start over
         const savedPos = state.getPosition(episode.title);
-        if (savedPos > 0) {
+        const duration = ui.audio.duration;
+        const isNearEnd = duration > 0 && savedPos > (duration * 0.95);
+
+        if (state.isListened(episode.title) || isNearEnd) {
+            ui.audio.currentTime = 0; // Start over
+            saveCurrentPosition(); // Save 0
+        } else if (savedPos > 0) {
             ui.audio.currentTime = savedPos;
         }
 
@@ -129,6 +135,7 @@ function saveCurrentPosition() {
     if (duration && (currentTime / duration) > 0.95) {
         state.markAsListened(episode.title);
         ui.updateTrack(episode, true);
+        // We don't change visual to solid yet because it's still active
     }
 }
 
@@ -136,14 +143,14 @@ function playAudio() {
     ui.audio.play();
     ui.setPlaying(true);
     const episode = episodes[currentIndex];
-    ui.updateListPlayStates(episode.title, true);
+    ui.updateListPlayStates(episode.title, true, state);
 }
 
 function pauseAudio() {
     ui.audio.pause();
     ui.setPlaying(false);
     const episode = episodes[currentIndex];
-    ui.updateListPlayStates(episode.title, false);
+    ui.updateListPlayStates(episode.title, false, state);
 }
 
 function skip(amount) {

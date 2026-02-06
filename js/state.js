@@ -53,12 +53,14 @@ export const state = {
     },
 
     getProgressPercentage(title) {
-        if (this.isListened(title)) return 100;
+        // If we have data, calculate exact percentage
         const pos = this.getPosition(title);
         const dur = this.getDuration(title);
-        if (pos && dur) {
+        if (dur > 0) {
             return Math.min(100, (pos / dur) * 100);
         }
+        // Fallback: if marked listened but no duration data (legacy), return 100
+        if (this.isListened(title)) return 100;
         return 0;
     },
 

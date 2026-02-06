@@ -53,14 +53,26 @@ export const ui = {
             items.forEach(item => {
                 const epDiv = document.createElement('div');
                 const isFinished = state.isListened(item.title);
-                epDiv.className = `episode-item ${item.effectiveIndex === activeIndex ? 'active' : ''} ${isFinished ? 'finished' : ''}`;
+                const isActive = (item.effectiveIndex === activeIndex);
+
+                // Only mark as 'finished' (Solid Orange) if it is NOT currently active/playing.
+                // If it is active, we want to show the transparent progress bar.
+                epDiv.className = `episode-item ${isActive ? 'active' : ''} ${isFinished && !isActive ? 'finished' : ''}`;
                 const listened = state.isListened(item.title);
 
                 // Progress Fill Overlay
                 const progressFill = document.createElement('div');
                 progressFill.className = 'episode-progress-fill';
-                const percent = state.getProgressPercentage(item.title);
+
+                // Calculate width
+                let percent = 0;
+                if (isFinished && !isActive) {
+                    percent = 100; // Finished and not playing -> Full Solid
+                } else {
+                    percent = state.getProgressPercentage(item.title);
+                }
                 progressFill.style.width = `${percent}%`;
+
                 epDiv.appendChild(progressFill);
 
                 const headerDiv = document.createElement('div');
@@ -124,11 +136,7 @@ export const ui = {
     updateTrack(episode, isListened) {
         this.title.innerHTML = `${episode.title} ${isListened ? '<span style="color: green; font-size: 0.8em;">✓</span>' : ''}`;
 
-        // If finished, mark the active row in the list
-        if (isListened) {
-            const activeRow = document.querySelector('.episode-item.active');
-            if (activeRow) activeRow.classList.add('finished');
-        }
+        // Note: active row class logic is handled in renderLibrary or updateListPlayStates
 
         // Update Sticky Player
         if (this.stickyTitle) {
@@ -155,6 +163,8 @@ export const ui = {
             const activeItem = document.querySelector('.episode-item.active');
             if (activeItem) {
                 const fill = activeItem.querySelector('.episode-progress-fill');
+                // Ensure we are in "progress mode" (transparent) not "finished mode" (solid)
+                // The class logic in updateListPlayStates ensures .finished is removed from active
                 if (fill) {
                     fill.style.width = `${percent}%`;
                 }
@@ -175,36 +185,42 @@ export const ui = {
     },
 
     /**
-     * Update the Icons in the List
+     * Update the Icons AND Class States in the List
      */
-    updateListPlayStates(currentTitle, isPlaying) {
-        // 1. Reset all buttons to Play and remove active class from all rows
+    updateListPlayStates(currentTitle, isPlaying, state) {
+        // 1. Reset all buttons to Play
         const allBtns = document.querySelectorAll('.list-play-btn');
-        const allRows = document.querySelectorAll('.episode-item');
-
         allBtns.forEach(btn => btn.innerHTML = ICONS.play);
-        allRows.forEach(row => row.classList.remove('active'));
 
-        // 2. Find the row/button for the current title
-        // We can match by text content of the title span
-        let foundBtn = null;
-        let foundRow = null;
-
+        // 2. Manage Active/Finished classes for ALL rows
+        const allRows = document.querySelectorAll('.episode-item');
         allRows.forEach(row => {
             const titleEl = row.querySelector('.episode-title-text');
-            if (titleEl && titleEl.innerText === currentTitle) {
-                foundRow = row;
-                foundBtn = row.querySelector('.list-play-btn');
+            if (!titleEl) return;
+            const rowTitle = titleEl.innerText;
+
+            if (rowTitle === currentTitle) {
+                // ACTIVE ROW
+                row.classList.add('active');
+                // Active row CANNOT be visually finished (solid), it must show progress bar
+                row.classList.remove('finished');
+
+                // Update Play Icon for this row
+                const btn = row.querySelector('.list-play-btn');
+                if (btn && isPlaying) {
+                    btn.innerHTML = ICONS.pause;
+                }
+            } else {
+                // INACTIVE ROW
+                row.classList.remove('active');
+                // If inactive AND listened, mark as finished (Solid)
+                if (state && state.isListened(rowTitle)) {
+                    row.classList.add('finished');
+                    // Ensure bar is full width for solid efffect
+                    const fill = row.querySelector('.episode-progress-fill');
+                    if (fill) fill.style.width = '100%';
+                }
             }
         });
-
-        // 3. Update the specific one
-        if (foundRow) {
-            foundRow.classList.add('active');
-        }
-
-        if (foundBtn && isPlaying) {
-            foundBtn.innerHTML = ICONS.pause;
-        }
     }
 };

@@ -310,17 +310,18 @@ button:hover {
   left: 0;
   height: 100%;
   width: 0%;
-  background: rgba(249, 115, 22, 0.15);
-  /* Semi-transparent orange (accent-orange) */
+  background: rgba(249, 115, 22, 0.4);
+  /* Transparent Orange for progress */
   z-index: 0;
   pointer-events: none;
-  transition: width 0.4s ease-out;
+  transition: width 0.2s linear;
 }
 
 .episode-item.finished .episode-progress-fill {
   width: 100% !important;
-  background: rgba(249, 115, 22, 0.25);
-  /* More visible for finished */
+  background: #f97316;
+  /* Solid Orange for finished */
+  opacity: 1;
 }
 
 .episode-header,
