@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Cuccurullo Board Review (Private)</title>
-    <link>https://shuhub.xyz</link>
+    <title>Midnight Board Review (Private)</title>
+    <link>https://midnight-board-review.com</link>
     <language>en-us</language>
-    <copyright>&#169; 2026 Cuccurullo Review</copyright>
-    <itunes:author>Cuccurullo Review</itunes:author>
-    <description>A 119-episode podcast covering everything in the PM&amp;R board review book by Cuccurullo.</description>
+    <copyright>&#169; 2026 Midnight Review</copyright>
+    <itunes:author>Midnight Review</itunes:author>
+    <description>A 119-episode podcast covering everything in the PM&amp;R board review.</description>
     <itunes:image href="https://shuhub.xyz/cover.jpg" />
     <itunes:block>yes</itunes:block>
     
