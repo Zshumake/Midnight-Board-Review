@@ -18,7 +18,14 @@ export const state = {
     load() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
-            this.data = JSON.parse(saved);
+            const parsed = JSON.parse(saved);
+            // Merge with defaults to ensure new keys (like durations) exist
+            this.data = { ...this.data, ...parsed };
+
+            // Explicitly ensure objects exist if not present in saved data
+            if (!this.data.durations) this.data.durations = {};
+            if (!this.data.positions) this.data.positions = {};
+            if (!this.data.history) this.data.history = [];
         }
         return this.data;
     },
