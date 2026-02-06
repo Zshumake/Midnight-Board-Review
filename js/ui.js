@@ -129,13 +129,33 @@ export const ui = {
      * Update the Icons in the List
      */
     updateListPlayStates(currentTitle, isPlaying) {
-        // ... (previous content logic)
-        const activeItem = document.querySelector('.episode-item.active');
-        if (activeItem) {
-            const btn = activeItem.querySelector('.list-play-btn');
-            if (btn) {
-                btn.innerHTML = isPlaying ? ICONS.pause : ICONS.play;
+        // 1. Reset all buttons to Play and remove active class from all rows
+        const allBtns = document.querySelectorAll('.list-play-btn');
+        const allRows = document.querySelectorAll('.episode-item');
+
+        allBtns.forEach(btn => btn.innerHTML = ICONS.play);
+        allRows.forEach(row => row.classList.remove('active'));
+
+        // 2. Find the row/button for the current title
+        // We can match by text content of the title span
+        let foundBtn = null;
+        let foundRow = null;
+
+        allRows.forEach(row => {
+            const titleEl = row.querySelector('.episode-title-text');
+            if (titleEl && titleEl.innerText === currentTitle) {
+                foundRow = row;
+                foundBtn = row.querySelector('.list-play-btn');
             }
+        });
+
+        // 3. Update the specific one
+        if (foundRow) {
+            foundRow.classList.add('active');
+        }
+
+        if (foundBtn && isPlaying) {
+            foundBtn.innerHTML = ICONS.pause;
         }
     }
 };
