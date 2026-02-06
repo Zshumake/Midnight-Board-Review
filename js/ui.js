@@ -17,6 +17,9 @@ export const ui = {
     searchInput: document.getElementById('search-input'),
     episodeList: document.getElementById('episode-list'),
 
+    // State
+    isDragging: false,
+
     // Sticky Player Elements
     stickyPlayer: document.getElementById('sticky-player'),
     stickyPlayBtn: document.getElementById('sticky-play'),

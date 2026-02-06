@@ -94,6 +94,7 @@ function loadEpisode(index) {
     ui.updateListPlayStates(episode.title, false);
 
     // Resume position after metadata loads
+    // Resume position after metadata loads
     ui.audio.onloadedmetadata = () => {
         // Restore playback speed
         const currentSpeed = parseFloat(ui.speedSelect.value) || 1.0;
@@ -102,16 +103,19 @@ function loadEpisode(index) {
         // Save duration for library progress tracking
         state.setDuration(episode.title, ui.audio.duration);
 
-        // Check for Auto-Restart: If finished or near end, start over
-        const savedPos = state.getPosition(episode.title);
-        const duration = ui.audio.duration;
-        const isNearEnd = duration > 0 && savedPos > (duration * 0.95);
+        // Determine Start Time Logic
+        const startTime = determineStartTime(
+            state,
+            episode.title,
+            ui.audio.duration,
+            isFirstLoad
+        );
 
-        if (state.isListened(episode.title) || isNearEnd) {
-            ui.audio.currentTime = 0; // Start over
-            saveCurrentPosition(); // Save 0
-        } else if (savedPos > 0) {
-            ui.audio.currentTime = savedPos;
+        if (startTime > 0) {
+            ui.audio.currentTime = startTime;
+        } else {
+            ui.audio.currentTime = 0;
+            saveCurrentPosition(); // Save 0 if restarting
         }
 
         if (isFirstLoad) {
@@ -124,6 +128,36 @@ function loadEpisode(index) {
     if (!isFirstLoad) {
         playAudio();
     }
+}
+
+/**
+ * Pure helper to determine where playback should start
+ * Modularity: Decouples logic from UI/Player side effects
+ */
+function determineStartTime(state, title, duration, isFirstLoad) {
+    const savedPos = state.getPosition(title);
+
+    // Scenario 1: Page Refresh (isFirstLoad)
+    // ALWAYS resume. Even if it's 99% done. User might want to hear credits.
+    if (isFirstLoad) {
+        return savedPos;
+    }
+
+    // Scenario 2: Explicit Click (Navigation)
+    // If finished or very near end, restart. Otherwise resume.
+    const isListened = state.isListened(title);
+    const isNearEnd = duration > 0 && savedPos > (duration * 0.95);
+
+    if (isListened || isNearEnd) {
+        return 0; // Restart
+    }
+
+    return savedPos; // Resume
+}
+
+if (!isFirstLoad) {
+    playAudio();
+}
 }
 
 /**
@@ -217,19 +251,23 @@ function setupEventListeners() {
     });
 
     ui.audio.addEventListener('timeupdate', () => {
-        ui.updateProgress(ui.audio.currentTime, ui.audio.duration);
+        // Only update visual if NOT dragging
+        if (!ui.isDragging) {
+            ui.updateProgress(ui.audio.currentTime, ui.audio.duration);
+        }
+
         // Throttle saving position to every 5 seconds to reduce UI lag
         if (Math.floor(ui.audio.currentTime) % 5 === 0) {
             saveCurrentPosition();
         }
     });
 
-    ui.progressContainer.addEventListener('click', (e) => {
-        const width = ui.progressContainer.clientWidth;
-        const clickX = e.offsetX;
-        const duration = ui.audio.duration;
-        if (duration) {
-            ui.audio.currentTime = (clickX / width) * duration;
+    // Drag-to-Scrub Logic (Main & Sticky)
+    addScrubbingListeners(ui.progressContainer, (percent) => {
+        ui.updateProgress(ui.audio.duration * (percent / 100), ui.audio.duration);
+    }, (percent) => {
+        if (ui.audio.duration) {
+            ui.audio.currentTime = (percent / 100) * ui.audio.duration;
             saveCurrentPosition();
         }
     });
@@ -254,17 +292,70 @@ function setupEventListeners() {
     if (ui.stickySkipFwd) {
         ui.stickySkipFwd.addEventListener('click', () => skip(10));
     }
+
     if (ui.stickyProgressContainer) {
-        ui.stickyProgressContainer.addEventListener('click', (e) => {
-            const width = ui.stickyProgressContainer.clientWidth;
-            const clickX = e.offsetX;
-            const duration = ui.audio.duration;
-            if (duration) {
-                ui.audio.currentTime = (clickX / width) * duration;
+        addScrubbingListeners(ui.stickyProgressContainer, (percent) => {
+            // Visual Update during drag (handled by ui.updateProgress via generic logic or explicit here)
+            // Check: ui.updateProgress calls this.progressBar.style.width... it also updates sticky. 
+            // We can manually force width here for smoothness
+            ui.stickyProgressBar.style.width = `${percent}%`;
+            ui.progressBar.style.width = `${percent}%`;
+        }, (percent) => {
+            if (ui.audio.duration) {
+                ui.audio.currentTime = (percent / 100) * ui.audio.duration;
                 saveCurrentPosition();
             }
         });
     }
+}
+
+/**
+ * Helper to add Mouse/Touch scrubbing events to a progress container
+ */
+function addScrubbingListeners(container, onDrag, onCommit) {
+    const handleMove = (e) => {
+        if (!ui.isDragging) return;
+        const rect = container.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const offsetX = clientX - rect.left;
+        let percent = (offsetX / rect.width) * 100;
+        percent = Math.max(0, Math.min(100, percent));
+        onDrag(percent);
+    };
+
+    const handleEnd = (e) => {
+        if (!ui.isDragging) return;
+        ui.isDragging = false;
+
+        // Calculate final pos
+        const rect = container.getBoundingClientRect();
+        // Use changedTouches for end event if touch
+        const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+        const offsetX = clientX - rect.left;
+        let percent = (offsetX / rect.width) * 100;
+        percent = Math.max(0, Math.min(100, percent));
+
+        onCommit(percent);
+
+        document.removeEventListener('mousemove', handleMove);
+        document.removeEventListener('touchmove', handleMove);
+        document.removeEventListener('mouseup', handleEnd);
+        document.removeEventListener('touchend', handleEnd);
+    };
+
+    const handleStart = (e) => {
+        ui.isDragging = true;
+        // Optionally update immediately on click too
+        handleMove(e);
+
+        document.addEventListener('mousemove', handleMove);
+        document.addEventListener('touchmove', handleMove, { passive: false });
+        document.addEventListener('mouseup', handleEnd);
+        document.addEventListener('touchend', handleEnd);
+    };
+
+    container.addEventListener('mousedown', handleStart);
+    container.addEventListener('touchstart', handleStart, { passive: false });
 
     // Error Handling
     ui.audio.addEventListener('error', (e) => {
