@@ -6,6 +6,9 @@ import { WelcomeModal } from './welcomeModal.js';
 let currentIndex = 0;
 let isFirstLoad = true;
 
+// Load saved state from localStorage
+state.load();
+
 // Initialize
 ui.renderLibrary(episodes, currentIndex, state, (index, action) => {
     if (action === 'play') {
