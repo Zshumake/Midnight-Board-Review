@@ -345,6 +345,7 @@ button:hover {
 }
 
 .rss-url {
+  display: block;
   background: var(--bg-card);
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1rem;
@@ -352,6 +353,8 @@ button:hover {
   color: var(--text-muted);
   margin-bottom: 1.5rem;
   border-radius: 2px;
+  word-break: break-all;
+  max-width: 100%;
 }
 
 .copy-btn {
