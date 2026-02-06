@@ -147,6 +147,10 @@ function saveCurrentPosition() {
 }
 
 function playAudio() {
+    // Enforce playback speed before playing
+    const currentSpeed = parseFloat(ui.speedSelect.value) || 1.0;
+    ui.audio.playbackRate = currentSpeed;
+
     ui.audio.play();
     ui.setPlaying(true);
     const episode = episodes[currentIndex];
