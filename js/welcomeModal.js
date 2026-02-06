@@ -204,7 +204,7 @@ export const WelcomeModal = {
                             </div>
                             <div class="feature-text">
                                 <strong>Searchable Pearls</strong>
-                                Use the search bar to instantly find a specific podcast that discusses topics like "neurogenic bowel" or "L5 radiculopathy."
+                                Use the search bar to instantly find a specific podcast that discusses topics like "neurogenic bowel" or "autonomic dysreflexia."
                             </div>
                         </li>
                         <li>
