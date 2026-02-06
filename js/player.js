@@ -31,20 +31,7 @@ ui.renderLibrary(episodes, currentIndex, state, (index, action) => {
         skip(10);
     }
 }, (url) => preloadEpisode(url)); // Pass preload callback
-if (action === 'play') {
-    if (Number(currentIndex) === Number(index)) {
-        // Toggle Play/Pause
-        if (ui.audio.paused) playAudio(); else pauseAudio();
-    } else {
-        // Load new
-        loadEpisode(index);
-    }
-} else if (action === 'skip-back') {
-    skip(-10);
-} else if (action === 'skip-fwd') {
-    skip(10);
-}
-}, (url) => preloadEpisode(url)); // Pass preload callback
+
 
 // Initialize Welcome Modal (Modular)
 WelcomeModal.init();
