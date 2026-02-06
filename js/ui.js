@@ -17,6 +17,15 @@ export const ui = {
     searchInput: document.getElementById('search-input'),
     episodeList: document.getElementById('episode-list'),
 
+    // Sticky Player Elements
+    stickyPlayer: document.getElementById('sticky-player'),
+    stickyPlayBtn: document.getElementById('sticky-play'),
+    stickySkipBack: document.getElementById('sticky-skip-back'),
+    stickySkipFwd: document.getElementById('sticky-skip-fwd'),
+    stickyTitle: document.getElementById('sticky-title'),
+    stickyProgressBar: document.getElementById('sticky-progress-bar'),
+    stickyProgressContainer: document.getElementById('sticky-progress-container'),
+
     /**
      * Render the episode list grouped by category
      */
@@ -43,8 +52,16 @@ export const ui = {
 
             items.forEach(item => {
                 const epDiv = document.createElement('div');
-                epDiv.className = `episode-item ${item.effectiveIndex === activeIndex ? 'active' : ''}`;
+                const isFinished = state.isListened(item.title);
+                epDiv.className = `episode-item ${item.effectiveIndex === activeIndex ? 'active' : ''} ${isFinished ? 'finished' : ''}`;
                 const listened = state.isListened(item.title);
+
+                // Progress Fill Overlay
+                const progressFill = document.createElement('div');
+                progressFill.className = 'episode-progress-fill';
+                const percent = state.getProgressPercentage(item.title);
+                progressFill.style.width = `${percent}%`;
+                epDiv.appendChild(progressFill);
 
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'episode-header';
@@ -106,6 +123,20 @@ export const ui = {
      */
     updateTrack(episode, isListened) {
         this.title.innerHTML = `${episode.title} ${isListened ? '<span style="color: green; font-size: 0.8em;">✓</span>' : ''}`;
+
+        // If finished, mark the active row in the list
+        if (isListened) {
+            const activeRow = document.querySelector('.episode-item.active');
+            if (activeRow) activeRow.classList.add('finished');
+        }
+
+        // Update Sticky Player
+        if (this.stickyTitle) {
+            this.stickyTitle.innerText = episode.title;
+        }
+        if (this.stickyPlayer) {
+            this.stickyPlayer.classList.add('visible');
+        }
     },
 
     /**
@@ -115,6 +146,19 @@ export const ui = {
         if (duration) {
             const percent = (currentTime / duration) * 100;
             this.progressBar.style.width = `${percent}%`;
+
+            if (this.stickyProgressBar) {
+                this.stickyProgressBar.style.width = `${percent}%`;
+            }
+
+            // Update the active item's progress fill in real-time
+            const activeItem = document.querySelector('.episode-item.active');
+            if (activeItem) {
+                const fill = activeItem.querySelector('.episode-progress-fill');
+                if (fill) {
+                    fill.style.width = `${percent}%`;
+                }
+            }
         }
     },
 
@@ -122,7 +166,12 @@ export const ui = {
      * Update play/pause button state
      */
     setPlaying(isPlaying) {
-        this.playBtn.innerHTML = isPlaying ? ICONS.pause : ICONS.play;
+        const icon = isPlaying ? ICONS.pause : ICONS.play;
+        this.playBtn.innerHTML = icon;
+
+        if (this.stickyPlayBtn) {
+            this.stickyPlayBtn.innerHTML = icon;
+        }
     },
 
     /**

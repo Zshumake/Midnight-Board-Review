@@ -299,6 +299,35 @@ button:hover {
   color: var(--text-secondary);
   cursor: pointer;
   transition: background 0.2s;
+  position: relative;
+  /* For progress overlay */
+  overflow: hidden;
+}
+
+.episode-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: rgba(249, 115, 22, 0.15);
+  /* Semi-transparent orange (accent-orange) */
+  z-index: 0;
+  pointer-events: none;
+  transition: width 0.4s ease-out;
+}
+
+.episode-item.finished .episode-progress-fill {
+  width: 100% !important;
+  background: rgba(249, 115, 22, 0.25);
+  /* More visible for finished */
+}
+
+.episode-header,
+.episode-description {
+  position: relative;
+  z-index: 1;
+  /* Sit above the fill */
 }
 
 .episode-header {
@@ -487,10 +516,119 @@ button:hover {
   font-weight: 600;
 }
 
-@media (max-width: 768px) {
-  .episode-description {
-    font-size: 0.6rem;
-    line-height: 1.3;
-    padding: 0 0.8rem 0.8rem 0.8rem;
+.episode-description {
+  font-size: 0.6rem;
+  line-height: 1.3;
+  padding: 0 0.8rem 0.8rem 0.8rem;
+}
+
+/* Sticky Footer Player */
+.sticky-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(28, 25, 23, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-gold);
+  z-index: 1000;
+  transform: translateY(110%);
+  /* Hidden by default */
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.sticky-player.visible {
+  transform: translateY(0);
+}
+
+.sticky-progress-container {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.sticky-progress-bar {
+  height: 100%;
+  background: var(--accent-gold);
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+.sticky-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+  height: 70px;
+}
+
+.sticky-info {
+  flex: 1;
+  overflow: hidden;
+  margin-right: 1rem;
+}
+
+.sticky-title {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Merriweather', serif;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.sticky-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-shrink: 0;
+}
+
+.sticky-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.sticky-btn:hover {
+  color: var(--accent-gold);
+  transform: scale(1.1);
+}
+
+.sticky-btn.primary {
+  color: var(--accent-gold);
+}
+
+.sticky-btn.primary:hover {
+  color: var(--accent-gold-light);
+}
+
+@media (max-width: 480px) {
+  .sticky-content {
+    padding: 0.6rem 1rem;
+  }
+
+  .sticky-title {
+    font-size: 0.85rem;
+  }
+
+  .sticky-controls {
+    gap: 0.8rem;
   }
 }

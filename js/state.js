@@ -11,6 +11,7 @@ export const state = {
     data: {
         lastIndex: 0,
         positions: {},
+        durations: {}, // New: stores total time per episode
         history: []
     },
 
@@ -38,6 +39,27 @@ export const state = {
 
     getPosition(title) {
         return this.data.positions[title] || 0;
+    },
+
+    setDuration(title, duration) {
+        if (duration && duration > 0) {
+            this.data.durations[title] = duration;
+            this.save();
+        }
+    },
+
+    getDuration(title) {
+        return this.data.durations[title] || 0;
+    },
+
+    getProgressPercentage(title) {
+        if (this.isListened(title)) return 100;
+        const pos = this.getPosition(title);
+        const dur = this.getDuration(title);
+        if (pos && dur) {
+            return Math.min(100, (pos / dur) * 100);
+        }
+        return 0;
     },
 
     markAsListened(title) {

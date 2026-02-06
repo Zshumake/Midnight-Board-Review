@@ -16,6 +16,10 @@ ui.renderLibrary(episodes, currentIndex, state, (index, action) => {
             // Load new
             loadEpisode(index);
         }
+    } else if (action === 'skip-back') {
+        skip(-10);
+    } else if (action === 'skip-fwd') {
+        skip(10);
     }
 });
 
@@ -48,10 +52,12 @@ function renderLibrary(filter = '') {
                 // Load new
                 loadEpisode(index);
             }
+        } else if (action === 'skip-back') {
+            skip(-10);
+        } else if (action === 'skip-fwd') {
+            skip(10);
         } else {
-            // Default (e.g. from row click if we kept that logic, but we removed it)
-            // Wait, we removed the row click play logic.
-            // But if we ever need it:
+            // Default fallback
             loadEpisode(index);
         }
     });
@@ -86,6 +92,9 @@ function loadEpisode(index) {
 
     // Resume position after metadata loads
     ui.audio.onloadedmetadata = () => {
+        // Save duration for library progress tracking
+        state.setDuration(episode.title, ui.audio.duration);
+
         // Restore position if available
         const savedPos = state.getPosition(episode.title);
         if (savedPos > 0) {
@@ -203,6 +212,30 @@ function setupEventListeners() {
             setTimeout(() => ui.copyRssBtn.innerText = originalText, 2000);
         });
     });
+
+    // Sticky Player Events
+    if (ui.stickyPlayBtn) {
+        ui.stickyPlayBtn.addEventListener('click', () => {
+            if (ui.audio.paused) playAudio(); else pauseAudio();
+        });
+    }
+    if (ui.stickySkipBack) {
+        ui.stickySkipBack.addEventListener('click', () => skip(-10));
+    }
+    if (ui.stickySkipFwd) {
+        ui.stickySkipFwd.addEventListener('click', () => skip(10));
+    }
+    if (ui.stickyProgressContainer) {
+        ui.stickyProgressContainer.addEventListener('click', (e) => {
+            const width = ui.stickyProgressContainer.clientWidth;
+            const clickX = e.offsetX;
+            const duration = ui.audio.duration;
+            if (duration) {
+                ui.audio.currentTime = (clickX / width) * duration;
+                saveCurrentPosition();
+            }
+        });
+    }
 }
 
 // Start the app
