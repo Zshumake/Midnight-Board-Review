@@ -155,7 +155,7 @@ export const ui = {
      * Update the track metadata and title
      */
     updateTrack(episode, isListened) {
-        this.title.innerHTML = `${episode.title} ${isListened ? '<span style="color: green; font-size: 0.8em;">✓</span>' : ''}`;
+        this.title.innerHTML = `${episode.title} ${isListened ? '<span style="color: var(--accent-gold); font-weight: bold; margin-left:8px;">✓</span>' : ''}`;
 
         // Update Sticky Player
         if (this.stickyTitle) {

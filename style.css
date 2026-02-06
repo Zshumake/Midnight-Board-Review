@@ -314,6 +314,7 @@ button:hover {
   left: 0;
   height: 100%;
   width: 0%;
+  background: rgba(249, 115, 22, 0.4);
   /* Transparent Orange for progress */
   z-index: 0;
   pointer-events: none;
@@ -676,6 +677,22 @@ button:hover {
 .error-toast.visible {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
+}
+
+/* Solid Orange Badge with Black Check */
+.status-icon {
+  margin-left: auto;
+  color: #000;
+  font-weight: bold;
+  font-size: 0.9rem;
+  background: var(--accent-gold);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 /* Show badge when content has '✓' */
