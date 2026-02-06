@@ -21,7 +21,7 @@
         </header>
 
         <section class="hero glass-panel">
-            <img src="cover.png" alt="Midnight Board Review Cover" class="cover-art" id="cover-art">
+            <img src="cover.jpg" alt="Midnight Board Review Cover" class="cover-art" id="cover-art">
 
             <div class="player-card">
                 <div class="episode-info">
@@ -35,11 +35,38 @@
                 </div>
 
                 <div class="track-controls">
-                    <button id="prev" title="Previous Episode">⏮</button>
-                    <button id="skip-back" title="Skip Back 10s">⟲</button>
-                    <button class="play-btn" id="play" title="Play/Pause">▶</button>
-                    <button id="skip-fwd" title="Skip Forward 10s">⟳</button>
-                    <button id="next" title="Next Episode">⏭</button>
+                    <button id="prev" title="Previous Episode">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24"
+                            height="24">
+                            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                        </svg>
+                    </button>
+                    <button id="skip-back" title="Skip Back 10s">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24"
+                            height="24">
+                            <path
+                                d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
+                        </svg>
+                    </button>
+                    <button class="play-btn" id="play" title="Play/Pause">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24"
+                            height="24">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                    </button>
+                    <button id="skip-fwd" title="Skip Forward 10s">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24"
+                            height="24">
+                            <path
+                                d="M11.5 8c4.65 0 8.58 3.03 9.96 7.22l-2.37.78c-1.05-3.19-4.06-5.5-7.6-5.5-1.95 0-3.73.72-5.12 1.88L10 16H1V7l3.6 3.6C6.45 8.99 8.85 8 11.5 8z" />
+                        </svg>
+                    </button>
+                    <button id="next" title="Next Episode">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24"
+                            height="24">
+                            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                        </svg>
+                    </button>
                 </div>
 
                 <div class="player-footer">

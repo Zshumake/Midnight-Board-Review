@@ -140,7 +140,7 @@ function updateMediaSession(episode) {
             title: episode.title,
             artist: 'Midnight Review',
             album: 'Board Review Podcast',
-            artwork: [{ src: 'cover.jpg', sizes: '512x512', type: 'image/jpeg' }]
+            artwork: [{ src: 'cover.jpg?v=2', sizes: '512x512', type: 'image/jpeg' }]
         });
 
         navigator.mediaSession.setActionHandler('play', playAudio);

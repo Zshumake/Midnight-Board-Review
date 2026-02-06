@@ -1,3 +1,5 @@
+import { ICONS } from './icons.js';
+
 export const ui = {
     // Elements
     audio: document.getElementById('audio'),
@@ -50,7 +52,7 @@ export const ui = {
                 // Play/Pause Button for List
                 const listPlayBtn = document.createElement('button');
                 listPlayBtn.className = 'list-play-btn';
-                listPlayBtn.innerHTML = '▶'; // Default
+                listPlayBtn.innerHTML = ICONS.play; // Default
                 listPlayBtn.dataset.index = item.effectiveIndex;
                 listPlayBtn.onclick = (e) => {
                     e.stopPropagation(); // Prevent accordion toggle
@@ -120,7 +122,7 @@ export const ui = {
      * Update play/pause button state
      */
     setPlaying(isPlaying) {
-        this.playBtn.innerText = isPlaying ? '⏸' : '▶';
+        this.playBtn.innerHTML = isPlaying ? ICONS.pause : ICONS.play;
     },
 
     /**
@@ -129,7 +131,7 @@ export const ui = {
     updateListPlayStates(currentTitle, isPlaying) {
         // Reset all buttons to Play
         const allBtns = document.querySelectorAll('.list-play-btn');
-        allBtns.forEach(btn => btn.innerText = '▶');
+        allBtns.forEach(btn => btn.innerHTML = ICONS.play);
 
         // Find the button for the current track and set to Pause if playing
         // We need to look up by title or ensure index matches. title is safer if filtered.
@@ -143,7 +145,7 @@ export const ui = {
         if (activeItem) {
             const btn = activeItem.querySelector('.list-play-btn');
             if (btn) {
-                btn.innerText = isPlaying ? '⏸' : '▶';
+                btn.innerHTML = isPlaying ? ICONS.pause : ICONS.play;
             }
         }
     }
