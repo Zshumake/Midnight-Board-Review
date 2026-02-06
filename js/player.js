@@ -91,9 +91,9 @@ function loadEpisode(index) {
 
     const episode = episodes[index];
     const savedPos = state.getPosition(episode.title);
+
+    // Update UI Metadata
     document.getElementById('current-track-title').innerText = episode.title;
-    // document.getElementById('current-track-artist').innerText = episode.category; // Optional: show category instead of artist? 
-    // Keep artist as "Midnight Review" or set to Category? User wanted obscurity. 
 
     const descEl = document.getElementById('current-track-description');
     if (descEl) {
@@ -101,16 +101,14 @@ function loadEpisode(index) {
     }
 
     const listened = state.isListened(episode.title);
-
     ui.updateTrack(episode, listened);
-    ui.audio.src = episode.url;
 
     // Reset Play State (Pause) when loading new
     ui.setPlaying(false);
     ui.updateListPlayStates(episode.title, false);
 
-    // Resume position after metadata loads
-    ui.audio.onloadedmetadata = () => {
+    // Define resume logic (Metadata Handler)
+    const handleMetadata = () => {
         // Restore playback speed
         const currentSpeed = parseFloat(ui.speedSelect.value) || 1.0;
         ui.audio.playbackRate = currentSpeed;
@@ -126,11 +124,14 @@ function loadEpisode(index) {
             isFirstLoad
         );
 
+        console.log(`Loaded ${episode.title}. Saved: ${savedPos}, Duration: ${ui.audio.duration}, StartTime: ${startTime}`);
+
         if (startTime > 0) {
             ui.audio.currentTime = startTime;
         } else {
             ui.audio.currentTime = 0;
-            saveCurrentPosition(); // Save 0 if restarting
+            // Only save 0 if we are actually restarting (and not just glitching)
+            // saveCurrentPosition(); 
         }
 
         if (isFirstLoad) {
@@ -141,11 +142,18 @@ function loadEpisode(index) {
         isPreloading = false;
 
         updateMediaSession(episode);
+
+        // Auto-play if not initial load
+        if (!isFirstLoad) {
+            playAudio();
+        }
     };
 
-    if (!isFirstLoad) {
-        playAudio();
-    }
+    // Attach listener BEFORE setting src to catch cached files
+    ui.audio.addEventListener('loadedmetadata', handleMetadata, { once: true });
+
+    // Set source triggers loading
+    ui.audio.src = episode.url;
 }
 
 /**
