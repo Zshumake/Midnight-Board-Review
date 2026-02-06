@@ -76,6 +76,9 @@ function loadEpisode(index) {
         autoplayTimer = null;
     }
 
+    // Reset silence flag so we don't think we are in a gap
+    isPlayingSilence = false;
+
     currentIndex = index;
     state.setLastIndex(index);
 
