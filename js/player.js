@@ -95,6 +95,10 @@ function loadEpisode(index) {
 
     // Resume position after metadata loads
     ui.audio.onloadedmetadata = () => {
+        // Restore playback speed
+        const currentSpeed = parseFloat(ui.speedSelect.value) || 1.0;
+        ui.audio.playbackRate = currentSpeed;
+
         // Save duration for library progress tracking
         state.setDuration(episode.title, ui.audio.duration);
 
