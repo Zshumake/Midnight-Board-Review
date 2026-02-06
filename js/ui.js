@@ -26,6 +26,20 @@ export const ui = {
     stickyProgressBar: document.getElementById('sticky-progress-bar'),
     stickyProgressContainer: document.getElementById('sticky-progress-container'),
     stickySpeedSelect: document.getElementById('sticky-speed-select'),
+    errorToast: document.getElementById('error-toast'),
+
+    /**
+     * Show Error Toast
+     */
+    showError(message) {
+        if (this.errorToast) {
+            this.errorToast.innerText = message;
+            this.errorToast.classList.add('visible');
+            setTimeout(() => {
+                this.errorToast.classList.remove('visible');
+            }, 3000);
+        }
+    },
 
     /**
      * Render the episode list grouped by category

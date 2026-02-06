@@ -265,7 +265,21 @@ function setupEventListeners() {
             }
         });
     }
+
+    // Error Handling
+    ui.audio.addEventListener('error', (e) => {
+        const error = ui.audio.error;
+        let message = 'An error occurred while playing audio.';
+        if (error.code === 1) message = 'Playback aborted.';
+        if (error.code === 2) message = 'Network error. Please check your connection.';
+        if (error.code === 3) message = 'Audio decoding failed.';
+        if (error.code === 4) message = 'Audio file not found or unsupported.'; // 404 falls here
+
+        ui.showError(message);
+        ui.setPlaying(false);
+        const episode = episodes[currentIndex];
+        ui.updateListPlayStates(episode.title, false, state);
+    });
 }
 
 // Start the app
-

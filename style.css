@@ -663,6 +663,29 @@ button:hover {
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* Error Toast */
+.error-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  box-shadow: 0 10px 25px rgba(185, 28, 28, 0.5);
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  z-index: 2000;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.error-toast.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
 /* Show badge when content has '✓' */
 .status-icon:not(:empty) {
   opacity: 1;
