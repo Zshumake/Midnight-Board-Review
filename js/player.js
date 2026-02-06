@@ -3,13 +3,19 @@ import { ui } from './ui.js';
 import { state } from './state.js';
 import { WelcomeModal } from './welcomeModal.js';
 
+// --- State Variables (Defined at top to avoid ReferenceError) ---
 let currentIndex = 0;
 let isFirstLoad = true;
+let playPromise = undefined; // Track valid play request
+let isPreloading = false;    // Track auto-preloading state
+let isPlayingSilence = false; // Track mobile-safe gap state
+let autoplayTimer = null;    // Track 5s delay timer (safety ref)
+const preloadAudio = new Audio(); // Singleton for hover preloading
 
 // Load saved state from localStorage
 state.load();
 
-// Initialize
+// Initialize (Hoisted functions will work, but vars must be ready)
 ui.renderLibrary(episodes, currentIndex, state, (index, action) => {
     if (action === 'play') {
         if (Number(currentIndex) === Number(index)) {
@@ -24,6 +30,20 @@ ui.renderLibrary(episodes, currentIndex, state, (index, action) => {
     } else if (action === 'skip-fwd') {
         skip(10);
     }
+}, (url) => preloadEpisode(url)); // Pass preload callback
+if (action === 'play') {
+    if (Number(currentIndex) === Number(index)) {
+        // Toggle Play/Pause
+        if (ui.audio.paused) playAudio(); else pauseAudio();
+    } else {
+        // Load new
+        loadEpisode(index);
+    }
+} else if (action === 'skip-back') {
+    skip(-10);
+} else if (action === 'skip-fwd') {
+    skip(10);
+}
 }, (url) => preloadEpisode(url)); // Pass preload callback
 
 // Initialize Welcome Modal (Modular)
