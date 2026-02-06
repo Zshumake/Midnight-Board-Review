@@ -9,8 +9,13 @@ let isFirstLoad = true;
 // Initialize
 ui.renderLibrary(episodes, currentIndex, state, (index, action) => {
     if (action === 'play') {
-        loadEpisode(index);
-        playAudio();
+        if (Number(currentIndex) === Number(index)) {
+            // Toggle Play/Pause
+            if (ui.audio.paused) playAudio(); else pauseAudio();
+        } else {
+            // Load new
+            loadEpisode(index);
+        }
     }
 });
 
