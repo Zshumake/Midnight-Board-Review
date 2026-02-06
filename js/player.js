@@ -1,21 +1,24 @@
-import { episodes } from './episodes.js';
-import { state } from './state.js';
+import { episodes } from './data.js';
+import { loadAudio, playAudio } from './audio.js';
 import { ui } from './ui.js';
+import { state } from './state.js';
+import { WelcomeModal } from './welcomeModal.js';
 
 let currentIndex = 0;
-let isFirstLoad = true;
 
-/**
- * Initialize the player
- */
-function init() {
-    const savedState = state.load();
-    currentIndex = savedState.lastIndex || 0;
+// Initialize
+ui.renderLibrary(episodes, currentIndex, state, (index, action) => {
+    if (action === 'play') {
+        loadEpisode(index);
+        playAudio();
+    }
+});
 
-    loadEpisode(currentIndex);
-    renderLibrary();
-    setupEventListeners();
-}
+// Initialize Welcome Modal (Modular)
+WelcomeModal.init();
+
+loadEpisode(currentIndex); // Load first episode but don't auto-play
+setupEventListeners();
 
 /**
  * Filtered render of the library

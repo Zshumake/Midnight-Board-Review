@@ -129,18 +129,7 @@ export const ui = {
      * Update the Icons in the List
      */
     updateListPlayStates(currentTitle, isPlaying) {
-        // Reset all buttons to Play
-        const allBtns = document.querySelectorAll('.list-play-btn');
-        allBtns.forEach(btn => btn.innerHTML = ICONS.play);
-
-        // Find the button for the current track and set to Pause if playing
-        // We need to look up by title or ensure index matches. title is safer if filtered.
-        // Actually we used dataset.index but that index is into the FILTERED list if rerendered?
-        // Note: renderLibrary re-renders freshly, so dataset.index should be correct for the click.
-        // But here we might be strictly updating icons.
-
-        // Better: Find the row with the matching title text?
-        // Let's rely on looking for the active item.
+        // ... (previous content logic)
         const activeItem = document.querySelector('.episode-item.active');
         if (activeItem) {
             const btn = activeItem.querySelector('.list-play-btn');

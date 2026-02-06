@@ -23,7 +23,9 @@
 <body>
     <div class="container">
         <header>
-            <h1>Midnight Board Review</h1>
+            <div class="header-content">
+                <h1>Midnight Board Review</h1>
+            </div>
             <p class="subtitle">Focused PM&R Education</p>
         </header>
 
@@ -104,37 +106,45 @@
             </div>
         </section>
 
-        <section class="rss-section">
-            <h3>Add to Your Podcast App</h3>
-            <p>Copy this secret URL and paste it into Apple Podcasts, Overcast, or your favorite player.</p>
-            <code class="rss-url" id="rss-url">https://shuhub.xyz/feed/v1_8zX9s2_secure.xml</code>
-            <button class="copy-btn" id="copy-rss">Copy Feed URL</button>
+        <section class="rss-section glass-panel">
+            <div class="section-header center">
+                <h3>Subscribe on Mobile</h3>
+            </div>
 
-            <div class="instructions">
-                <h4>How to add to Apple Podcasts:</h4>
-                <ol>
-                    <li>Copy the <strong>Feed URL</strong> above.</li>
-                    <li>Open the <strong>Apple Podcasts</strong> app.</li>
-                    <li>Tap <strong>Library</strong> at the bottom.</li>
-                    <li>Tap the <strong>Edit</strong> or <strong>More (...)</strong> button in the top right.</li>
-                    <li>Select <strong>Add a Show by URL...</strong>.</li>
-                    <li>Paste the URL and tap <strong>Follow</strong>.</li>
-                </ol>
+            <p class="rss-description">Use your favorite podcast app to sync episodes offline.</p>
 
-                <br>
+            <div class="rss-card">
+                <code class="rss-url" id="rss-url">https://shuhub.xyz/feed/v1_8zX9s2_secure.xml</code>
+                <button class="copy-btn" id="copy-rss">Copy Feed URL</button>
+            </div>
 
-                <h4>How to Install as an App:</h4>
-                <ol>
-                    <li><strong>iOS (iPhone):</strong> Tap the <strong>Share</strong> button <svg
-                            style="width:12px; height:12px; vertical-align:middle; display:inline;" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                            <polyline points="16 6 12 2 8 6" />
-                            <line x1="12" y1="2" x2="12" y2="15" />
-                        </svg> in Safari, then select <strong>Add to Home Screen</strong>.</li>
-                    <li><strong>Android:</strong> Tap the <strong>Menu</strong> (3 dots), then select <strong>Add to
-                            Home screen</strong>.</li>
-                </ol>
+            <div class="instructions-accordion">
+                <details>
+                    <summary>How to add to Apple Podcasts</summary>
+                    <ol>
+                        <li>Copy the <strong>Feed URL</strong> above.</li>
+                        <li>Open the <strong>Apple Podcasts</strong> app.</li>
+                        <li>Tap <strong>Library</strong> at the bottom.</li>
+                        <li>Tap the <strong>Edit</strong> or <strong>Three Dots (...)</strong> menu.</li>
+                        <li>Select <strong>Add a Show by URL...</strong>.</li>
+                        <li>Paste the URL and tap <strong>Follow</strong>.</li>
+                    </ol>
+                </details>
+
+                <details>
+                    <summary>How to Install as an App</summary>
+                    <ol>
+                        <li><strong>iOS (iPhone):</strong> Tap <strong>Share</strong> <svg
+                                style="width:14px; height:14px; vertical-align:middle; display:inline;"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                                <polyline points="16 6 12 2 8 6" />
+                                <line x1="12" y1="2" x2="12" y2="15" />
+                            </svg> in Safari → <strong>Add to Home Screen</strong>.</li>
+                        <li><strong>Android:</strong> Tap <strong>Menu</strong> (3 dots) → <strong>Add to Home
+                                screen</strong>.</li>
+                    </ol>
+                </details>
             </div>
         </section>
     </div>
