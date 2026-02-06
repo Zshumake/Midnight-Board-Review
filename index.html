@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midnight Board Review</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Merriweather:wght@300;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Midnight Board Review</h1>
+            <p class="subtitle">Focused PM&R Education</p>
+        </header>
+
+        <section class="hero glass-panel">
+            <img src="cover.png" alt="Midnight Board Review Cover" class="cover-art" id="cover-art">
+
+            <div class="player-card">
+                <div class="episode-info">
+                    <p id="current-track-title">Select an episode to begin</p>
+                    <p id="current-track-artist">Cuccurullo Review</p>
+                </div>
+
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+
+                <div class="track-controls">
+                    <button id="prev" title="Previous Episode">⏮</button>
+                    <button id="skip-back" title="Skip Back 10s">⟲</button>
+                    <button class="play-btn" id="play" title="Play/Pause">▶</button>
+                    <button id="skip-fwd" title="Skip Forward 10s">⟳</button>
+                    <button id="next" title="Next Episode">⏭</button>
+                </div>
+
+                <div class="player-footer">
+                    <div class="speed-controls">
+                        <select id="speed-select" title="Playback Speed">
+                            <option value="1">1x Speed</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="1.75">1.75x</option>
+                            <option value="2">2x</option>
+                        </select>
+                    </div>
+                </div>
+
+                <audio id="audio" src=""></audio>
+            </div>
+        </section>
+
+        <section class="library-section glass-panel">
+            <div class="section-header">
+                <h3>Episode Library</h3>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search episodes...">
+                </div>
+            </div>
+            <div id="episode-list" class="episode-list">
+                <!-- Episodes dynamically populated here -->
+            </div>
+        </section>
+
+        <section class="rss-section">
+            <h3>Add to Your Podcast App</h3>
+            <p>Copy this secret URL and paste it into Apple Podcasts, Overcast, or your favorite player.</p>
+            <code class="rss-url" id="rss-url">https://shuhub.xyz/feed/v1_8zX9s2_secure.xml</code>
+            <button class="copy-btn" id="copy-rss">Copy Feed URL</button>
+
+            <div class="instructions">
+                <h4>How to add to Apple Podcasts:</h4>
+                <ol>
+                    <li>Copy the <strong>Feed URL</strong> above.</li>
+                    <li>Open the <strong>Apple Podcasts</strong> app.</li>
+                    <li>Tap <strong>Library</strong> at the bottom.</li>
+                    <li>Tap the <strong>Edit</strong> or <strong>More (...)</strong> button in the top right.</li>
+                    <li>Select <strong>Add a Show by URL...</strong>.</li>
+                    <li>Paste the URL and tap <strong>Follow</strong>.</li>
+                </ol>
+            </div>
+        </section>
+    </div>
+
+    <script type="module" src="js/player.js"></script>
+</body>
+
+</html>
