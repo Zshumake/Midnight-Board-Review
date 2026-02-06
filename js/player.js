@@ -100,7 +100,7 @@ function updateMediaSession(episode) {
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: episode.title,
-            artist: 'Cuccurullo Review',
+            artist: 'Midnight Review',
             album: 'Board Review Podcast',
             artwork: [{ src: 'cover.jpg', sizes: '512x512', type: 'image/jpeg' }]
         });
