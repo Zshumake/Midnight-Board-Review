@@ -620,6 +620,32 @@ button:hover {
   color: var(--accent-gold-light);
 }
 
+/* Status Icon (Completion Badge) */
+.status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  color: #000;
+  font-size: 0.8rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  opacity: 0;
+  /* Hidden by default */
+  transform: scale(0);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Show badge when content has '✓' */
+.status-icon:not(:empty) {
+  opacity: 1;
+  transform: scale(1);
+}
+
 @media (max-width: 480px) {
   .sticky-content {
     padding: 0.6rem 1rem;

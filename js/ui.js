@@ -94,6 +94,7 @@ export const ui = {
 
                 const statusSpan = document.createElement('span');
                 statusSpan.className = 'status-icon';
+                // Use checkmark if listened
                 statusSpan.innerText = listened ? '✓' : '';
 
                 headerDiv.appendChild(listPlayBtn);
@@ -136,8 +137,6 @@ export const ui = {
     updateTrack(episode, isListened) {
         this.title.innerHTML = `${episode.title} ${isListened ? '<span style="color: green; font-size: 0.8em;">✓</span>' : ''}`;
 
-        // Note: active row class logic is handled in renderLibrary or updateListPlayStates
-
         // Update Sticky Player
         if (this.stickyTitle) {
             this.stickyTitle.innerText = episode.title;
@@ -145,6 +144,30 @@ export const ui = {
         if (this.stickyPlayer) {
             this.stickyPlayer.classList.add('visible');
         }
+
+        // Dynamically update the specific list item status
+        this.updateEpisodeStatus(episode.title, isListened);
+    },
+
+    /**
+     * Helper to update the status icon and finished state of a specific row
+     */
+    updateEpisodeStatus(title, isListened) {
+        const allRows = document.querySelectorAll('.episode-item');
+        allRows.forEach(row => {
+            const titleEl = row.querySelector('.episode-title-text');
+            if (titleEl && titleEl.innerText === title) {
+                // Update Badge
+                const statusIcon = row.querySelector('.status-icon');
+                if (statusIcon) {
+                    statusIcon.innerText = isListened ? '✓' : '';
+                }
+                // Update Finished Class (only if not active)
+                if (isListened && !row.classList.contains('active')) {
+                    row.classList.add('finished');
+                }
+            }
+        });
     },
 
     /**
@@ -164,7 +187,6 @@ export const ui = {
             if (activeItem) {
                 const fill = activeItem.querySelector('.episode-progress-fill');
                 // Ensure we are in "progress mode" (transparent) not "finished mode" (solid)
-                // The class logic in updateListPlayStates ensures .finished is removed from active
                 if (fill) {
                     fill.style.width = `${percent}%`;
                 }
@@ -199,6 +221,13 @@ export const ui = {
             if (!titleEl) return;
             const rowTitle = titleEl.innerText;
 
+            // Ensure status icon is up to date regardless of play state
+            const isListened = state ? state.isListened(rowTitle) : false;
+            const statusIcon = row.querySelector('.status-icon');
+            if (statusIcon) {
+                statusIcon.innerText = isListened ? '✓' : '';
+            }
+
             if (rowTitle === currentTitle) {
                 // ACTIVE ROW
                 row.classList.add('active');
@@ -214,7 +243,7 @@ export const ui = {
                 // INACTIVE ROW
                 row.classList.remove('active');
                 // If inactive AND listened, mark as finished (Solid)
-                if (state && state.isListened(rowTitle)) {
+                if (isListened) {
                     row.classList.add('finished');
                     // Ensure bar is full width for solid efffect
                     const fill = row.querySelector('.episode-progress-fill');
