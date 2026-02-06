@@ -285,6 +285,11 @@ function setupEventListeners() {
         if (ui.stickySpeedSelect) ui.stickySpeedSelect.value = speed;
     });
 
+    // Save on close/refresh
+    window.addEventListener('beforeunload', () => {
+        saveCurrentPosition();
+    });
+
     if (ui.stickySpeedSelect) {
         ui.stickySpeedSelect.addEventListener('change', () => {
             const speed = parseFloat(ui.stickySpeedSelect.value);
