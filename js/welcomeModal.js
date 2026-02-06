@@ -24,7 +24,10 @@ export const WelcomeModal = {
                 opacity: 0.8;
                 transition: opacity 0.2s;
             }
-            .info-btn:hover { opacity: 1; }
+            .info-btn:hover { 
+                opacity: 1; 
+                transform: translateY(calc(-50% - 2px));
+            }
 
             .modal-overlay {
                 position: fixed;

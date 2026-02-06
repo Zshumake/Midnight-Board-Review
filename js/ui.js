@@ -25,6 +25,7 @@ export const ui = {
     stickyTitle: document.getElementById('sticky-title'),
     stickyProgressBar: document.getElementById('sticky-progress-bar'),
     stickyProgressContainer: document.getElementById('sticky-progress-container'),
+    stickySpeedSelect: document.getElementById('sticky-speed-select'),
 
     /**
      * Render the episode list grouped by category

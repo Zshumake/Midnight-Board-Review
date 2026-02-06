@@ -189,9 +189,20 @@ function setupEventListeners() {
     ui.skipBackBtn.addEventListener('click', () => skip(-10));
     ui.skipFwdBtn.addEventListener('click', () => skip(10));
 
+    // Speed Control Sync
     ui.speedSelect.addEventListener('change', () => {
-        ui.audio.playbackRate = parseFloat(ui.speedSelect.value);
+        const speed = parseFloat(ui.speedSelect.value);
+        ui.audio.playbackRate = speed;
+        if (ui.stickySpeedSelect) ui.stickySpeedSelect.value = speed;
     });
+
+    if (ui.stickySpeedSelect) {
+        ui.stickySpeedSelect.addEventListener('change', () => {
+            const speed = parseFloat(ui.stickySpeedSelect.value);
+            ui.audio.playbackRate = speed;
+            ui.speedSelect.value = speed;
+        });
+    }
 
     ui.searchInput.addEventListener('input', (e) => {
         renderLibrary(e.target.value);

@@ -595,6 +595,25 @@ button:hover {
   flex-shrink: 0;
 }
 
+.sticky-speed-select {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.75rem;
+  cursor: pointer;
+  appearance: none;
+  /* Cleaner look on Mac */
+  text-align: center;
+}
+
+.sticky-speed-select:hover {
+  color: var(--accent-gold);
+  border-color: var(--accent-gold);
+}
+
 .sticky-btn {
   background: none;
   border: none;
