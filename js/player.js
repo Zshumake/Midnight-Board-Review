@@ -94,7 +94,6 @@ function loadEpisode(index) {
     ui.updateListPlayStates(episode.title, false);
 
     // Resume position after metadata loads
-    // Resume position after metadata loads
     ui.audio.onloadedmetadata = () => {
         // Restore playback speed
         const currentSpeed = parseFloat(ui.speedSelect.value) || 1.0;
@@ -121,6 +120,9 @@ function loadEpisode(index) {
         if (isFirstLoad) {
             isFirstLoad = false;
         }
+
+        // Reset Preload State for new track
+        isPreloading = false;
 
         updateMediaSession(episode);
     };
@@ -179,6 +181,7 @@ function saveCurrentPosition() {
 
 // Track valid play request to prevent race conditions
 let playPromise = undefined;
+let isPreloading = false; // Track preloading state
 
 function playAudio() {
     // Enforce playback speed before playing
@@ -242,6 +245,19 @@ function playPrev() {
     loadEpisode((currentIndex - 1 + episodes.length) % episodes.length);
 }
 
+function preloadNextEpisode() {
+    const nextIndex = (currentIndex + 1) % episodes.length;
+    const nextEpisode = episodes[nextIndex];
+
+    // Create audio element to force browser to cache stream
+    const preloadAudio = new Audio();
+    preloadAudio.src = nextEpisode.url;
+    preloadAudio.preload = 'auto'; // Force load
+
+    console.log(`Preloading next episode: ${nextEpisode.title}`);
+    isPreloading = true;
+}
+
 function updateMediaSession(episode) {
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -303,6 +319,12 @@ function setupEventListeners() {
         // Only update visual if NOT dragging
         if (!ui.isDragging) {
             ui.updateProgress(ui.audio.currentTime, ui.audio.duration);
+        }
+
+        // Smart Preloading: 10 seconds before end
+        const timeLeft = ui.audio.duration - ui.audio.currentTime;
+        if (timeLeft <= 10 && timeLeft > 0 && !isPreloading) {
+            preloadNextEpisode();
         }
 
         // Throttle saving position to every 5 seconds to reduce UI lag
