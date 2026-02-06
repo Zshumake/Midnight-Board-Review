@@ -6,24 +6,968 @@
     <language>en-us</language>
     <copyright>&#169; 2026 Midnight Review</copyright>
     <itunes:author>Midnight Review</itunes:author>
-    <description>A 119-episode podcast covering everything in the PM&amp;R board review.</description>
+    <description>A 119-episode podcast covering everything in the PM&R board review.</description>
     <itunes:image href="https://shuhub.xyz/cover.jpg" />
     <itunes:block>yes</itunes:block>
-    
-    <!-- Using a loop to generate items would be easier with a script, but for now I'll provide the start and the pattern -->
     <item>
-      <title>Ankle 1</title>
-      <enclosure url="https://media.shuhub.xyz/Ankle1.mp3" length="0" type="audio/mpeg" />
-      <guid isPermaLink="false">Ankle1</guid>
-      <pubDate>Wed, 04 Feb 2026 12:00:00 GMT</pubDate>
+      <title>Musculoskeletal: Shoulder 1</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Shoulder_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Shoulder_1.m4a</guid>
+      <pubDate>Thu, 09 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
     </item>
     <item>
-      <title>Ankle 2</title>
-      <enclosure url="https://media.shuhub.xyz/Ankle2.mp3" length="0" type="audio/mpeg" />
-      <guid isPermaLink="false">Ankle2</guid>
-      <pubDate>Wed, 04 Feb 2026 12:01:00 GMT</pubDate>
+      <title>Musculoskeletal: Shoulder 2</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Shoulder_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Shoulder_2.m4a</guid>
+      <pubDate>Fri, 10 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
     </item>
-    <!-- [Truncated for brevity in tool call, but full file would contain all 119 episodes] -->
-    <!-- I will generate the full XML in segments or use a simplified approach for the mockup -->
+    <item>
+      <title>Musculoskeletal: Shoulder 3</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Shoulder_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Shoulder_3.m4a</guid>
+      <pubDate>Sat, 11 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Shoulder 4</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Shoulder_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Shoulder_4.m4a</guid>
+      <pubDate>Sun, 12 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Elbow 1</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Elbow_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Elbow_1.m4a</guid>
+      <pubDate>Mon, 13 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Elbow 2</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Elbow_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Elbow_2.m4a</guid>
+      <pubDate>Tue, 14 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Hand</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Hand.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Hand.m4a</guid>
+      <pubDate>Wed, 15 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Wrist</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Wrist.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Wrist.m4a</guid>
+      <pubDate>Thu, 16 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Spine 1</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_1.m4a</guid>
+      <pubDate>Fri, 17 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Spine 2</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_2.m4a</guid>
+      <pubDate>Sat, 18 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Spine 3</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_3.m4a</guid>
+      <pubDate>Sun, 19 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Spine 4</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_4.m4a</guid>
+      <pubDate>Mon, 20 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Spine 5</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_5.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_5.m4a</guid>
+      <pubDate>Tue, 21 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Spine 6</title>
+      <description>Musculoskeletal: Upper Extremity & Spine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_6.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Spine_6.m4a</guid>
+      <pubDate>Wed, 22 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Hip 1</title>
+      <description>Musculoskeletal: Lower Extremity</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Hip_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Hip_1.m4a</guid>
+      <pubDate>Thu, 23 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Hip 2</title>
+      <description>Musculoskeletal: Lower Extremity</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Hip_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Hip_2.m4a</guid>
+      <pubDate>Fri, 24 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Hip 3</title>
+      <description>Musculoskeletal: Lower Extremity</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Hip_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Hip_3.m4a</guid>
+      <pubDate>Sat, 25 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Knee 1</title>
+      <description>Musculoskeletal: Lower Extremity</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Knee_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Knee_1.m4a</guid>
+      <pubDate>Sun, 26 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Knee 2</title>
+      <description>Musculoskeletal: Lower Extremity</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Knee_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Knee_2.m4a</guid>
+      <pubDate>Mon, 27 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Knee 3</title>
+      <description>Musculoskeletal: Lower Extremity</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Knee_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Knee_3.m4a</guid>
+      <pubDate>Tue, 28 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Lower Leg</title>
+      <description>Musculoskeletal: Lower Extremity</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Lower_Leg.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Lower_Leg.m4a</guid>
+      <pubDate>Wed, 29 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Ankle 1</title>
+      <description>Musculoskeletal: Lower Extremity</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Ankle_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Ankle_1.m4a</guid>
+      <pubDate>Thu, 30 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Ankle 2</title>
+      <description>Musculoskeletal: Lower Extremity</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Ankle_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Ankle_2.m4a</guid>
+      <pubDate>Fri, 31 Oct 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Musculoskeletal: Foot</title>
+      <description>Musculoskeletal: Lower Extremity</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Foot.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MSK_Foot.m4a</guid>
+      <pubDate>Sat, 01 Nov 2025 20:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Traumatic Brain Injury 1</title>
+      <description>Neurology: TBI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_1.m4a</guid>
+      <pubDate>Sun, 02 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Traumatic Brain Injury 2</title>
+      <description>Neurology: TBI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_2.m4a</guid>
+      <pubDate>Mon, 03 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Traumatic Brain Injury 3</title>
+      <description>Neurology: TBI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_3.m4a</guid>
+      <pubDate>Tue, 04 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Traumatic Brain Injury 4</title>
+      <description>Neurology: TBI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_4.m4a</guid>
+      <pubDate>Wed, 05 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Traumatic Brain Injury 5</title>
+      <description>Neurology: TBI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_5.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_5.m4a</guid>
+      <pubDate>Thu, 06 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Traumatic Brain Injury 6</title>
+      <description>Neurology: TBI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_6.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/TBI_6.m4a</guid>
+      <pubDate>Fri, 07 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cerebrovascular Accident 1</title>
+      <description>Neurology: Cerebrovascular Accident (CVA)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_1.m4a</guid>
+      <pubDate>Sat, 08 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cerebrovascular Accident 2</title>
+      <description>Neurology: Cerebrovascular Accident (CVA)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_2.m4a</guid>
+      <pubDate>Sun, 09 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cerebrovascular Accident 3</title>
+      <description>Neurology: Cerebrovascular Accident (CVA)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_3.m4a</guid>
+      <pubDate>Mon, 10 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cerebrovascular Accident 4</title>
+      <description>Neurology: Cerebrovascular Accident (CVA)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_4.m4a</guid>
+      <pubDate>Tue, 11 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cerebrovascular Accident 5</title>
+      <description>Neurology: Cerebrovascular Accident (CVA)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_5.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_5.m4a</guid>
+      <pubDate>Wed, 12 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cerebrovascular Accident 6</title>
+      <description>Neurology: Cerebrovascular Accident (CVA)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_6.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/CVA_6.m4a</guid>
+      <pubDate>Thu, 13 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spinal Cord Injury 1</title>
+      <description>Neurology: SCI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_1.m4a</guid>
+      <pubDate>Fri, 14 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spinal Cord Injury 2</title>
+      <description>Neurology: SCI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_2.m4a</guid>
+      <pubDate>Sat, 15 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spinal Cord Injury 3</title>
+      <description>Neurology: SCI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_3.m4a</guid>
+      <pubDate>Sun, 16 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spinal Cord Injury 4</title>
+      <description>Neurology: SCI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_4.m4a</guid>
+      <pubDate>Mon, 17 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spinal Cord Injury 5</title>
+      <description>Neurology: SCI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_5.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_5.m4a</guid>
+      <pubDate>Tue, 18 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spinal Cord Injury 6</title>
+      <description>Neurology: SCI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_6.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_6.m4a</guid>
+      <pubDate>Wed, 19 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spinal Cord Injury 7</title>
+      <description>Neurology: SCI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_7.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_7.m4a</guid>
+      <pubDate>Thu, 20 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spinal Cord Injury 8</title>
+      <description>Neurology: SCI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_8.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_8.m4a</guid>
+      <pubDate>Fri, 21 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spinal Cord Injury 9</title>
+      <description>Neurology: SCI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_9.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_9.m4a</guid>
+      <pubDate>Sat, 22 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spinal Cord Injury 10</title>
+      <description>Neurology: SCI</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_10.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/SCI_10.m4a</guid>
+      <pubDate>Sun, 23 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Multiple Sclerosis 1</title>
+      <description>Neurology: Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MS_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MS_1.m4a</guid>
+      <pubDate>Mon, 24 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Multiple Sclerosis 2</title>
+      <description>Neurology: Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/MS_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/MS_2.m4a</guid>
+      <pubDate>Tue, 25 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spasticity 1</title>
+      <description>Neurology: Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Spasticity_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Spasticity_1.m4a</guid>
+      <pubDate>Wed, 26 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spasticity 2</title>
+      <description>Neurology: Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Spasticity_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Spasticity_2.m4a</guid>
+      <pubDate>Thu, 27 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Spasticity 3</title>
+      <description>Neurology: Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Spasticity_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Spasticity_3.m4a</guid>
+      <pubDate>Fri, 28 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 1</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_1.m4a</guid>
+      <pubDate>Sat, 29 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 2</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_2.m4a</guid>
+      <pubDate>Sun, 30 Nov 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 3</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_3.m4a</guid>
+      <pubDate>Mon, 01 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 4</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_4.m4a</guid>
+      <pubDate>Tue, 02 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 5</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_5.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_5.m4a</guid>
+      <pubDate>Wed, 03 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 6</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_6.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_6.m4a</guid>
+      <pubDate>Thu, 04 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 7</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_7.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_7.m4a</guid>
+      <pubDate>Fri, 05 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 8</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_8.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_8.m4a</guid>
+      <pubDate>Sat, 06 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 9</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_9.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_9.m4a</guid>
+      <pubDate>Sun, 07 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 10</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_10.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_10.m4a</guid>
+      <pubDate>Mon, 08 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 11</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_11.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_11.m4a</guid>
+      <pubDate>Tue, 09 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 12</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_12.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_12.m4a</guid>
+      <pubDate>Wed, 10 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 13</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_13.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_13.m4a</guid>
+      <pubDate>Thu, 11 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 14</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_14.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_14.m4a</guid>
+      <pubDate>Fri, 12 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Electrodiagnostic 15</title>
+      <description>Electrodiagnostic Medicine (EDX)</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_15.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/EDX_15.m4a</guid>
+      <pubDate>Sat, 13 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pediatrics 1</title>
+      <description>Pediatrics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_1.m4a</guid>
+      <pubDate>Sun, 14 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pediatrics 2</title>
+      <description>Pediatrics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_2.m4a</guid>
+      <pubDate>Mon, 15 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pediatrics 3</title>
+      <description>Pediatrics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_3.m4a</guid>
+      <pubDate>Tue, 16 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pediatrics 4</title>
+      <description>Pediatrics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_4.m4a</guid>
+      <pubDate>Wed, 17 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pediatrics 5</title>
+      <description>Pediatrics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_5.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_5.m4a</guid>
+      <pubDate>Thu, 18 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pediatrics 6</title>
+      <description>Pediatrics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_6.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_6.m4a</guid>
+      <pubDate>Fri, 19 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pediatrics 7</title>
+      <description>Pediatrics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_7.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_7.m4a</guid>
+      <pubDate>Sat, 20 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pediatrics 8</title>
+      <description>Pediatrics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_8.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_8.m4a</guid>
+      <pubDate>Sun, 21 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pediatrics 9</title>
+      <description>Pediatrics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_9.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_9.m4a</guid>
+      <pubDate>Mon, 22 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pediatrics 10</title>
+      <description>Pediatrics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_10.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_10.m4a</guid>
+      <pubDate>Tue, 23 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pediatrics 11</title>
+      <description>Pediatrics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_11.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Peds_11.m4a</guid>
+      <pubDate>Wed, 24 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Prosthetics & Orthotics 1</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_1.m4a</guid>
+      <pubDate>Thu, 25 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Prosthetics & Orthotics 2</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_2.m4a</guid>
+      <pubDate>Fri, 26 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Prosthetics & Orthotics 3</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_3.m4a</guid>
+      <pubDate>Sat, 27 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Prosthetics & Orthotics 4</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_4.m4a</guid>
+      <pubDate>Sun, 28 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Prosthetics & Orthotics 5</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_5.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_5.m4a</guid>
+      <pubDate>Mon, 29 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Prosthetics & Orthotics 6</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_6.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_6.m4a</guid>
+      <pubDate>Tue, 30 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Prosthetics & Orthotics 7</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_7.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_7.m4a</guid>
+      <pubDate>Wed, 31 Dec 2025 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Prosthetics & Orthotics 8</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_8.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_8.m4a</guid>
+      <pubDate>Thu, 01 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Prosthetics & Orthotics 9</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_9.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_9.m4a</guid>
+      <pubDate>Fri, 02 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Prosthetics & Orthotics 10</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_10.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/P&O_10.m4a</guid>
+      <pubDate>Sat, 03 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Wheelchair 1</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Wheelchair_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Wheelchair_1.m4a</guid>
+      <pubDate>Sun, 04 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Wheelchair 2</title>
+      <description>Prosthetics & Orthotics</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Wheelchair_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Wheelchair_2.m4a</guid>
+      <pubDate>Mon, 05 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cancer Rehab 1</title>
+      <description>Cardiopulmonary & Cancer Rehabilitation</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cancer_Rehab_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cancer_Rehab_1.m4a</guid>
+      <pubDate>Tue, 06 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cancer Rehab 2</title>
+      <description>Cardiopulmonary & Cancer Rehabilitation</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cancer_Rehab_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cancer_Rehab_2.m4a</guid>
+      <pubDate>Wed, 07 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cancer Rehab 3</title>
+      <description>Cardiopulmonary & Cancer Rehabilitation</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cancer_Rehab_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cancer_Rehab_3.m4a</guid>
+      <pubDate>Thu, 08 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cardiac Rehab 1</title>
+      <description>Cardiopulmonary & Cancer Rehabilitation</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cardiac_Rehab_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cardiac_Rehab_1.m4a</guid>
+      <pubDate>Fri, 09 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cardiac Rehab 2</title>
+      <description>Cardiopulmonary & Cancer Rehabilitation</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cardiac_Rehab_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cardiac_Rehab_2.m4a</guid>
+      <pubDate>Sat, 10 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cardiac Rehab 3</title>
+      <description>Cardiopulmonary & Cancer Rehabilitation</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cardiac_Rehab_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cardiac_Rehab_3.m4a</guid>
+      <pubDate>Sun, 11 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Cardiac Rehab 4</title>
+      <description>Cardiopulmonary & Cancer Rehabilitation</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cardiac_Rehab_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Cardiac_Rehab_4.m4a</guid>
+      <pubDate>Mon, 12 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pulmonary Rehab 1</title>
+      <description>Cardiopulmonary & Cancer Rehabilitation</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pulm_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pulm_1.m4a</guid>
+      <pubDate>Tue, 13 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pulmonary Rehab 2</title>
+      <description>Cardiopulmonary & Cancer Rehabilitation</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pulm_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pulm_2.m4a</guid>
+      <pubDate>Wed, 14 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pulmonary Rehab 3</title>
+      <description>Cardiopulmonary & Cancer Rehabilitation</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pulm_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pulm_3.m4a</guid>
+      <pubDate>Thu, 15 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pain 1</title>
+      <description>Pain Medicine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pain_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pain_1.m4a</guid>
+      <pubDate>Fri, 16 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pain 2</title>
+      <description>Pain Medicine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pain_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pain_2.m4a</guid>
+      <pubDate>Sat, 17 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pain 3</title>
+      <description>Pain Medicine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pain_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pain_3.m4a</guid>
+      <pubDate>Sun, 18 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Pain 4</title>
+      <description>Pain Medicine</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pain_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Pain_4.m4a</guid>
+      <pubDate>Mon, 19 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Rheumatology 1</title>
+      <description>Rheumatology</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_1.m4a</guid>
+      <pubDate>Tue, 20 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Rheumatology 2</title>
+      <description>Rheumatology</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_2.m4a</guid>
+      <pubDate>Wed, 21 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Rheumatology 3</title>
+      <description>Rheumatology</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_3.m4a</guid>
+      <pubDate>Thu, 22 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Rheumatology 4</title>
+      <description>Rheumatology</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_4.m4a</guid>
+      <pubDate>Fri, 23 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Rheumatology 5</title>
+      <description>Rheumatology</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_5.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_5.m4a</guid>
+      <pubDate>Sat, 24 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Rheumatology 6</title>
+      <description>Rheumatology</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_6.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Rheum_6.m4a</guid>
+      <pubDate>Sun, 25 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Physical Modalities 1</title>
+      <description>Physical Modalities</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Physical_Modalities_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Physical_Modalities_1.m4a</guid>
+      <pubDate>Mon, 26 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Physical Modalities 2</title>
+      <description>Physical Modalities</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Physical_Modalities_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Physical_Modalities_2.m4a</guid>
+      <pubDate>Tue, 27 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Physical Modalities 3</title>
+      <description>Physical Modalities</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Physical_Modalities_3.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Physical_Modalities_3.m4a</guid>
+      <pubDate>Wed, 28 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Physical Modalities 4</title>
+      <description>Physical Modalities</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Physical_Modalities_4.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Physical_Modalities_4.m4a</guid>
+      <pubDate>Thu, 29 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Bioethics</title>
+      <description>Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Bioethics.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Bioethics.m4a</guid>
+      <pubDate>Fri, 30 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Biostatistics</title>
+      <description>Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Biostats.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Biostats.m4a</guid>
+      <pubDate>Sat, 31 Jan 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Burns 1</title>
+      <description>Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Burns_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Burns_1.m4a</guid>
+      <pubDate>Sun, 01 Feb 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Burns 2</title>
+      <description>Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Burns_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Burns_2.m4a</guid>
+      <pubDate>Mon, 02 Feb 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Osteoporosis 1</title>
+      <description>Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Osteoporosis_1.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Osteoporosis_1.m4a</guid>
+      <pubDate>Tue, 03 Feb 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>Osteoporosis 2</title>
+      <description>Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/Osteoporosis_2.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/Osteoporosis_2.m4a</guid>
+      <pubDate>Wed, 04 Feb 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
+    <item>
+      <title>The Board Exam</title>
+      <description>Miscellaneous</description>
+      <enclosure url="https://pub-a42279514b124e9085d9969a57978062.r2.dev/The_Board_Exam.m4a" length="0" type="audio/mpeg" />
+      <guid isPermaLink="false">https://pub-a42279514b124e9085d9969a57978062.r2.dev/The_Board_Exam.m4a</guid>
+      <pubDate>Thu, 05 Feb 2026 21:47:19 GMT</pubDate>
+      <itunes:duration>0</itunes:duration>
+    </item>
   </channel>
 </rss>
