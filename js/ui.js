@@ -44,12 +44,54 @@ export const ui = {
                 epDiv.className = `episode-item ${item.effectiveIndex === activeIndex ? 'active' : ''}`;
                 const listened = state.isListened(item.title);
 
-                epDiv.innerHTML = `
-                    <span>${item.title}</span>
-                    <span class="status-icon">${listened ? '✓' : ''}</span>
-                `;
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'episode-header';
 
-                epDiv.onclick = () => onEpisodeClick(item.effectiveIndex);
+                // Play/Pause Button for List
+                const listPlayBtn = document.createElement('button');
+                listPlayBtn.className = 'list-play-btn';
+                listPlayBtn.innerHTML = '▶'; // Default
+                listPlayBtn.dataset.index = item.effectiveIndex;
+                listPlayBtn.onclick = (e) => {
+                    e.stopPropagation(); // Prevent accordion toggle
+                    onEpisodeClick(item.effectiveIndex, 'play');
+                };
+
+                const titleSpan = document.createElement('span');
+                titleSpan.className = 'episode-title-text';
+                titleSpan.innerText = item.title;
+
+                const statusSpan = document.createElement('span');
+                statusSpan.className = 'status-icon';
+                statusSpan.innerText = listened ? '✓' : '';
+
+                headerDiv.appendChild(listPlayBtn);
+                headerDiv.appendChild(titleSpan);
+                headerDiv.appendChild(statusSpan);
+
+                // Description Container (Hidden until clicked)
+                const descDiv = document.createElement('div');
+                descDiv.className = 'episode-description';
+                descDiv.innerText = item.description || 'No description available.';
+
+                epDiv.appendChild(headerDiv);
+                epDiv.appendChild(descDiv);
+
+                // Row Click Handler: Toggle Accordion Only
+                epDiv.onclick = (e) => {
+                    // Prevent collapse if clicking inside description
+                    if (e.target.closest('.episode-description')) return;
+
+                    // Close ALL other open accordions
+                    const allExpanded = document.querySelectorAll('.episode-item.expanded');
+                    allExpanded.forEach(el => {
+                        if (el !== epDiv) el.classList.remove('expanded');
+                    });
+
+                    // Toggle Current
+                    epDiv.classList.toggle('expanded');
+                };
+
                 groupDiv.appendChild(epDiv);
             });
 
@@ -79,5 +121,30 @@ export const ui = {
      */
     setPlaying(isPlaying) {
         this.playBtn.innerText = isPlaying ? '⏸' : '▶';
+    },
+
+    /**
+     * Update the Icons in the List
+     */
+    updateListPlayStates(currentTitle, isPlaying) {
+        // Reset all buttons to Play
+        const allBtns = document.querySelectorAll('.list-play-btn');
+        allBtns.forEach(btn => btn.innerText = '▶');
+
+        // Find the button for the current track and set to Pause if playing
+        // We need to look up by title or ensure index matches. title is safer if filtered.
+        // Actually we used dataset.index but that index is into the FILTERED list if rerendered?
+        // Note: renderLibrary re-renders freshly, so dataset.index should be correct for the click.
+        // But here we might be strictly updating icons.
+
+        // Better: Find the row with the matching title text?
+        // Let's rely on looking for the active item.
+        const activeItem = document.querySelector('.episode-item.active');
+        if (activeItem) {
+            const btn = activeItem.querySelector('.list-play-btn');
+            if (btn) {
+                btn.innerText = isPlaying ? '⏸' : '▶';
+            }
+        }
     }
 };

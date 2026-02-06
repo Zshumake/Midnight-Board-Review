@@ -25,12 +25,27 @@ function renderLibrary(filter = '') {
         .map((ep, index) => ({ ...ep, originalIndex: index }))
         .filter(ep =>
             ep.title.toLowerCase().includes(filter.toLowerCase()) ||
-            ep.category.toLowerCase().includes(filter.toLowerCase())
+            ep.category.toLowerCase().includes(filter.toLowerCase()) ||
+            (ep.description && ep.description.toLowerCase().includes(filter.toLowerCase()))
         );
 
     // We pass the full episodes list to the UI but with filter applied
-    ui.renderLibrary(filtered, currentIndex, state, (index) => {
-        loadEpisode(index);
+    ui.renderLibrary(filtered, currentIndex, state, (index, action) => {
+        // If action is play, check if it matches current
+        if (action === 'play') {
+            if (currentIndex === index) {
+                // Toggle Play/Pause
+                if (ui.audio.paused) playAudio(); else pauseAudio();
+            } else {
+                // Load new
+                loadEpisode(index);
+            }
+        } else {
+            // Default (e.g. from row click if we kept that logic, but we removed it)
+            // Wait, we removed the row click play logic.
+            // But if we ever need it:
+            loadEpisode(index);
+        }
     });
 }
 
@@ -43,17 +58,36 @@ function loadEpisode(index) {
 
     const episode = episodes[index];
     const savedPos = state.getPosition(episode.title);
+    document.getElementById('current-track-title').innerText = episode.title;
+    // document.getElementById('current-track-artist').innerText = episode.category; // Optional: show category instead of artist? 
+    // Keep artist as "Midnight Review" or set to Category? User wanted obscurity. 
+
+    const descEl = document.getElementById('current-track-description');
+    if (descEl) {
+        descEl.innerText = episode.description || '';
+    }
+
     const listened = state.isListened(episode.title);
 
     ui.updateTrack(episode, listened);
     ui.audio.src = episode.url;
 
+    // Reset Play State (Pause) when loading new
+    ui.setPlaying(false);
+    ui.updateListPlayStates(episode.title, false);
+
     // Resume position after metadata loads
     ui.audio.onloadedmetadata = () => {
-        if (savedPos > 0 && isFirstLoad) {
+        // Restore position if available
+        const savedPos = state.getPosition(episode.title);
+        if (savedPos > 0) {
             ui.audio.currentTime = savedPos;
+        }
+
+        if (isFirstLoad) {
             isFirstLoad = false;
         }
+
         updateMediaSession(episode);
     };
 
@@ -84,11 +118,15 @@ function saveCurrentPosition() {
 function playAudio() {
     ui.audio.play();
     ui.setPlaying(true);
+    const episode = episodes[currentIndex];
+    ui.updateListPlayStates(episode.title, true);
 }
 
 function pauseAudio() {
     ui.audio.pause();
     ui.setPlaying(false);
+    const episode = episodes[currentIndex];
+    ui.updateListPlayStates(episode.title, false);
 }
 
 function skip(amount) {
