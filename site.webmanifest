@@ -1,0 +1,14 @@
+{
+    "name": "Midnight Board Review",
+    "short_name": "Midnight Review",
+    "icons": [
+        {
+            "src": "cover.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#1c1917",
+    "background_color": "#1c1917",
+    "display": "standalone"
+}
