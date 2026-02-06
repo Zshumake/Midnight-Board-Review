@@ -314,18 +314,10 @@ button:hover {
   left: 0;
   height: 100%;
   width: 0%;
-  background: rgba(249, 115, 22, 0.4);
   /* Transparent Orange for progress */
   z-index: 0;
   pointer-events: none;
-  transition: width 0.2s linear;
-}
-
-.episode-item.finished .episode-progress-fill {
-  width: 100% !important;
-  background: #f97316;
-  /* Solid Orange for finished */
-  opacity: 1;
+  transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .episode-header,

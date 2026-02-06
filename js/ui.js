@@ -75,7 +75,9 @@ export const ui = {
 
                 // Only mark as 'finished' (Solid Orange) if it is NOT currently active/playing.
                 // If it is active, we want to show the transparent progress bar.
-                epDiv.className = `episode-item ${isActive ? 'active' : ''} ${isFinished && !isActive ? 'finished' : ''}`;
+                // UPDATE: Per user request, we NO LONGER use 'finished' solid style.
+                // Instead we let it match the active state or reset to 0 for animation.
+                epDiv.className = `episode-item ${isActive ? 'active' : ''}`;
                 const listened = state.isListened(item.title);
 
                 // Progress Fill Overlay
@@ -85,7 +87,7 @@ export const ui = {
                 // Calculate width
                 let percent = 0;
                 if (isFinished && !isActive) {
-                    percent = 100; // Finished and not playing -> Full Solid
+                    percent = 0; // Finished -> Slide back to 0 (Gray)
                 } else {
                     percent = state.getProgressPercentage(item.title);
                 }
@@ -180,9 +182,11 @@ export const ui = {
                 if (statusIcon) {
                     statusIcon.innerText = isListened ? '✓' : '';
                 }
-                // Update Finished Class (only if not active)
+                // Update Finished Class: REMOVED per user request (no solid orange)
                 if (isListened && !row.classList.contains('active')) {
-                    row.classList.add('finished');
+                    // Ensure progress bar slides back to 0
+                    const fill = row.querySelector('.episode-progress-fill');
+                    if (fill) fill.style.width = '0%';
                 }
             }
         });
@@ -249,8 +253,6 @@ export const ui = {
             if (rowTitle === currentTitle) {
                 // ACTIVE ROW
                 row.classList.add('active');
-                // Active row CANNOT be visually finished (solid), it must show progress bar
-                row.classList.remove('finished');
 
                 // Update Play Icon for this row
                 const btn = row.querySelector('.list-play-btn');
@@ -260,12 +262,13 @@ export const ui = {
             } else {
                 // INACTIVE ROW
                 row.classList.remove('active');
-                // If inactive AND listened, mark as finished (Solid)
+
+                // If inactive AND listened:
+                // Prior Logic: Add 'finished' (Solid Orange).
+                // New Logic: Ensure width is 0% (Clean Gray).
                 if (isListened) {
-                    row.classList.add('finished');
-                    // Ensure bar is full width for solid efffect
                     const fill = row.querySelector('.episode-progress-fill');
-                    if (fill) fill.style.width = '100%';
+                    if (fill) fill.style.width = '0%';
                 }
             }
         });
