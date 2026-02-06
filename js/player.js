@@ -195,9 +195,17 @@ function saveCurrentPosition() {
     }
 }
 
-// Track valid play request to prevent race conditions
-let playPromise = undefined;
-let isPreloading = false; // Track preloading state
+/**
+ * Hover-Preload (Instant Manual Start)
+ */
+function preloadEpisode(url) {
+    if (preloadAudio.src !== url) {
+        preloadAudio.src = url;
+        preloadAudio.preload = 'auto';
+        preloadAudio.load();
+        console.log(`Hover-Preloading: ${url}`);
+    }
+}
 
 function playAudio() {
     // Enforce playback speed before playing
