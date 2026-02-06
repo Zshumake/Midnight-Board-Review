@@ -155,10 +155,7 @@ function determineStartTime(state, title, duration, isFirstLoad) {
     return savedPos; // Resume
 }
 
-if (!isFirstLoad) {
-    playAudio();
-}
-}
+
 
 /**
  * Persistence: Save position periodically
