@@ -1,10 +1,10 @@
-import { episodes } from './data.js';
-import { loadAudio, playAudio } from './audio.js';
+import { episodes } from './episodes.js';
 import { ui } from './ui.js';
 import { state } from './state.js';
 import { WelcomeModal } from './welcomeModal.js';
 
 let currentIndex = 0;
+let isFirstLoad = true;
 
 // Initialize
 ui.renderLibrary(episodes, currentIndex, state, (index, action) => {
@@ -201,4 +201,4 @@ function setupEventListeners() {
 }
 
 // Start the app
-init();
+
