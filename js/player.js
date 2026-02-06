@@ -24,7 +24,7 @@ ui.renderLibrary(episodes, currentIndex, state, (index, action) => {
     } else if (action === 'skip-fwd') {
         skip(10);
     }
-});
+}, (url) => preloadEpisode(url)); // Pass preload callback
 
 // Initialize Welcome Modal (Modular)
 WelcomeModal.init();
@@ -63,13 +63,19 @@ function renderLibrary(filter = '') {
             // Default fallback
             loadEpisode(index);
         }
-    });
+    }, (url) => preloadEpisode(url));
 }
 
 /**
  * Load an episode and its saved position
  */
 function loadEpisode(index) {
+    // Safety: Cancel any pending autoplay jump if user manually selects a track
+    if (autoplayTimer) {
+        clearTimeout(autoplayTimer);
+        autoplayTimer = null;
+    }
+
     currentIndex = index;
     state.setLastIndex(index);
 

@@ -47,7 +47,7 @@ export const ui = {
     /**
      * Render the episode list grouped by category
      */
-    renderLibrary(episodes, activeIndex, state, onEpisodeClick) {
+    renderLibrary(episodes, activeIndex, state, onEpisodeClick, onEpisodeHover) {
         this.episodeList.innerHTML = '';
 
         // Group by category
@@ -143,6 +143,23 @@ export const ui = {
                     // Toggle Current
                     epDiv.classList.toggle('expanded');
                 };
+
+                // Hover Preload Logic (Debounced)
+                let hoverTimer = null;
+                epDiv.addEventListener('mouseenter', () => {
+                    if (onEpisodeHover) {
+                        hoverTimer = setTimeout(() => {
+                            onEpisodeHover(item.url);
+                        }, 200); // Wait 200ms before requesting
+                    }
+                });
+
+                epDiv.addEventListener('mouseleave', () => {
+                    if (hoverTimer) {
+                        clearTimeout(hoverTimer);
+                        hoverTimer = null;
+                    }
+                });
 
                 groupDiv.appendChild(epDiv);
             });
