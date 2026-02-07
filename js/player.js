@@ -107,11 +107,8 @@ function loadEpisode(index) {
     const listened = state.isListened(episode.title);
     ui.updateTrack(episode, listened);
 
-    // Reset Play State (Pause)
-    ui.setPlaying(false);
-    ui.updateListPlayStates(episode.title, false, state);
-
     // Define resume logic (Metadata Handler)
+    // This now ONLY handles post-load adjustments (seek, speed)
     const handleMetadata = () => {
         const savedSpeed = state.getSpeed();
         currentAudio.playbackRate = savedSpeed;
@@ -124,7 +121,7 @@ function loadEpisode(index) {
         const startTime = determineStartTime(state, episode.title, currentAudio.duration, isFirstLoad);
         console.log(`Loaded ${episode.title}. StartTime: ${startTime}`);
 
-        // Robust Seek: Mobile browsers often ignore the first seek attempt
+        // Robust Seek
         const performSeek = () => {
             if (startTime > 0) {
                 try {
@@ -137,33 +134,33 @@ function loadEpisode(index) {
         };
 
         performSeek();
-        setTimeout(performSeek, 100); // Quick retry
-        setTimeout(performSeek, 500); // Safety retry
+        setTimeout(performSeek, 100);
+        setTimeout(performSeek, 500);
 
         needsRestoration = startTime > 0;
-
-        // Visual update immediately using saved state if audio isn't ready
         ui.updateProgress(startTime, currentAudio.duration || state.getDuration(episode.title));
-
-        // Store active 'isFirstLoad' state for this execution context
-        const wasFirstLoad = isFirstLoad;
-
-        if (isFirstLoad) {
-            isFirstLoad = false;
-        }
 
         isPreloading = false;
         updateMediaSession(episode);
-
-        // Auto-play ONLY if NOT initial load
-        if (!wasFirstLoad) {
-            playAudio();
-        }
     };
+
+    // Store 'isFirstLoad' state for this execution context
+    const wasFirstLoad = isFirstLoad;
+    if (isFirstLoad) isFirstLoad = false;
 
     currentAudio.preload = 'auto';
     currentAudio.addEventListener('loadedmetadata', handleMetadata, { once: true });
     currentAudio.src = episode.url;
+
+    // CRITICAL: Call play() immediately in the same event loop as the click
+    // to satisfy browser "User Gesture" requirements for auto-play.
+    if (!wasFirstLoad) {
+        playAudio();
+    } else {
+        // Just update UI to inactive if it's the very first load
+        ui.setPlaying(false);
+        ui.updateListPlayStates(episode.title, false, state);
+    }
 }
 
 function determineStartTime(state, title, duration, isFirstLoad) {
