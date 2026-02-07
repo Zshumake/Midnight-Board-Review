@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Midnight Board Review (Private)</title>
-    <link>https://midnight-board-review.com</link>
+    <link>https://zshumake.github.io/Midnight-Board-Review/</link>
     <language>en-us</language>
     <copyright>&#169; 2026 Midnight Review</copyright>
     <itunes:author>Midnight Review</itunes:author>
     <description>A 119-episode podcast covering everything in the PM&R board review.</description>
-    <itunes:image href="https://shuhub.xyz/cover.jpg" />
+    <itunes:image href="https://zshumake.github.io/Midnight-Board-Review/cover.jpg" />
     <itunes:block>yes</itunes:block>
     <item>
       <title>Musculoskeletal: Shoulder 1</title>
