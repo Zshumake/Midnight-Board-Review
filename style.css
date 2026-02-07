@@ -735,65 +735,64 @@ transform: scale(1);
     gap: 0.8rem;
   }
 }
-/* Category Tabs (Fixed) */
+
+/* Category Tabs (Fixed - Wrapped) */
 .category-tabs {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding: 10px 0;
-    margin-bottom: 20px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    white-space: nowrap;
-    width: 100%;
-}
-.category-tabs::-webkit-scrollbar {
-    display: none;
+  display: flex;
+  flex-wrap: wrap;
+  /* Allow wrapping */
+  gap: 8px;
+  /* Slightly tighter gap for grid look */
+  padding: 10px 0;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 .category-tab {
-    display: inline-flex; /* Ensure flex behavior */
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-muted);
-    padding: 8px 16px;
-    border-radius: 50px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    flex-shrink: 0; /* Critical for horizontal scroll */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  padding: 6px 12px;
+  /* Slightly smaller padding for density */
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  /* Keep individual label on one line */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
 }
 
 .category-tab:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: var(--text-light);
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-light);
 }
 
 .category-tab.active {
-    background: var(--accent-gold);
-    color: #000;
-    border-color: var(--accent-gold);
-    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+  background: var(--accent-gold);
+  color: #000;
+  border-color: var(--accent-gold);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
 }
 
 /* Share Button (Fixed) */
 .share-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .share-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-light);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
 }
