@@ -1,8 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * Utility to escape XML special characters
+ */
 function escapeXml(unsafe) {
-    return (unsafe || '').toString()
+    if (typeof unsafe !== 'string') return '';
+    return unsafe
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
@@ -11,19 +15,13 @@ function escapeXml(unsafe) {
 }
 
 async function generate() {
-    console.log('🚀 Generating Production RSS Feed...');
+    console.log('🚀 Generating Production RSS Feed from JSON...');
 
-    // 1. Load Data Sources
-    const seriesPath = path.join(__dirname, 'js', 'series', 'pmr_board_review.js');
-    const seriesContent = fs.readFileSync(seriesPath, 'utf8');
+    // 1. Load Data Sources (JSON is much more reliable)
+    const episodes = JSON.parse(fs.readFileSync(path.join(__dirname, 'js', 'modules', 'episodes.json'), 'utf8'));
+    const sizes = JSON.parse(fs.readFileSync(path.join(__dirname, 'js', 'modules', 'mediaSizes.json'), 'utf8'));
 
-    const descPath = path.join(__dirname, 'js', 'descriptions.js');
-    const descContent = fs.readFileSync(descPath, 'utf8');
-
-    const sizesPath = path.join(__dirname, 'js', 'modules', 'mediaSizes.json');
-    const sizes = JSON.parse(fs.readFileSync(sizesPath, 'utf8'));
-
-    // Modular Config (matches the rssConfig.js file)
+    // Modular Config
     const config = {
         title: "Midnight Board Review (Private)",
         link: "https://zshumake.github.io/Midnight-Board-Review/",
@@ -37,26 +35,7 @@ async function generate() {
         feedUrl: "https://zshumake.github.io/Midnight-Board-Review/feed/v1_8zX9s2_secure.xml"
     };
 
-    // 2. Parse Episodes
-    const episodes = [];
-    const entryRegex = /\{\s*title:\s*"(.*?)",\s*url:\s*"(.*?)",\s*category:\s*"(.*?)",\s*description:\s*descriptions\["(.*?)"\]/g;
-    let match;
-
-    while ((match = entryRegex.exec(seriesContent)) !== null) {
-        const title = match[1];
-        const url = match[2];
-        const category = match[3];
-        const descKey = match[4];
-
-        const escapedKey = descKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const descRegex = new RegExp(`"${escapedKey}":\\s*"(.*?)"`, 's');
-        const descMatch = descContent.match(descRegex);
-        const description = descMatch ? descMatch[1] : category;
-
-        episodes.push({ title, url, category, description });
-    }
-
-    // 3. Build XML Header
+    // 2. Build XML Header
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
@@ -82,8 +61,9 @@ async function generate() {
         <itunes:email>${escapeXml(config.ownerEmail)}</itunes:email>
     </itunes:owner>\n`;
 
-    // 4. Add Items with Real Sizes
-    episodes.forEach((ep, i) => {
+    // 3. Add Items
+    // Reverse episodes for RSS chronicity (newest first)
+    [...episodes].reverse().forEach((ep, i) => {
         const filename = ep.url.split('/').pop();
         const length = sizes[filename] || "60000000";
 
@@ -102,10 +82,10 @@ async function generate() {
     xml += `  </channel>
 </rss>`;
 
-    // 5. Final Write
-    const relativePath = path.join('feed', 'v1_8zX9s2_secure.xml');
-    fs.writeFileSync(path.join(__dirname, relativePath), xml);
-    console.log(`✅ Success! Generated ${episodes.length} episodes with valid XML and correct file sizes.`);
+    // 4. Final Write
+    const targetFile = path.join(__dirname, 'feed', 'v1_8zX9s2_secure.xml');
+    fs.writeFileSync(targetFile, xml);
+    console.log(`✅ Success! Rebuilt feed with ${episodes.length} episodes.`);
 }
 
 generate().catch(console.error);
