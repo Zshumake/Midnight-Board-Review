@@ -62,18 +62,35 @@ async function generate() {
     </itunes:owner>\n`;
 
     // 3. Add Items
-    // Reverse episodes for RSS chronicity (newest first)
+    // In RSS, the first <item> in the file is displayed as the "Latest Episode".
+    // We want Episode 120 at the top (newest) and Episode 1 at the bottom (oldest).
+    // The 'episodes' array is already 1 to 120.
+    const totalEpisodes = episodes.length;
+
+    // We reverse the array so that index 0 is Episode 120, index 1 is Episode 119...
+    // This puts the highest number at the top of the XML file.
     [...episodes].reverse().forEach((ep, i) => {
         const filename = ep.url.split('/').pop();
         const length = sizes[filename] || "60000000";
 
+        // episodeNumber is 120, 119, 118...
+        const episodeNumber = totalEpisodes - i;
+
+        // Date calculation: Today - (i days)
+        // Episode 120 (at the top) = Today
+        // Episode 119 = Yesterday
+        // ... Episode 1 = 119 days ago
+        const pubDate = new Date(Date.now() - (i * 86400000)).toUTCString();
+
         xml += `    <item>
       <title>${escapeXml(ep.title)}</title>
       <link>${config.link}</link>
+      <itunes:episode>${episodeNumber}</itunes:episode>
+      <itunes:season>1</itunes:season>
       <description>${escapeXml(ep.description)}</description>
       <enclosure url="${escapeXml(ep.url)}" length="${length}" type="audio/x-m4a" />
       <guid isPermaLink="false">${escapeXml(ep.url)}</guid>
-      <pubDate>${new Date(Date.now() - (i * 86400000)).toUTCString()}</pubDate>
+      <pubDate>${pubDate}</pubDate>
       <itunes:summary>${escapeXml(ep.description)}</itunes:summary>
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:image href="${config.coverUrl}" />
