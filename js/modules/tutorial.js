@@ -17,6 +17,16 @@ export const Tutorial = {
             img: "tutorial_search_demo_1770474285266.png"
         },
         {
+            title: "Never Lose Your Spot",
+            desc: "The app remembers exactly where you left off, even if you close the app or restart your phone.",
+            img: "tutorial_persistence_1770474901212.png"
+        },
+        {
+            title: "Jump to Any Chapter",
+            desc: "Use the category tabs to instantly filter 60+ hours of content by high-yield board topics.",
+            img: "tutorial_categories_1770474913238.png"
+        },
+        {
             title: "Mastery Badges",
             desc: "Listen to an episode multiple times to earn gold mastery badges. Right-click any episode to manually add a level.",
             img: "tutorial_badges_1770474699164.png"
