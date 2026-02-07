@@ -111,18 +111,6 @@ export const state = {
         return false;
     },
 
-    markCategoryAsListened(episodeList) {
-        episodeList.forEach(ep => {
-            if (!this.data.completions[ep.title]) {
-                this.data.completions[ep.title] = 1;
-                if (!this.data.history.includes(ep.title)) {
-                    this.data.history.push(ep.title);
-                }
-            }
-        });
-        this.save();
-    },
-
     getCompletionCount(title) {
         return this.data.completions[title] || 0;
     },

@@ -139,27 +139,6 @@ export const ui = {
             title.innerText = category;
             header.appendChild(title);
 
-            if (category !== 'All') {
-                const masterBtn = document.createElement('button');
-                masterBtn.className = 'category-master-btn';
-                masterBtn.title = `Mark all in ${category} as mastered`;
-                masterBtn.innerHTML = `
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                    </svg>
-                    Master All
-                `;
-                masterBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    if (confirm(`Mark all ${items.length} episodes in "${category}" as mastered?`)) {
-                        document.dispatchEvent(new CustomEvent('master-category', {
-                            detail: { category: category, episodes: items }
-                        }));
-                    }
-                };
-                header.appendChild(masterBtn);
-            }
-
             groupDiv.appendChild(header);
 
             items.forEach(item => {

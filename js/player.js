@@ -401,14 +401,6 @@ function setupEventListeners() {
         }
     });
 
-    document.addEventListener('master-category', (e) => {
-        const { episodes: catEpisodes } = e.detail;
-        if (catEpisodes) {
-            state.markCategoryAsListened(catEpisodes);
-            renderLibrary(ui.searchInput.value);
-        }
-    });
-
     // Sticky Player
     if (ui.stickyPlayBtn) {
         ui.stickyPlayBtn.addEventListener('click', () => { if (currentAudio.paused) playAudio(); else pauseAudio(); });
