@@ -46,6 +46,23 @@ export const ui = {
     },
 
     /**
+     * Helper to create the badge container DOM
+     */
+    createBadgeContainer(count) {
+        const container = document.createElement('div');
+        container.className = 'status-container';
+        if (count > 0) {
+            for (let i = 0; i < count; i++) {
+                const badge = document.createElement('span');
+                badge.className = 'status-badge';
+                badge.innerText = '✓';
+                container.appendChild(badge);
+            }
+        }
+        return container;
+    },
+
+    /**
      * Render the episode list grouped by category
      */
     renderLibrary(episodes, activeIndex, state, onEpisodeClick, onEpisodeHover) {
@@ -304,8 +321,7 @@ export const ui = {
 
             const statusContainer = row.querySelector('.status-container');
             if (statusContainer) {
-                // Only rebuild if count changed to avoid DOM thrashing? 
-                // Simple innerHTML replace is cheap enough for now
+                // Only rebuild if count changed
                 if (statusContainer.childElementCount !== badgeCount) {
                     statusContainer.innerHTML = '';
                     for (let i = 0; i < badgeCount; i++) {
