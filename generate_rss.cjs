@@ -69,6 +69,7 @@ async function generate() {
 
         xml += `    <item>
       <title>${escapeXml(ep.title)}</title>
+      <link>${config.link}</link>
       <description>${escapeXml(ep.description)}</description>
       <enclosure url="${escapeXml(ep.url)}" length="${length}" type="audio/x-m4a" />
       <guid isPermaLink="false">${escapeXml(ep.url)}</guid>
