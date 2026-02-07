@@ -98,7 +98,7 @@ export const ui = {
         if (cat.startsWith('Neurology:')) return cat.replace('Neurology:', 'Neuro:'); // Fallback
 
         // Others
-        if (cat.includes('Cardiopulmonary')) return 'Cardio & Cancer';
+        if (cat.includes('Cardiopulmonary')) return 'Cancer/Pulm/Cardiac';
         if (cat.includes('Electrodiagnostic')) return 'EDX';
         if (cat.includes('Prosthetics')) return 'Prosthetics';
         if (cat.includes('Physical Modalities')) return 'Modalities';
