@@ -1,11 +1,11 @@
 import { episodes } from './episodes.js';
 import { ui } from './ui.js';
 import { state } from './state.js';
-import { WelcomeModal } from './welcomeModal.js';
+
 import { Share } from './share.js';
 import { Library } from './library.js';
 import { Tracking } from './tracking.js';
-import { Tutorial } from './modules/tutorial.js';
+import { InfoModal } from './modules/infoModal.js';
 
 // --- State Variables ---
 let currentIndex = 0;
@@ -16,6 +16,8 @@ let isPlayingSilence = false; // Track mobile-safe gap state
 let autoplayTimer = null;    // Track 5s delay timer (safety ref)
 let needsRestoration = false; // Flag for emergency jump
 let targetStartTime = 0;     // Lock for saveCurrentPosition
+let activeLoadId = 0;       // Safeguard for rapid switching
+let lastKnownTime = 0;      // Cache for atomic saves
 const preloadAudio = new Audio(); // Singleton for hover preloading
 const currentAudio = ui.audio; // Alias
 
@@ -30,16 +32,31 @@ if (deepLinkIndex !== null) {
     currentIndex = state.data.lastIndex || 0;
 }
 
-// --- Library & Category Setup ---
-// Initialize Tabs (Pass callback for when filter changes)
+// 1. Setup Local Listeners (Non-Player)
+// 1. Setup Local Listeners (Non-Player)
+console.log('Player.js: Calling InfoModal.init()...');
+InfoModal.init();
+document.getElementById('info-btn')?.addEventListener('click', () => {
+    console.log('Info button clicked');
+    InfoModal.show();
+});
+
+// 2. Library & Category Logic
 Library.initCategories(episodes, ui, () => {
     renderLibrary(ui.searchInput.value);
 });
 
-// Initialize Library Render
-const onEpisodeClick = (index, action) => {
+// 3. Setup Main Player Event Listeners
+setupEventListeners();
+
+// 4. Initial Episode Load (Prep)
+loadEpisode(currentIndex);
+
+// 5. Shared Click Handler for Library
+const onEpisodeClick = (idx, action) => {
+    const index = Number(idx);
     if (action === 'play') {
-        if (Number(currentIndex) === Number(index)) {
+        if (Number(currentIndex) === index) {
             if (currentAudio.paused) playAudio(); else pauseAudio();
         } else {
             loadEpisode(index);
@@ -47,21 +64,12 @@ const onEpisodeClick = (index, action) => {
     }
 };
 
-// Initial Render
+// 6. Initial Full Library Render
 ui.renderLibrary(episodes, currentIndex, state, onEpisodeClick, (url) => preloadEpisode(url));
 
-// Initialize Modules
+// 7. Modals
 WelcomeModal.init();
 Tutorial.init();
-
-// Event Listeners for Tutorial
-document.getElementById('tutorial-next')?.addEventListener('click', () => Tutorial.next());
-document.getElementById('tutorial-prev')?.addEventListener('click', () => Tutorial.prev());
-document.addEventListener('tutorial-close', () => Tutorial.hide());
-
-// Filter and Show All initially
-loadEpisode(currentIndex);
-setupEventListeners();
 
 
 /**
@@ -70,7 +78,8 @@ setupEventListeners();
 function renderLibrary(filter = '') {
     const filtered = Library.filterEpisodes(episodes, filter);
 
-    ui.renderLibrary(filtered, currentIndex, state, (index, action) => {
+    ui.renderLibrary(filtered, currentIndex, state, (idx, action) => {
+        const index = Number(idx);
         if (action === 'play') {
             if (currentIndex === index) {
                 if (currentAudio.paused) playAudio(); else pauseAudio();
@@ -91,13 +100,26 @@ function renderLibrary(filter = '') {
  * Load an episode
  */
 function loadEpisode(index) {
+    activeLoadId++;
+    const currentId = activeLoadId;
+
     if (autoplayTimer) {
         clearTimeout(autoplayTimer);
         autoplayTimer = null;
     }
 
+    // 1. Immediately Save Previous Using Cache
+    if (lastKnownTime > 1) {
+        state.setPosition(episodes[currentIndex].title, lastKnownTime);
+    }
+    lastKnownTime = 0; // Reset for new track
+
+    // 2. Halt Previous
+    currentAudio.pause();
+    currentAudio.src = '';
+    // ui.setLoading(true) moved down to ensure it targets the correct new row
     isPlayingSilence = false;
-    needsRestoration = false; // Reset for new track
+    needsRestoration = false;
 
     // Reset Tracking
     Tracking.reset();
@@ -105,13 +127,11 @@ function loadEpisode(index) {
     currentIndex = index;
     state.setLastIndex(index);
 
-    const episode = episodes[index];
-    const savedPos = state.getPosition(episode.title);
+    // Force UI to acknowledge new index immediately so setLoading targets correct row
+    ui.updateListPlayStates(currentIndex, false, state);
+    ui.setLoading(true); // Now targets the newly active row
 
-    // Update UI Metadata
-    document.getElementById('current-track-title').innerText = episode.title;
-    const descEl = document.getElementById('current-track-description');
-    if (descEl) descEl.innerText = episode.description || '';
+    const episode = episodes[index];
     const startTime = determineStartTime(state, episode.title, state.getDuration(episode.title), isFirstLoad);
     targetStartTime = startTime;
     needsRestoration = startTime > 5;
@@ -123,21 +143,25 @@ function loadEpisode(index) {
     ui.updateTrack(episode, listened, nextEpisode);
     ui.updateProgress(startTime, state.getDuration(episode.title));
     ui.setPlaying(false);
-    ui.updateListPlayStates(episode.title, false, state);
+
+    // updateListPlayStates will be called by 'pause' listener above due to .pause()
 
     const handleMetadata = () => {
+        // Guard: If a new load has started, ignore this one
+        if (currentId !== activeLoadId) return;
+
         const savedSpeed = state.getSpeed();
         currentAudio.playbackRate = savedSpeed;
         if (ui.speedSelect) ui.speedSelect.value = savedSpeed;
         if (ui.stickySpeedSelect) ui.stickySpeedSelect.value = savedSpeed;
         state.setDuration(episode.title, currentAudio.duration);
 
-        // Even with fragment, we seek again for safety
         const realStartTime = determineStartTime(state, episode.title, currentAudio.duration, isFirstLoad);
         if (realStartTime > 0 && Math.abs(currentAudio.currentTime - realStartTime) > 2) {
             currentAudio.currentTime = realStartTime;
         }
 
+        ui.setLoading(false);
         isPreloading = false;
         updateMediaSession(episode);
     };
@@ -145,16 +169,16 @@ function loadEpisode(index) {
     const wasFirstLoad = isFirstLoad;
     if (isFirstLoad) isFirstLoad = false;
 
-    currentAudio.preload = 'auto';
     currentAudio.addEventListener('loadedmetadata', handleMetadata, { once: true });
 
-    // NUCLEAR OPTION: Source Fragment (#t=)
-    // This tells Safari to start at X seconds natively.
     currentAudio.src = startTime > 1 ? `${episode.url}#t=${startTime}` : episode.url;
-    currentAudio.load();
+    currentAudio.autoplay = true; // Fix for auto-play falling asleep
+    updateMediaSession(episode); // Immediate update for lock screen continuity
 
-    if (!wasFirstLoad) {
-        playAudio();
+    if (wasFirstLoad) {
+        currentAudio.load();
+    } else {
+        playAudio(currentId);
     }
 }
 
@@ -170,17 +194,16 @@ function determineStartTime(state, title, duration, isFirstLoad) {
 
 function saveCurrentPosition() {
     const episode = episodes[currentIndex];
-    const currentTime = currentAudio.currentTime;
+    if (!episode) return;
 
-    // SHIELD: Do not save 0:00 or low numbers if we are expecting a restore.
-    // This prevents the "0 overwrites progress" bug.
-    if (targetStartTime > 5) {
-        // If we haven't crossed/reached the targetStartTime yet, it means the seek is still working.
-        // We only unlock saving once we are safely within the restored range.
-        if (Math.abs(currentTime - targetStartTime) > 5 && currentTime < 5) {
-            return;
-        }
-    }
+    const currentTime = currentAudio.currentTime;
+    if (currentTime > 0) lastKnownTime = currentTime;
+
+    // SHIELD: Ignore 0 if we are in the middle of a restore
+    if (needsRestoration && currentTime < 5) return;
+
+    // TargetStartTime check: if we haven't crossed the target yet, don't save a low number
+    if (targetStartTime > 5 && currentTime < 5) return;
 
     if (currentTime > 0) {
         state.setPosition(episode.title, currentTime);
@@ -195,69 +218,59 @@ function preloadEpisode(url) {
     }
 }
 
-function playAudio() {
-    const currentSpeed = state.getSpeed();
-    if (currentAudio.playbackRate !== currentSpeed) {
-        currentAudio.playbackRate = currentSpeed;
+function playAudio(loadId = null) {
+    // 1. Safe Guard: If no src, load current index first
+    if (!currentAudio.src || currentAudio.src === window.location.href) {
+        loadEpisode(currentIndex);
+        return;
     }
 
-    // Double-check restoration on play (Crucial for Mobile/Safari)
-    if (needsRestoration) {
-        const episode = episodes[currentIndex];
-        const savedPos = state.getPosition(episode.title);
-        // If the fragment and metadata seek failed, do a hard jump
-        if (savedPos > 0 && Math.abs(currentAudio.currentTime - savedPos) > 2) {
-            console.log("Emergency Restore during Play Gesture");
-            currentAudio.currentTime = savedPos;
-        }
-    }
+    // 2. Load ID Guard: If valid play request from a specific load, but we changed load, abort
+    if (loadId !== null && loadId !== activeLoadId) return;
 
-    saveCurrentPosition(); // Save immediately when play starts
-
+    // 3. Prioritize play() promise for Safari trust
     playPromise = currentAudio.play();
+
     if (playPromise !== undefined) {
         playPromise.then(_ => {
-            ui.setPlaying(true);
-            updateMediaSessionState(); // Sync after play starts
+            // Guard: If load changed while we were waiting for the engine
+            if (loadId !== null && loadId !== activeLoadId) {
+                currentAudio.pause();
+                return;
+            }
 
-            // Final safety check: If after play starts we are still at 0, force the jump
+            saveCurrentPosition();
+
             if (needsRestoration) {
                 const ep = episodes[currentIndex];
                 const pos = state.getPosition(ep.title);
                 if (pos > 5 && currentAudio.currentTime < 2) {
-                    console.log("PWA Force-Restoring to:", pos);
                     currentAudio.currentTime = pos;
                 }
                 needsRestoration = false;
             }
-        })
-            .catch(error => {
-                if (error.name !== 'AbortError') ui.showError(error.message);
-                ui.setPlaying(false);
-                updateMediaSessionState();
-            });
+        }).catch(error => {
+            if (error.name !== 'AbortError') {
+                console.error("Play rejected:", error);
+                ui.showError("Click again to play");
+            }
+        });
     }
-
-    const episode = episodes[currentIndex];
-    ui.updateListPlayStates(episode.title, true, state);
 }
 
 function pauseAudio() {
     if (playPromise !== undefined) {
         playPromise.then(_ => {
             currentAudio.pause();
-            ui.setPlaying(false);
-            updateMediaSessionState();
-            saveCurrentPosition(); // Critical for iOS PWA!
-        }).catch(() => { });
+            saveCurrentPosition();
+        }).catch(() => {
+            // Even if play failed, try to pause if it somehow started
+            currentAudio.pause();
+        });
     } else {
         currentAudio.pause();
-        ui.setPlaying(false);
-        updateMediaSessionState();
         saveCurrentPosition();
     }
-    const episode = episodes[currentIndex];
-    ui.updateListPlayStates(episode.title, false, state);
 }
 
 function skip(amount) {
@@ -267,11 +280,11 @@ function skip(amount) {
 }
 
 function playNext() {
-    loadEpisode((currentIndex + 1) % episodes.length);
+    loadEpisode((Number(currentIndex) + 1) % episodes.length);
 }
 
 function playPrev() {
-    loadEpisode((currentIndex - 1 + episodes.length) % episodes.length);
+    loadEpisode((Number(currentIndex) - 1 + episodes.length) % episodes.length);
 }
 
 function preloadNextEpisode() {
@@ -335,6 +348,15 @@ function setupEventListeners() {
     ui.skipFwdBtn.addEventListener('click', () => skip(10));
     currentAudio.addEventListener('ended', playNext);
 
+    if (ui.reportBtn) {
+        ui.reportBtn.addEventListener('click', () => {
+            const currentEp = episodes[currentIndex];
+            const subject = encodeURIComponent(`Issue Report: ${currentEp.title}`);
+            const body = encodeURIComponent(`I found an issue with the episode "${currentEp.title}":\n\n[Describe issue here]\n\nTime: ${ui.formatTime(currentAudio.currentTime)}\nDevice: ${navigator.userAgent}`);
+            window.location.href = `mailto:zshumaker12@gmail.com?subject=${subject}&body=${body}`;
+        });
+    }
+
     // Speed Control
     const handleSpeed = (speed) => {
         currentAudio.playbackRate = speed;
@@ -393,7 +415,7 @@ function setupEventListeners() {
     });
 
     // Share & Deep Linking Listeners
-    Share.setupShareButton(ui, () => currentIndex, () => currentAudio.currentTime);
+
     Share.setupRssCopy(ui);
 
     // Context Menu Events
@@ -419,11 +441,34 @@ function setupEventListeners() {
     if (ui.progressContainer) setupScrub(ui.progressContainer);
     if (ui.stickyProgressContainer) setupScrub(ui.stickyProgressContainer);
 
-    // Error Handling
+    // --- Audio Engine Core Listeners (Single Source of Truth) ---
+    currentAudio.addEventListener('playing', () => {
+        ui.setPlaying(true);
+        ui.updateListPlayStates(currentIndex, true, state);
+        updateMediaSessionState();
+    });
+
+    currentAudio.addEventListener('pause', () => {
+        ui.setPlaying(false);
+        ui.updateListPlayStates(currentIndex, false, state);
+        updateMediaSessionState();
+    });
+
+    currentAudio.addEventListener('waiting', () => {
+        ui.setLoading(true);
+    });
+
+    currentAudio.addEventListener('canplay', () => {
+        ui.setLoading(false);
+    });
+
     currentAudio.addEventListener('error', () => {
-        ui.showError('Error playing audio.');
+        console.error("Audio Error Code:", currentAudio.error ? currentAudio.error.code : "unknown");
+        ui.showError('Error playing audio. Please try again.');
         ui.setPlaying(false);
     });
+
+    currentAudio.addEventListener('ended', playNext);
 }
 
 function setupScrub(container) {

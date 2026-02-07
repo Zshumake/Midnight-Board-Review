@@ -26,8 +26,8 @@ export const Tracking = {
     update(currentTime, isPaused, isDragging) {
         if (this.lastTimeUpdate > 0 && !isPaused && !isDragging) {
             const delta = currentTime - this.lastTimeUpdate;
-            // Only count time if it flows naturally (no seek jumps > 1s)
-            if (delta > 0 && delta < 1.0) {
+            // Relaxed delta (3s) to account for background throttles on mobile
+            if (delta > 0 && delta < 3.0) {
                 this.sessionValidTime += delta;
             }
         }
@@ -45,7 +45,7 @@ export const Tracking = {
 
                 const leveledUp = state.incrementCompletion(episode.title);
                 if (leveledUp) {
-                    ui.updateTrack(episode, state.getCompletionCount(episode.title));
+                    ui.updateTrack(episode, true, null); // Pass true because they definitely finished it
                 }
                 this.hasCreditedSession = true; // Only one badge per listen session
             }

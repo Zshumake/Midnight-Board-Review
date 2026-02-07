@@ -30,24 +30,7 @@ export const Share = {
         return null; // No deep link
     },
 
-    /**
-     * Setup Share Button Listener
-     */
-    setupShareButton(ui, getCurrentIndex, getAudioTime) {
-        if (!ui.shareBtn) return;
 
-        ui.shareBtn.addEventListener('click', () => {
-            const url = new URL(window.location.href);
-            url.searchParams.set('ep', getCurrentIndex());
-            url.searchParams.set('t', Math.floor(getAudioTime()));
-
-            navigator.clipboard.writeText(url.toString()).then(() => {
-                const originalHTML = ui.shareBtn.innerHTML;
-                ui.shareBtn.innerHTML = '<span style="font-size:0.7rem; font-weight:bold;">Copied!</span>';
-                setTimeout(() => ui.shareBtn.innerHTML = originalHTML, 2000);
-            });
-        });
-    },
 
     /**
      * Setup RSS Copy Listener

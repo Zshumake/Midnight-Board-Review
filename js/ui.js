@@ -16,11 +16,12 @@ export const ui = {
     copyRssBtn: document.getElementById('copy-rss'),
     rssUrlText: document.getElementById('rss-url'),
     searchInput: document.getElementById('search-input'),
-    currentTimeLabel: document.getElementById('current-time'), // New
-    durationLabel: document.getElementById('duration'), // New
+    currentTimeLabel: document.getElementById('current-time'),
+    durationLabel: document.getElementById('duration'),
     episodeList: document.getElementById('episode-list'),
-    shareBtn: document.getElementById('share-btn'), // New
-    categoryTabs: document.getElementById('category-tabs'), // New
+    categoryTabs: document.getElementById('category-tabs'),
+    trackDescription: document.getElementById('current-track-description'),
+    reportBtn: document.getElementById('report-issue-btn'),
 
     // State
     isDragging: false,
@@ -35,6 +36,7 @@ export const ui = {
     stickyProgressContainer: document.getElementById('sticky-progress-container'),
     stickySpeedSelect: document.getElementById('sticky-speed-select'),
     errorToast: document.getElementById('error-toast'),
+    loadingDisclaimer: document.getElementById('loading-disclaimer'),
 
     /**
      * Show Error Toast
@@ -50,17 +52,48 @@ export const ui = {
     },
 
     /**
+     * Show/Hide Loading States
+     */
+    setLoading(isLoading) {
+        if (this.loadingDisclaimer) {
+            this.loadingDisclaimer.style.display = isLoading ? 'block' : 'none';
+        }
+        if (this.playBtn) {
+            if (isLoading) this.playBtn.classList.add('loading');
+            else this.playBtn.classList.remove('loading');
+        }
+
+        const activeRow = document.querySelector('.episode-item.active');
+        if (activeRow) {
+            const rowDisclaimer = activeRow.querySelector('.list-loading-disclaimer');
+            if (rowDisclaimer) rowDisclaimer.style.display = isLoading ? 'block' : 'none';
+        }
+    },
+
+    /**
      * Helper to create the badge container DOM
      */
     createBadgeContainer(count) {
         const container = document.createElement('div');
         container.className = 'status-container';
+
         if (count > 0) {
+            const badgeRow = document.createElement('div');
+            badgeRow.className = 'badge-row';
+
             for (let i = 0; i < count; i++) {
                 const badge = document.createElement('span');
                 badge.className = 'status-badge';
                 badge.innerText = '✓';
-                container.appendChild(badge);
+                badgeRow.appendChild(badge);
+            }
+            container.appendChild(badgeRow);
+
+            if (count >= 3) {
+                const masterLabel = document.createElement('div');
+                masterLabel.className = 'master-label';
+                masterLabel.innerText = 'MASTER';
+                container.appendChild(masterLabel);
             }
         }
         return container;
@@ -73,14 +106,27 @@ export const ui = {
         if (!this.categoryTabs) return;
         this.categoryTabs.innerHTML = '';
 
-        // Dynamic Tabs (includes 'All' if passed in array)
         categories.forEach(cat => {
             const tab = document.createElement('div');
             tab.className = `category-tab ${activeCategory === cat ? 'active' : ''}`;
-            tab.innerText = this.formatCategoryName(cat); // Use short name
+            tab.innerText = this.formatCategoryName(cat);
             tab.onclick = () => onSelect(cat);
             this.categoryTabs.appendChild(tab);
         });
+    },
+
+    /**
+     * More descriptive names for Section Headers (h4)
+     */
+    formatCategoryHeader(cat) {
+        if (!cat) return '';
+        if (cat.includes('SCI')) return 'Spinal Cord Injury';
+        if (cat.includes('TBI')) return 'Traumatic Brain Injury';
+        if (cat.includes('CVA') || cat.includes('Cerebrovascular')) return 'Stroke';
+        if (cat === 'Neurology: Miscellaneous') return 'Neuro: Misc';
+
+        return cat.replace('Neurology:', 'Neuro:')
+            .replace('Musculoskeletal:', 'MSK:');
     },
 
     /**
@@ -88,19 +134,14 @@ export const ui = {
      */
     formatCategoryName(cat) {
         if (!cat) return '';
-        // Musculoskeletal
         if (cat.includes('Upper Extremity')) return 'Upper Extremity';
         if (cat.includes('Lower Extremity')) return 'Lower Extremity';
-        if (cat.startsWith('Musculoskeletal:')) return cat.replace('Musculoskeletal:', 'MSK:'); // Fallback for others
-
-        // Neurology
+        if (cat.startsWith('Musculoskeletal:')) return cat.replace('Musculoskeletal:', 'MSK:');
         if (cat.includes('TBI')) return 'TBI';
         if (cat.includes('SCI')) return 'SCI';
         if (cat.includes('CVA') || cat.includes('Cerebrovascular')) return 'CVA';
-        if (cat === 'Neurology: Miscellaneous') return 'Neuro: Misc'; // Strict match
-        if (cat.startsWith('Neurology:')) return cat.replace('Neurology:', 'Neuro:'); // Fallback
-
-        // Others
+        if (cat === 'Neurology: Miscellaneous') return 'Neuro: Misc';
+        if (cat.startsWith('Neurology:')) return cat.replace('Neurology:', 'Neuro:');
         if (cat.includes('Cardiopulmonary')) return 'Cancer/Pulm/Cardiac';
         if (cat.includes('Electrodiagnostic')) return 'EDX';
         if (cat.includes('Prosthetics')) return 'P&O';
@@ -108,7 +149,6 @@ export const ui = {
         if (cat.includes('Pediatrics')) return 'Peds';
         if (cat.includes('Pain Medicine')) return 'Pain';
         if (cat.includes('Rheumatology')) return 'Rheum';
-
         return cat;
     },
 
@@ -121,7 +161,6 @@ export const ui = {
         // Group by category
         const groups = episodes.reduce((acc, ep, index) => {
             if (!acc[ep.category]) acc[ep.category] = [];
-            // Use originalIndex if passed (from filtering), otherwise use index
             const effectiveIndex = (ep.originalIndex !== undefined) ? ep.originalIndex : index;
             acc[ep.category].push({ ...ep, effectiveIndex });
             return acc;
@@ -131,55 +170,48 @@ export const ui = {
             const groupDiv = document.createElement('div');
             groupDiv.className = 'category-group';
 
-            // Category Header with "Master All" option
             const header = document.createElement('div');
             header.className = 'category-header-group';
 
             const title = document.createElement('h4');
-            title.innerText = category;
+            title.innerText = this.formatCategoryHeader(category);
             header.appendChild(title);
-
             groupDiv.appendChild(header);
 
             items.forEach(item => {
                 const epDiv = document.createElement('div');
+                epDiv.dataset.index = item.effectiveIndex;
+                epDiv.dataset.title = item.title;
+
                 const isFinished = state.isListened(item.title);
                 const isActive = (item.effectiveIndex === activeIndex);
+                const hasSearch = searchTerm && searchTerm.trim().length > 0;
+                const isExpanded = hasSearch;
 
-                // Only mark as 'finished' (Solid Orange) if it is NOT currently active/playing.
-                // If it is active, we want to show the transparent progress bar.
-                // UPDATE: Per user request, we NO LONGER use 'finished' solid style.
-                // Instead we let it match the active state or reset to 0 for animation.
-                epDiv.className = `episode-item ${isActive ? 'active' : ''}`;
-                const listened = state.isListened(item.title);
+                epDiv.className = `episode-item ${isActive ? 'active' : ''} ${isExpanded ? 'expanded' : ''}`;
 
                 // Progress Fill Overlay
                 const progressFill = document.createElement('div');
                 progressFill.className = 'episode-progress-fill';
-
-                // Calculate width
-                let percent = 0;
-                if (isFinished && !isActive) {
-                    percent = 0; // Finished -> Slide back to 0 (Gray)
-                } else {
-                    percent = state.getProgressPercentage(item.title);
-                }
+                let percent = state.getProgressPercentage(item.title);
                 progressFill.style.width = `${percent}%`;
-
                 epDiv.appendChild(progressFill);
 
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'episode-header';
 
-                // Play/Pause Button for List
                 const listPlayBtn = document.createElement('button');
                 listPlayBtn.className = 'list-play-btn';
-                listPlayBtn.innerHTML = ICONS.play; // Default
-                listPlayBtn.dataset.index = item.effectiveIndex;
+                listPlayBtn.innerHTML = (isActive && !this.audio.paused) ? ICONS.pause : ICONS.play;
                 listPlayBtn.onclick = (e) => {
-                    e.stopPropagation(); // Prevent accordion toggle
+                    e.stopPropagation();
                     onEpisodeClick(item.effectiveIndex, 'play');
                 };
+
+                const listDisclaimer = document.createElement('div');
+                listDisclaimer.className = 'list-loading-disclaimer';
+                listDisclaimer.innerText = 'Loading Episode...';
+                listDisclaimer.style.display = 'none';
 
                 const titleSpan = document.createElement('span');
                 titleSpan.className = 'episode-title-text';
@@ -187,22 +219,24 @@ export const ui = {
 
                 const statusSpan = document.createElement('span');
                 statusSpan.className = 'status-icon';
-
-                // Get badge count (legacy 'isListened' check handled inside getCompletionCount wrapper or direct state check)
-                // We need extended state method or direct check
                 let badgeCount = state.getCompletionCount(item.title);
+                if (badgeCount === 0 && isFinished) badgeCount = 1;
 
-                // If 0 but marked as listened in legacy history, treat as 1 (handled by migration but safe to assume)
-                if (badgeCount === 0 && state.isListened(item.title)) badgeCount = 1;
+                // Debug Log
+                if (badgeCount > 0) console.log(`Rendering Badge for "${item.title}": ${badgeCount}`);
 
-                // Generate Badges
-                statusSpan.innerHTML = '✓'.repeat(badgeCount);
+                if (badgeCount > 0) {
+                    statusSpan.appendChild(this.createBadgeContainer(badgeCount));
+                    statusSpan.classList.add('visible');
+                } else {
+                    statusSpan.classList.remove('visible');
+                }
 
                 headerDiv.appendChild(listPlayBtn);
+                headerDiv.appendChild(listDisclaimer);
                 headerDiv.appendChild(titleSpan);
                 headerDiv.appendChild(statusSpan);
 
-                // Description Container (Hidden until clicked)
                 const descDiv = document.createElement('div');
                 descDiv.className = 'episode-description';
                 descDiv.innerHTML = this.highlightText(item.description || 'No description available.', searchTerm);
@@ -210,56 +244,31 @@ export const ui = {
                 epDiv.appendChild(headerDiv);
                 epDiv.appendChild(descDiv);
 
-                // Row Click Handler: Toggle Accordion Only
                 epDiv.onclick = (e) => {
-                    // Prevent collapse if clicking inside description
                     if (e.target.closest('.episode-description')) return;
-
-                    // Close ALL other open accordions
                     const allExpanded = document.querySelectorAll('.episode-item.expanded');
-                    allExpanded.forEach(el => {
-                        if (el !== epDiv) el.classList.remove('expanded');
-                    });
-
-                    // Toggle Current
+                    allExpanded.forEach(el => { if (el !== epDiv) el.classList.remove('expanded'); });
                     epDiv.classList.toggle('expanded');
                 };
 
-                // Context Menu: Mark as Mastered (Manual Badge)
                 epDiv.addEventListener('contextmenu', (e) => {
-                    e.preventDefault(); // Block default browser menu
-
-                    // Simple Confirm Dialog
+                    e.preventDefault();
                     if (confirm(`Mark "${item.title}" as Mastered? 🏅\n(This will award 1 badge)`)) {
-                        // We need a callback or direct state access. 
-                        // Since we are in renderLibrary, we can pass a callback or just use the state object if exposed?
-                        // Ideally pass 'onMastery' callback. But to save refactoring 5 tiers, we'll dispatch a custom event or check if we can access logic.
-                        // For now, let's dispatch a custom event on the document.
                         const event = new CustomEvent('manual-mastery', { detail: { title: item.title } });
                         document.dispatchEvent(event);
                     }
                 });
 
-                // Hover Preload Logic (Debounced)
                 let hoverTimer = null;
                 epDiv.addEventListener('mouseenter', () => {
-                    if (onEpisodeHover) {
-                        hoverTimer = setTimeout(() => {
-                            onEpisodeHover(item.url);
-                        }, 200); // Wait 200ms before requesting
-                    }
+                    if (onEpisodeHover) hoverTimer = setTimeout(() => onEpisodeHover(item.url), 200);
                 });
-
                 epDiv.addEventListener('mouseleave', () => {
-                    if (hoverTimer) {
-                        clearTimeout(hoverTimer);
-                        hoverTimer = null;
-                    }
+                    if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
                 });
 
                 groupDiv.appendChild(epDiv);
             });
-
             this.episodeList.appendChild(groupDiv);
         }
     },
@@ -268,15 +277,12 @@ export const ui = {
      * Update the track metadata and title
      */
     updateTrack(episode, isListened, nextEpisode = null) {
-        // Calculate badges
         let badgeCount = state.getCompletionCount(episode.title);
         if (badgeCount === 0 && isListened) badgeCount = 1;
 
-        // 1. Update Main Title
-        this.title.innerHTML = ''; // Clear
-        const textNode = document.createTextNode(episode.title + ' ');
-        this.title.appendChild(textNode);
-
+        // Update Main Title
+        this.title.innerHTML = '';
+        this.title.appendChild(document.createTextNode(episode.title + ' '));
         if (badgeCount > 0) {
             const container = this.createBadgeContainer(badgeCount);
             container.style.display = 'inline-flex';
@@ -285,12 +291,10 @@ export const ui = {
             this.title.appendChild(container);
         }
 
-        // 2. Update Sticky Player Title
+        // Update Sticky Player Title
         if (this.stickyTitle) {
             this.stickyTitle.innerHTML = '';
-            const stickyText = document.createTextNode(episode.title + ' ');
-            this.stickyTitle.appendChild(stickyText);
-
+            this.stickyTitle.appendChild(document.createTextNode(episode.title + ' '));
             if (badgeCount > 0) {
                 const stickyContainer = this.createBadgeContainer(badgeCount);
                 stickyContainer.style.display = 'inline-flex';
@@ -300,53 +304,36 @@ export const ui = {
             }
         }
 
-        if (this.stickyPlayer) {
-            this.stickyPlayer.classList.add('visible');
+        if (this.stickyPlayer) this.stickyPlayer.classList.add('visible');
+
+        if (this.trackDescription) {
+            this.trackDescription.innerText = episode.description || 'No description available.';
         }
 
-        // Dynamically update the specific list item status
-        this.updateEpisodeStatus(episode.title, isListened);
+        // We use title here because updateTrack is global UI, not list-specific, 
+        // but we'll try to find the row by title + index if possible.
+        this.syncListStatus(episode.title, isListened);
     },
 
     /**
-     * Helper to update the status icon and finished state of a specific row
+     * Efficiently sync status using title (global check)
      */
-    updateEpisodeStatus(title, isListened) {
-        const allRows = document.querySelectorAll('.episode-item');
-        allRows.forEach(row => {
-            const titleEl = row.querySelector('.episode-title-text');
-            if (titleEl && titleEl.innerText === title) {
-                // Update Badge
-                let statusContainer = row.querySelector('.status-container');
-                // Backwards compat if refactoring live DOM (unlikely but safe)
-                if (!statusContainer) {
-                    const oldIcon = row.querySelector('.status-icon');
-                    if (oldIcon) {
-                        statusContainer = document.createElement('div');
-                        statusContainer.className = 'status-container';
-                        oldIcon.replaceWith(statusContainer);
-                    }
-                }
+    syncListStatus(title, isListened) {
+        const rows = document.querySelectorAll(`.episode-item[data-title="${title.replace(/"/g, '\\"')}"]`);
+        rows.forEach(row => {
+            const statusIcon = row.querySelector('.status-icon');
+            if (!statusIcon) return;
+            let badgeCount = state.getCompletionCount(title);
+            if (badgeCount === 0 && isListened) badgeCount = 1;
 
-                if (statusContainer) {
-                    statusContainer.innerHTML = ''; // Clear
+            if (badgeCount > 0) console.log(`Syncing Badge for "${title}": ${badgeCount}`);
 
-                    let badgeCount = state.getCompletionCount(title);
-                    if (badgeCount === 0 && isListened) badgeCount = 1;
-
-                    for (let i = 0; i < badgeCount; i++) {
-                        const badge = document.createElement('span');
-                        badge.className = 'status-badge';
-                        badge.innerText = '✓';
-                        statusContainer.appendChild(badge);
-                    }
-                }
-                // Update Finished Class: REMOVED per user request (no solid orange)
-                if (isListened && !row.classList.contains('active')) {
-                    // Ensure progress bar slides back to 0
-                    const fill = row.querySelector('.episode-progress-fill');
-                    if (fill) fill.style.width = '0%';
-                }
+            statusIcon.innerHTML = '';
+            if (badgeCount > 0) {
+                statusIcon.appendChild(this.createBadgeContainer(badgeCount));
+                statusIcon.classList.add('visible');
+            } else {
+                statusIcon.classList.remove('visible');
             }
         });
     },
@@ -355,24 +342,18 @@ export const ui = {
      * Update the progress bar visually
      */
     updateProgress(currentTime, duration) {
-        if (duration) {
-            const percent = (currentTime / duration) * 100;
-            this.progressBar.style.width = `${percent}%`;
+        if (!duration) return;
+        const percent = (currentTime / duration) * 100;
+        this.progressBar.style.width = `${percent}%`;
+        if (this.stickyProgressBar) this.stickyProgressBar.style.width = `${percent}%`;
 
-            if (this.stickyProgressBar) {
-                this.stickyProgressBar.style.width = `${percent}%`;
-            }
+        if (this.currentTimeLabel) this.currentTimeLabel.innerText = this.formatTime(currentTime);
+        if (this.durationLabel) this.durationLabel.innerText = this.formatTime(duration);
 
-            // Update Numeric Labels
-            if (this.currentTimeLabel) this.currentTimeLabel.innerText = this.formatTime(currentTime);
-            if (this.durationLabel) this.durationLabel.innerText = this.formatTime(duration);
-
-            // Update the active item's progress fill in real-time
-            const activeItem = document.querySelector('.episode-item.active');
-            if (activeItem) {
-                const fill = activeItem.querySelector('.episode-progress-fill');
-                if (fill) fill.style.width = `${percent}%`;
-            }
+        const activeItem = document.querySelector('.episode-item.active');
+        if (activeItem) {
+            const fill = activeItem.querySelector('.episode-progress-fill');
+            if (fill) fill.style.width = `${percent}%`;
         }
     },
 
@@ -381,12 +362,8 @@ export const ui = {
      */
     highlightText(text, term) {
         if (!term || !term.trim()) return text;
-        const normalizedTerm = term.trim().toLowerCase();
-
-        // Escape regex special chars
-        const escaped = normalizedTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const escaped = term.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const regex = new RegExp(`(${escaped})`, 'gi');
-
         return text.replace(regex, '<mark class="highlight">$1</mark>');
     },
 
@@ -398,10 +375,7 @@ export const ui = {
         const h = Math.floor(seconds / 3600);
         const m = Math.floor((seconds % 3600) / 60);
         const s = Math.floor(seconds % 60);
-        if (h > 0) {
-            return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        }
-        return `${m}:${s.toString().padStart(2, '0')}`;
+        return h > 0 ? `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}` : `${m}:${s.toString().padStart(2, '0')}`;
     },
 
     /**
@@ -410,66 +384,35 @@ export const ui = {
     setPlaying(isPlaying) {
         const icon = isPlaying ? ICONS.pause : ICONS.play;
         this.playBtn.innerHTML = icon;
-
-        if (this.stickyPlayBtn) {
-            this.stickyPlayBtn.innerHTML = icon;
-        }
+        if (this.stickyPlayBtn) this.stickyPlayBtn.innerHTML = icon;
     },
 
     /**
-     * Update the Icons AND Class States in the List
+     * Update Icons and Active states using numeric index (The Shoulder Bug Fix)
      */
-    updateListPlayStates(currentTitle, isPlaying, state) {
-        // 1. Reset all buttons to Play
-        const allBtns = document.querySelectorAll('.list-play-btn');
-        allBtns.forEach(btn => btn.innerHTML = ICONS.play);
-
-        // 2. Manage Active/Finished classes for ALL rows
+    updateListPlayStates(currentIndex, isPlaying, state) {
+        const activeIdx = Number(currentIndex);
         const allRows = document.querySelectorAll('.episode-item');
+
         allRows.forEach(row => {
-            const titleEl = row.querySelector('.episode-title-text');
-            if (!titleEl) return;
-            const rowTitle = titleEl.innerText;
+            const rowIdx = Number(row.dataset.index);
+            const rowTitle = row.dataset.title;
+            const isCurrent = (rowIdx === activeIdx);
 
-            // Ensure status icon is up to date regardless of play state
-            const isListened = state ? state.isListened(rowTitle) : false;
-            let badgeCount = state ? state.getCompletionCount(rowTitle) : 0;
-            if (badgeCount === 0 && isListened) badgeCount = 1;
+            const btn = row.querySelector('.list-play-btn');
+            if (btn) btn.innerHTML = (isCurrent && isPlaying) ? ICONS.pause : ICONS.play;
 
-            const statusContainer = row.querySelector('.status-container');
-            if (statusContainer) {
-                // Only rebuild if count changed
-                if (statusContainer.childElementCount !== badgeCount) {
-                    statusContainer.innerHTML = '';
-                    for (let i = 0; i < badgeCount; i++) {
-                        const badge = document.createElement('span');
-                        badge.className = 'status-badge';
-                        badge.innerText = '✓';
-                        statusContainer.appendChild(badge);
-                    }
-                }
-            }
-
-            if (rowTitle === currentTitle) {
-                // ACTIVE ROW
+            if (isCurrent) {
                 row.classList.add('active');
-
-                // Update Play Icon for this row
-                const btn = row.querySelector('.list-play-btn');
-                if (btn && isPlaying) {
-                    btn.innerHTML = ICONS.pause;
-                }
             } else {
-                // INACTIVE ROW
                 row.classList.remove('active');
+                // Persist progress for non-active episodes
+                const percent = state.getProgressPercentage(rowTitle);
+                const fill = row.querySelector('.episode-progress-fill');
+                if (fill) fill.style.width = `${percent}%`;
 
-                // If inactive AND listened:
-                // Prior Logic: Add 'finished' (Solid Orange).
-                // New Logic: Ensure width is 0% (Clean Gray).
-                if (isListened) {
-                    const fill = row.querySelector('.episode-progress-fill');
-                    if (fill) fill.style.width = '0%';
-                }
+                const rowDisclaimer = row.querySelector('.list-loading-disclaimer');
+                if (rowDisclaimer) rowDisclaimer.style.display = 'none';
             }
         });
     }

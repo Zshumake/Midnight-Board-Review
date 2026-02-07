@@ -25,6 +25,14 @@
         <header>
             <div class="header-content">
                 <h1>Midnight Board Review</h1>
+                <button id="info-btn" class="info-btn" title="App Info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                </button>
             </div>
             <p class="subtitle">Focused PM&R Education</p>
         </header>
@@ -84,6 +92,16 @@
                 </div>
 
                 <div class="player-footer">
+                    <div id="loading-disclaimer" class="loading-disclaimer" style="display:none">Loading Episode...
+                    </div>
+                    <button id="report-issue-btn" class="report-btn" title="Report Issue with Episode">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                            </path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                    </button>
                     <div class="speed-controls">
                         <select id="speed-select" title="Playback Speed">
                             <option value="1">1x Speed</option>
@@ -214,19 +232,6 @@
                             d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z" />
                     </svg>
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tutorial Modal -->
-    <div id="tutorial-modal" class="tutorial-modal">
-        <div class="tutorial-card">
-            <div class="tutorial-skip" onclick="document.dispatchEvent(new CustomEvent('tutorial-close'))">Skip</div>
-            <div id="tutorial-content"></div>
-            <div class="tutorial-dots" id="tutorial-dots"></div>
-            <div class="tutorial-controls">
-                <button class="tutorial-btn secondary" id="tutorial-prev">Back</button>
-                <button class="tutorial-btn" id="tutorial-next">Next</button>
             </div>
         </div>
     </div>

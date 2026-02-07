@@ -49,23 +49,25 @@ export const state = {
     },
 
     setPosition(title, position) {
-        this.data.positions[title] = position;
+        const key = title.trim();
+        this.data.positions[key] = position;
         this.save();
     },
 
     getPosition(title) {
-        return this.data.positions[title] || 0;
+        return this.data.positions[title.trim()] || 0;
     },
 
     setDuration(title, duration) {
+        const key = title.trim();
         if (duration && duration > 0) {
-            this.data.durations[title] = duration;
+            this.data.durations[key] = duration;
             this.save();
         }
     },
 
     getDuration(title) {
-        return this.data.durations[title] || 0;
+        return this.data.durations[title.trim()] || 0;
     },
 
     getProgressPercentage(title) {
@@ -92,18 +94,19 @@ export const state = {
     },
 
     incrementCompletion(title) {
+        const key = title.trim();
         // Initialize if empty
-        if (!this.data.completions[title]) {
-            this.data.completions[title] = 0;
+        if (!this.data.completions[key]) {
+            this.data.completions[key] = 0;
         }
 
         // Max 3 badges
-        if (this.data.completions[title] < 3) {
-            this.data.completions[title]++;
+        if (this.data.completions[key] < 3) {
+            this.data.completions[key]++;
 
             // Also ensure legacy history is synced
-            if (!this.data.history.includes(title)) {
-                this.data.history.push(title);
+            if (!this.data.history.includes(key)) {
+                this.data.history.push(key);
             }
             this.save();
             return true; // Return true if leveled up
@@ -112,11 +115,18 @@ export const state = {
     },
 
     getCompletionCount(title) {
-        return this.data.completions[title] || 0;
+        const key = title.trim();
+        const count = this.data.completions[key] || 0;
+        // Fallback: If marked listened in legacy history but no count, return 1
+        if (count === 0 && this.isListened(key)) {
+            return 1;
+        }
+        return count;
     },
 
     isListened(title) {
-        return (this.data.completions[title] && this.data.completions[title] > 0) || this.data.history.includes(title);
+        const key = title.trim();
+        return (this.data.completions[key] && this.data.completions[key] > 0) || this.data.history.includes(key);
     },
 
     setSpeed(speed) {
