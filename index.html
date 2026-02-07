@@ -37,6 +37,7 @@
                     <p id="current-track-title">Select an episode to begin</p>
                     <p id="current-track-artist">Midnight Review</p>
                     <p id="current-track-description" class="track-description"></p>
+                    <div id="next-up-indicator" class="next-up-indicator" style="display:none"></div>
                 </div>
 
                 <div class="progress-area">
@@ -166,6 +167,14 @@
                 </details>
             </div>
         </section>
+
+        <footer class="app-footer">
+            <p>&copy; 2026 Midnight Board Review</p>
+            <div class="footer-maintenance">
+                <span class="version-tag">Version 1.2.0</span>
+                <button id="reset-app-btn" class="reset-btn">Reset App & Clear Cache</button>
+            </div>
+        </footer>
     </div>
 
     <div id="sticky-player" class="sticky-player">
@@ -212,7 +221,16 @@
     <!-- Error Toast -->
     <div id="error-toast" class="error-toast">Error loading audio</div>
 
-    <script>
+    <!-- Update Toast -->
+    <div id="update-toast" class="update-toast">
+        <span>⭐ New update available!</span>
+        <button id="update-refresh-btn" class="update-btn">Update Now</button>
+    </div>
+
+    <script type="module">
+        import { Updater } from './js/modules/updater.js';
+        Updater.init();
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')

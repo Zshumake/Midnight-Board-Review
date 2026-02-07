@@ -115,7 +115,7 @@ export const ui = {
     /**
      * Render the episode list grouped by category
      */
-    renderLibrary(episodes, activeIndex, state, onEpisodeClick, onEpisodeHover) {
+    renderLibrary(episodes, activeIndex, state, onEpisodeClick, onEpisodeHover, searchTerm = '') {
         this.episodeList.innerHTML = '';
 
         // Group by category
@@ -131,10 +131,36 @@ export const ui = {
             const groupDiv = document.createElement('div');
             groupDiv.className = 'category-group';
 
-            const catTitle = document.createElement('div');
-            catTitle.className = 'category-title';
-            catTitle.innerText = category;
-            groupDiv.appendChild(catTitle);
+            // Category Header with "Master All" option
+            const header = document.createElement('div');
+            header.className = 'category-header-group';
+
+            const title = document.createElement('h4');
+            title.innerText = category;
+            header.appendChild(title);
+
+            if (category !== 'All') {
+                const masterBtn = document.createElement('button');
+                masterBtn.className = 'category-master-btn';
+                masterBtn.title = `Mark all in ${category} as mastered`;
+                masterBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="16" height="16">
+                        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
+                    Master All
+                `;
+                masterBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (confirm(`Mark all ${items.length} episodes in "${category}" as mastered?`)) {
+                        document.dispatchEvent(new CustomEvent('master-category', {
+                            detail: { category: category, episodes: items }
+                        }));
+                    }
+                };
+                header.appendChild(masterBtn);
+            }
+
+            groupDiv.appendChild(header);
 
             items.forEach(item => {
                 const epDiv = document.createElement('div');
@@ -178,7 +204,7 @@ export const ui = {
 
                 const titleSpan = document.createElement('span');
                 titleSpan.className = 'episode-title-text';
-                titleSpan.innerText = item.title;
+                titleSpan.innerHTML = this.highlightText(item.title, searchTerm);
 
                 const statusSpan = document.createElement('span');
                 statusSpan.className = 'status-icon';
@@ -200,7 +226,7 @@ export const ui = {
                 // Description Container (Hidden until clicked)
                 const descDiv = document.createElement('div');
                 descDiv.className = 'episode-description';
-                descDiv.innerText = item.description || 'No description available.';
+                descDiv.innerHTML = this.highlightText(item.description || 'No description available.', searchTerm);
 
                 epDiv.appendChild(headerDiv);
                 epDiv.appendChild(descDiv);
@@ -229,7 +255,6 @@ export const ui = {
                         // We need a callback or direct state access. 
                         // Since we are in renderLibrary, we can pass a callback or just use the state object if exposed?
                         // Ideally pass 'onMastery' callback. But to save refactoring 5 tiers, we'll dispatch a custom event or check if we can access logic.
-                        // Let's modify renderLibrary signature in next step or assume global access/callback.
                         // For now, let's dispatch a custom event on the document.
                         const event = new CustomEvent('manual-mastery', { detail: { title: item.title } });
                         document.dispatchEvent(event);
@@ -263,7 +288,7 @@ export const ui = {
     /**
      * Update the track metadata and title
      */
-    updateTrack(episode, isListened) {
+    updateTrack(episode, isListened, nextEpisode = null) {
         // Calculate badges
         let badgeCount = state.getCompletionCount(episode.title);
         if (badgeCount === 0 && isListened) badgeCount = 1;
@@ -370,6 +395,20 @@ export const ui = {
                 if (fill) fill.style.width = `${percent}%`;
             }
         }
+    },
+
+    /**
+     * Highlight matching text in a string
+     */
+    highlightText(text, term) {
+        if (!term || !term.trim()) return text;
+        const normalizedTerm = term.trim().toLowerCase();
+
+        // Escape regex special chars
+        const escaped = normalizedTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(${escaped})`, 'gi');
+
+        return text.replace(regex, '<mark class="highlight">$1</mark>');
     },
 
     /**

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'midnight-review-v1.1';
+const CACHE_NAME = 'midnight-review-v1.2.1';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -60,4 +60,11 @@ self.addEventListener('fetch', (event) => {
             return cachedResponse || fetchPromise;
         })
     );
+});
+
+// Message Listener for skipWaiting
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });

@@ -1,7 +1,4 @@
-/**
- * Library Module
- * Handles Category Logic and Episode Filtering
- */
+import { SYNONYMS } from './modules/synonyms.js';
 
 export const Library = {
     activeCategory: 'All',
@@ -30,6 +27,12 @@ export const Library = {
      * Filter Episodes based on Search and Active Category
      */
     filterEpisodes(episodes, searchTerm = '') {
+        const term = searchTerm.toLowerCase().trim();
+
+        // Expansion: If the term is a known synonym key, add the expansion to search space.
+        // e.g. "tbi" -> searches for "tbi" OR "traumatic brain injury"
+        const expansion = SYNONYMS[term] || "";
+
         return episodes
             .map((ep, index) => ({ ...ep, originalIndex: index }))
             .filter(ep => {
@@ -37,10 +40,11 @@ export const Library = {
                 if (this.activeCategory !== 'All' && ep.category !== this.activeCategory) return false;
 
                 // 2. Search Filter
-                const term = searchTerm.toLowerCase();
-                return ep.title.toLowerCase().includes(term) ||
-                    ep.category.toLowerCase().includes(term) ||
-                    (ep.description && ep.description.toLowerCase().includes(term));
+                if (!term) return true;
+
+                const searchSpace = `${ep.title} ${ep.category} ${ep.description || ''}`.toLowerCase();
+
+                return searchSpace.includes(term) || (expansion && searchSpace.includes(expansion));
             });
     }
 };

@@ -77,7 +77,7 @@ function renderLibrary(filter = '') {
         } else {
             loadEpisode(index);
         }
-    }, (url) => preloadEpisode(url));
+    }, (url) => preloadEpisode(url), filter);
 }
 
 /**
@@ -111,7 +111,9 @@ function loadEpisode(index) {
 
     // Initial UI Setup
     const listened = state.isListened(episode.title);
-    ui.updateTrack(episode, listened);
+    const nextEpisode = episodes[(index + 1) % episodes.length];
+
+    ui.updateTrack(episode, listened, nextEpisode);
     ui.updateProgress(startTime, state.getDuration(episode.title));
     ui.setPlaying(false);
     ui.updateListPlayStates(episode.title, false, state);
@@ -387,15 +389,23 @@ function setupEventListeners() {
     Share.setupShareButton(ui, () => currentIndex, () => currentAudio.currentTime);
     Share.setupRssCopy(ui);
 
-    // Context Menu Event (Manual Mastery)
+    // Context Menu Events
     document.addEventListener('manual-mastery', (e) => {
         const title = e.detail.title;
         if (title) {
             state.incrementCompletion(title);
             renderLibrary(ui.searchInput.value);
             if (episodes[currentIndex].title === title) {
-                ui.updateTrack(episodes[currentIndex], true);
+                ui.updateTrack(episodes[currentIndex], true, episodes[(currentIndex + 1) % episodes.length]);
             }
+        }
+    });
+
+    document.addEventListener('master-category', (e) => {
+        const { episodes: catEpisodes } = e.detail;
+        if (catEpisodes) {
+            state.markCategoryAsListened(catEpisodes);
+            renderLibrary(ui.searchInput.value);
         }
     });
 
