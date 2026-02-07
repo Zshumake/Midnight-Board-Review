@@ -105,8 +105,15 @@ function loadEpisode(index) {
     const descEl = document.getElementById('current-track-description');
     if (descEl) descEl.innerText = episode.description || '';
 
+    const startTime = determineStartTime(state, episode.title, state.getDuration(episode.title), isFirstLoad);
+    needsRestoration = startTime > 5; // Only need emergency restore if significant progress exists
+
+    // Initial UI Setup (BEFORE Audio loads)
     const listened = state.isListened(episode.title);
     ui.updateTrack(episode, listened);
+    ui.updateProgress(startTime, state.getDuration(episode.title));
+    ui.setPlaying(false);
+    ui.updateListPlayStates(episode.title, false, state);
 
     // Define resume logic (Metadata Handler)
     // This now ONLY handles post-load adjustments (seek, speed)
@@ -119,14 +126,15 @@ function loadEpisode(index) {
 
         state.setDuration(episode.title, currentAudio.duration);
 
-        const startTime = determineStartTime(state, episode.title, currentAudio.duration, isFirstLoad);
-        console.log(`Loaded ${episode.title}. StartTime: ${startTime}`);
+        // Re-calculate with real duration just in case
+        const realStartTime = determineStartTime(state, episode.title, currentAudio.duration, isFirstLoad);
+        console.log(`Loaded ${episode.title}. RealStartTime: ${realStartTime}`);
 
         // Robust Seek
         const performSeek = () => {
-            if (startTime > 0) {
+            if (realStartTime > 0) {
                 try {
-                    currentAudio.currentTime = startTime;
+                    currentAudio.currentTime = realStartTime;
                     ui.updateProgress(currentAudio.currentTime, currentAudio.duration);
                 } catch (e) {
                     console.log("Seek pending buffer...");
@@ -138,10 +146,6 @@ function loadEpisode(index) {
         setTimeout(performSeek, 100);
         setTimeout(performSeek, 500);
 
-        needsRestoration = startTime > 0;
-        ui.updateProgress(startTime, currentAudio.duration || state.getDuration(episode.title));
-
-        isPreloading = false;
         updateMediaSession(episode);
     };
 
@@ -154,13 +158,8 @@ function loadEpisode(index) {
     currentAudio.src = episode.url;
 
     // CRITICAL: Call play() immediately in the same event loop as the click
-    // to satisfy browser "User Gesture" requirements for auto-play.
     if (!wasFirstLoad) {
         playAudio();
-    } else {
-        // Just update UI to inactive if it's the very first load
-        ui.setPlaying(false);
-        ui.updateListPlayStates(episode.title, false, state);
     }
 }
 
@@ -177,7 +176,12 @@ function determineStartTime(state, title, duration, isFirstLoad) {
 function saveCurrentPosition() {
     const episode = episodes[currentIndex];
     const currentTime = currentAudio.currentTime;
-    // Tracking module handles badges now
+
+    // Safety check: Don't overwrite progress with 0 while restoring
+    if (needsRestoration && currentTime < 5) {
+        return;
+    }
+
     if (currentTime > 0) {
         state.setPosition(episode.title, currentTime);
     }
