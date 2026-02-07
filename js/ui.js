@@ -101,8 +101,11 @@ export const ui = {
         // Others
         if (cat.includes('Cardiopulmonary')) return 'Cancer/Pulm/Cardiac';
         if (cat.includes('Electrodiagnostic')) return 'EDX';
-        if (cat.includes('Prosthetics')) return 'Prosthetics';
+        if (cat.includes('Prosthetics')) return 'P&O';
         if (cat.includes('Physical Modalities')) return 'Modalities';
+        if (cat.includes('Pediatrics')) return 'Peds';
+        if (cat.includes('Pain Medicine')) return 'Pain';
+        if (cat.includes('Rheumatology')) return 'Rheum';
 
         return cat;
     },
