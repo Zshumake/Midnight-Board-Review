@@ -211,9 +211,23 @@ function playAudio() {
         needsRestoration = false;
     }
 
+    saveCurrentPosition(); // Save immediately when play starts
+
     playPromise = currentAudio.play();
     if (playPromise !== undefined) {
-        playPromise.then(_ => ui.setPlaying(true))
+        playPromise.then(_ => {
+            ui.setPlaying(true);
+            // Final safety check: If after play starts we are still at 0, force the jump
+            if (needsRestoration) {
+                const ep = episodes[currentIndex];
+                const pos = state.getPosition(ep.title);
+                if (pos > 5 && currentAudio.currentTime < 2) {
+                    console.log("PWA Force-Restoring to:", pos);
+                    currentAudio.currentTime = pos;
+                }
+                needsRestoration = false;
+            }
+        })
             .catch(error => {
                 if (error.name !== 'AbortError') ui.showError(error.message);
                 ui.setPlaying(false);
@@ -229,10 +243,12 @@ function pauseAudio() {
         playPromise.then(_ => {
             currentAudio.pause();
             ui.setPlaying(false);
+            saveCurrentPosition(); // Critical for iOS PWA!
         }).catch(() => { });
     } else {
         currentAudio.pause();
         ui.setPlaying(false);
+        saveCurrentPosition();
     }
     const episode = episodes[currentIndex];
     ui.updateListPlayStates(episode.title, false, state);
