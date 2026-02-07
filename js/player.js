@@ -2,8 +2,11 @@ import { episodes } from './episodes.js';
 import { ui } from './ui.js';
 import { state } from './state.js';
 import { WelcomeModal } from './welcomeModal.js';
+import { Share } from './share.js';
+import { Library } from './library.js';
+import { Tracking } from './tracking.js';
 
-// --- State Variables (Defined at top to avoid ReferenceError) ---
+// --- State Variables ---
 let currentIndex = 0;
 let isFirstLoad = true;
 let playPromise = undefined; // Track valid play request
@@ -11,92 +14,58 @@ let isPreloading = false;    // Track auto-preloading state
 let isPlayingSilence = false; // Track mobile-safe gap state
 let autoplayTimer = null;    // Track 5s delay timer (safety ref)
 const preloadAudio = new Audio(); // Singleton for hover preloading
+const currentAudio = ui.audio; // Alias
 
-// Anti-Skip Logic
-let sessionValidTime = 0;
-let lastTimeUpdate = 0;
-let hasCreditedSession = false;
-
-// Load saved state from localStorage
+// Load saved state
 state.load();
 
-// --- Deep Linking & Init Logic ---
-const urlParams = new URLSearchParams(window.location.search);
-const paramEp = urlParams.get('ep');
-const paramT = urlParams.get('t');
-
-if (paramEp !== null) {
-    currentIndex = parseInt(paramEp, 10);
-    // If timestamp provided, override saved position temporarily 
-    // (We set it in state so loadEpisode picks it up, or we handle in loadEpisode)
-    if (paramT !== null) {
-        // We defer this until after loadEpisode reads state. 
-        // Or we just update state now. Updating state is cleaner for consistency.
-        const epTitle = episodes[currentIndex]?.title;
-        if (epTitle) {
-            state.setPosition(epTitle, parseFloat(paramT));
-        }
-    }
+// --- Init & Deep Linking ---
+const deepLinkIndex = Share.initDeepLinking(episodes, state);
+if (deepLinkIndex !== null) {
+    currentIndex = deepLinkIndex;
 } else {
-    // Default to last played if no URL params
     currentIndex = state.data.lastIndex || 0;
 }
-// --------------------------------
 
-let activeCategory = 'All';
-
-// Extract Categories (UI helper will add 'All')
-const categories = [...new Set(episodes.map(e => e.category))].filter(Boolean);
-ui.renderCategoryTabs(categories, activeCategory, (selected) => {
-    activeCategory = selected;
-    ui.renderCategoryTabs(categories, activeCategory, (cat) => activeCategory = cat); // Re-render to update active class
-    renderLibrary(ui.searchInput.value); // Re-render list with filter
+// --- Library & Category Setup ---
+// Initialize Tabs (Pass callback for when filter changes)
+Library.initCategories(episodes, ui, () => {
+    renderLibrary(ui.searchInput.value);
 });
 
-// Initialize (Hoisted functions will work, but vars must be ready)
+// Initialize Library Render
 const onEpisodeClick = (index, action) => {
     if (action === 'play') {
         if (Number(currentIndex) === Number(index)) {
-            if (ui.audio.paused) playAudio(); else pauseAudio();
+            if (currentAudio.paused) playAudio(); else pauseAudio();
         } else {
             loadEpisode(index);
         }
     }
 };
 
+// Initial Render
 ui.renderLibrary(episodes, currentIndex, state, onEpisodeClick, (url) => preloadEpisode(url));
 
-// Initialize Welcome Modal (Modular)
+// Initialize Modal
 WelcomeModal.init();
 
+// Start
 loadEpisode(currentIndex);
 setupEventListeners();
 
+
 /**
- * Filtered render of the library
+ * Filtered render of the library using Library Module
  */
 function renderLibrary(filter = '') {
-    const filtered = episodes
-        .map((ep, index) => ({ ...ep, originalIndex: index }))
-        .filter(ep => {
-            // 1. Category Filter
-            if (activeCategory !== 'All' && ep.category !== activeCategory) return false;
+    const filtered = Library.filterEpisodes(episodes, filter);
 
-            // 2. Search Filter
-            return ep.title.toLowerCase().includes(filter.toLowerCase()) ||
-                ep.category.toLowerCase().includes(filter.toLowerCase()) ||
-                (ep.description && ep.description.toLowerCase().includes(filter.toLowerCase()));
-        });
-
-    // We pass the full episodes list to the UI but with filter applied
     ui.renderLibrary(filtered, currentIndex, state, (index, action) => {
-        // If action is play, check if it matches current
         if (action === 'play') {
             if (currentIndex === index) {
-                // Toggle Play/Pause
-                if (ui.audio.paused) playAudio(); else pauseAudio();
+                if (currentAudio.paused) playAudio(); else pauseAudio();
             } else {
-                // Load new
                 loadEpisode(index);
             }
         } else if (action === 'skip-back') {
@@ -104,29 +73,24 @@ function renderLibrary(filter = '') {
         } else if (action === 'skip-fwd') {
             skip(10);
         } else {
-            // Default fallback
             loadEpisode(index);
         }
     }, (url) => preloadEpisode(url));
 }
 
 /**
- * Load an episode and its saved position
+ * Load an episode
  */
 function loadEpisode(index) {
-    // Safety: Cancel any pending autoplay jump if user manually selects a track
     if (autoplayTimer) {
         clearTimeout(autoplayTimer);
         autoplayTimer = null;
     }
 
-    // Reset silence flag so we don't think we are in a gap
     isPlayingSilence = false;
 
-    // Reset Anti-Skip Validation for new track
-    sessionValidTime = 0;
-    lastTimeUpdate = 0;
-    hasCreditedSession = false;
+    // Reset Tracking
+    Tracking.reset();
 
     currentIndex = index;
     state.setLastIndex(index);
@@ -136,154 +100,97 @@ function loadEpisode(index) {
 
     // Update UI Metadata
     document.getElementById('current-track-title').innerText = episode.title;
-
     const descEl = document.getElementById('current-track-description');
-    if (descEl) {
-        descEl.innerText = episode.description || '';
-    }
+    if (descEl) descEl.innerText = episode.description || '';
 
     const listened = state.isListened(episode.title);
     ui.updateTrack(episode, listened);
 
-    // Reset Play State (Pause) when loading new
+    // Reset Play State (Pause)
     ui.setPlaying(false);
-    ui.updateListPlayStates(episode.title, false);
+    ui.updateListPlayStates(episode.title, false, state);
 
     // Define resume logic (Metadata Handler)
     const handleMetadata = () => {
-        // Restore playback speed from STATE
         const savedSpeed = state.getSpeed();
-        ui.audio.playbackRate = savedSpeed;
+        currentAudio.playbackRate = savedSpeed;
 
-        // Sync UI toggles
         if (ui.speedSelect) ui.speedSelect.value = savedSpeed;
         if (ui.stickySpeedSelect) ui.stickySpeedSelect.value = savedSpeed;
 
-        // Save duration for library progress tracking
-        state.setDuration(episode.title, ui.audio.duration);
+        state.setDuration(episode.title, currentAudio.duration);
 
-        // Determine Start Time Logic
-        const startTime = determineStartTime(
-            state,
-            episode.title,
-            ui.audio.duration,
-            isFirstLoad
-        );
-
-        console.log(`Loaded ${episode.title}. Saved: ${savedPos}, Duration: ${ui.audio.duration}, StartTime: ${startTime}`);
+        const startTime = determineStartTime(state, episode.title, currentAudio.duration, isFirstLoad);
+        console.log(`Loaded ${episode.title}. StartTime: ${startTime}`);
 
         if (startTime > 0) {
-            ui.audio.currentTime = startTime;
+            currentAudio.currentTime = startTime;
         } else {
-            ui.audio.currentTime = 0;
+            currentAudio.currentTime = 0;
         }
 
-        // Force Visual Update Immediately (Fixes 'ticker' showing 0 on reload)
-        ui.updateProgress(ui.audio.currentTime, ui.audio.duration);
+        ui.updateProgress(currentAudio.currentTime, currentAudio.duration);
+
+        // Store active 'isFirstLoad' state for this execution context
+        const wasFirstLoad = isFirstLoad;
 
         if (isFirstLoad) {
             isFirstLoad = false;
         }
 
-        // Reset Preload State for new track
         isPreloading = false;
 
         updateMediaSession(episode);
 
-        // Auto-play if not initial load
-        if (!isFirstLoad) {
+        // Auto-play ONLY if NOT initial load
+        if (!wasFirstLoad) {
             playAudio();
         }
     };
 
-    // Attach listener BEFORE setting src to catch cached files
-    ui.audio.addEventListener('loadedmetadata', handleMetadata, { once: true });
-
-    // Set source triggers loading
-    ui.audio.src = episode.url;
+    currentAudio.addEventListener('loadedmetadata', handleMetadata, { once: true });
+    currentAudio.src = episode.url;
 }
 
-/**
- * Pure helper to determine where playback should start
- * Modularity: Decouples logic from UI/Player side effects
- */
 function determineStartTime(state, title, duration, isFirstLoad) {
     const savedPos = state.getPosition(title);
+    // Always load position (resume), but don't auto-play (handled by caller)
+    if (isFirstLoad) return savedPos;
 
-    // Scenario 1: Page Refresh (isFirstLoad)
-    // ALWAYS resume. Even if it's 99% done. User might want to hear credits.
-    if (isFirstLoad) {
-        return savedPos;
-    }
-
-    // Scenario 2: Explicit Click (Navigation)
-    // If finished or very near end, restart. Otherwise resume.
     const isListened = state.isListened(title);
     const isNearEnd = duration > 0 && savedPos > (duration * 0.95);
-
-    if (isListened || isNearEnd) {
-        return 0; // Restart
-    }
-
-    return savedPos; // Resume
+    if (isListened || isNearEnd) return 0;
+    return savedPos;
 }
 
-
-
-/**
- * Persistence: Save position periodically
- */
 function saveCurrentPosition() {
     const episode = episodes[currentIndex];
-    const currentTime = ui.audio.currentTime;
-    const duration = ui.audio.duration;
-
+    const currentTime = currentAudio.currentTime;
+    // Tracking module handles badges now
     if (currentTime > 0) {
         state.setPosition(episode.title, currentTime);
     }
-
-    // Mark as listened if > 95%
-    if (duration && (currentTime / duration) > 0.95) {
-        state.markAsListened(episode.title);
-        ui.updateTrack(episode, true);
-        // We don't change visual to solid yet because it's still active
-    }
 }
 
-/**
- * Hover-Preload (Instant Manual Start)
- */
 function preloadEpisode(url) {
     if (preloadAudio.src !== url) {
         preloadAudio.src = url;
         preloadAudio.preload = 'auto';
         preloadAudio.load();
-        console.log(`Hover-Preloading: ${url}`);
     }
 }
 
 function playAudio() {
-    // Enforce playback speed before playing (UI should be in sync)
-    // We trust the UI/Object state now
     const currentSpeed = state.getSpeed();
-    if (ui.audio.playbackRate !== currentSpeed) {
-        ui.audio.playbackRate = currentSpeed;
+    if (currentAudio.playbackRate !== currentSpeed) {
+        currentAudio.playbackRate = currentSpeed;
     }
 
-    playPromise = ui.audio.play();
-
+    playPromise = currentAudio.play();
     if (playPromise !== undefined) {
-        playPromise.then(_ => {
-            // Play started successfully
-            ui.setPlaying(true);
-        })
+        playPromise.then(_ => ui.setPlaying(true))
             .catch(error => {
-                // Auto-play was prevented or interrupted
-                if (error.name === 'AbortError') {
-                    // Ignore aborts (likely panic pause)
-                } else {
-                    ui.showError("Playback error: " + error.message);
-                }
+                if (error.name !== 'AbortError') ui.showError(error.message);
                 ui.setPlaying(false);
             });
     }
@@ -295,30 +202,22 @@ function playAudio() {
 function pauseAudio() {
     if (playPromise !== undefined) {
         playPromise.then(_ => {
-            ui.audio.pause();
+            currentAudio.pause();
             ui.setPlaying(false);
-        })
-            .catch(error => {
-                // Play was likely aborted safely
-            });
+        }).catch(() => { });
     } else {
-        ui.audio.pause();
+        currentAudio.pause();
         ui.setPlaying(false);
     }
-
     const episode = episodes[currentIndex];
     ui.updateListPlayStates(episode.title, false, state);
 }
 
 function skip(amount) {
-    ui.audio.currentTime = Math.max(0, Math.min(ui.audio.duration || 0, ui.audio.currentTime + amount));
-    saveCurrentPosition();
+    currentAudio.currentTime = Math.max(0, Math.min(currentAudio.duration || 0, currentAudio.currentTime + amount));
     saveCurrentPosition();
 }
 
-/**
- * Modular Navigation
- */
 function playNext() {
     loadEpisode((currentIndex + 1) % episodes.length);
 }
@@ -330,13 +229,10 @@ function playPrev() {
 function preloadNextEpisode() {
     const nextIndex = (currentIndex + 1) % episodes.length;
     const nextEpisode = episodes[nextIndex];
-
-    // Create audio element to force browser to cache stream
+    if (!nextEpisode) return;
     const preloadAudio = new Audio();
     preloadAudio.src = nextEpisode.url;
-    preloadAudio.preload = 'auto'; // Force load
-
-    console.log(`Preloading next episode: ${nextEpisode.title}`);
+    preloadAudio.preload = 'auto';
     isPreloading = true;
 }
 
@@ -348,7 +244,6 @@ function updateMediaSession(episode) {
             album: 'Board Review Podcast',
             artwork: [{ src: 'cover.jpg?v=6', sizes: '512x512', type: 'image/jpeg' }]
         });
-
         navigator.mediaSession.setActionHandler('play', playAudio);
         navigator.mediaSession.setActionHandler('pause', pauseAudio);
         navigator.mediaSession.setActionHandler('seekbackward', () => skip(-10));
@@ -359,184 +254,113 @@ function updateMediaSession(episode) {
 }
 
 function setupEventListeners() {
-    ui.playBtn.addEventListener('click', () => {
-        if (ui.audio.paused) playAudio(); else pauseAudio();
-    });
-
+    ui.playBtn.addEventListener('click', () => { if (currentAudio.paused) playAudio(); else pauseAudio(); });
     ui.prevBtn.addEventListener('click', playPrev);
     ui.nextBtn.addEventListener('click', playNext);
     ui.skipBackBtn.addEventListener('click', () => skip(-10));
     ui.skipFwdBtn.addEventListener('click', () => skip(10));
+    currentAudio.addEventListener('ended', playNext);
 
-    // Autoplay: Next track when current ends
-    ui.audio.addEventListener('ended', playNext);
-
-    // Speed Control Sync
-
-    // Speed Control Sync
-    ui.speedSelect.addEventListener('change', () => {
-        const speed = parseFloat(ui.speedSelect.value);
-        ui.audio.playbackRate = speed;
+    // Speed Control
+    const handleSpeed = (speed) => {
+        currentAudio.playbackRate = speed;
+        if (ui.speedSelect) ui.speedSelect.value = speed;
         if (ui.stickySpeedSelect) ui.stickySpeedSelect.value = speed;
-        state.setSpeed(speed); // Save persistence
-    });
-
-    // Save on close/refresh
-    window.addEventListener('beforeunload', () => {
-        saveCurrentPosition();
-    });
-
+        state.setSpeed(speed);
+    };
+    ui.speedSelect.addEventListener('change', () => handleSpeed(parseFloat(ui.speedSelect.value)));
     if (ui.stickySpeedSelect) {
-        ui.stickySpeedSelect.addEventListener('change', () => {
-            const speed = parseFloat(ui.stickySpeedSelect.value);
-            ui.audio.playbackRate = speed;
-            ui.speedSelect.value = speed;
-            state.setSpeed(speed); // Save persistence
-        });
+        ui.stickySpeedSelect.addEventListener('change', () => handleSpeed(parseFloat(ui.stickySpeedSelect.value)));
     }
 
-    ui.searchInput.addEventListener('input', (e) => {
-        renderLibrary(e.target.value);
-    });
+    // Save on unload
+    window.addEventListener('beforeunload', saveCurrentPosition);
 
-    ui.audio.addEventListener('timeupdate', () => {
-        const currentTime = ui.audio.currentTime;
-        const duration = ui.audio.duration;
+    // Search
+    ui.searchInput.addEventListener('input', (e) => renderLibrary(e.target.value));
 
-        // --- Anti-Skip Validation Logic ---
-        if (lastTimeUpdate > 0 && !ui.audio.paused && !ui.isDragging) {
-            const delta = currentTime - lastTimeUpdate;
-            // Only count time if it flows naturally (no seek jumps > 1s)
-            if (delta > 0 && delta < 1.0) {
-                sessionValidTime += delta;
-            }
-        }
-        lastTimeUpdate = currentTime;
+    // Time Update & Tracking
+    currentAudio.addEventListener('timeupdate', () => {
+        const currentTime = currentAudio.currentTime;
+        const duration = currentAudio.duration;
 
-        // Check for Badge Award (80% threshold + Not already credited this session)
-        if (duration > 0 && !hasCreditedSession) {
-            // Threshold: 80% of duration
-            if (sessionValidTime > (duration * 0.8)) {
-                console.log(`Validation Passed! Time: ${sessionValidTime.toFixed(1)} / Req: ${(duration * 0.8).toFixed(1)}`);
-                const episode = episodes[currentIndex];
-                const leveledUp = state.incrementCompletion(episode.title);
-                if (leveledUp) {
-                    ui.updateTrack(episode, state.getCompletionCount(episode.title));
-                    // Optional: Show toast or effect? -> "Badge Earned!"
-                }
-                hasCreditedSession = true; // Only one badge per listen session
-            }
-        }
-        // ----------------------------------
+        // 1. Update Tracking (Anti-Skip)
+        Tracking.update(currentTime, currentAudio.paused, ui.isDragging);
 
-        // Only update visual if NOT dragging
+        // 2. Check for Badge
+        Tracking.checkCompletion(duration, episodes[currentIndex], state, ui);
+
+        // 3. Visual Update
         if (!ui.isDragging) {
             ui.updateProgress(currentTime, duration);
         }
 
-        // Smart Preloading: 10 seconds before end
+        // 4. Preload
         const timeLeft = duration - currentTime;
         if (timeLeft <= 10 && timeLeft > 0 && !isPreloading) {
             preloadNextEpisode();
         }
 
-        // Throttle saving position to every 5 seconds to reduce UI lag
+        // 5. Save State Throttled
         if (Math.floor(currentTime) % 5 === 0) {
             saveCurrentPosition();
         }
     });
 
-    // Drag-to-Scrub Logic (Main & Sticky)
-    addScrubbingListeners(ui.progressContainer, (percent) => {
-        ui.updateProgress(ui.audio.duration * (percent / 100), ui.audio.duration);
-    }, (percent) => {
-        if (ui.audio.duration) {
-            ui.audio.currentTime = (percent / 100) * ui.audio.duration;
-            saveCurrentPosition();
-        }
-    });
+    // Share & Deep Linking Listeners
+    Share.setupShareButton(ui, () => currentIndex, () => currentAudio.currentTime);
+    Share.setupRssCopy(ui);
 
-    ui.copyRssBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(ui.rssUrlText.innerText).then(() => {
-            const originalText = ui.copyRssBtn.innerText;
-            ui.copyRssBtn.innerText = 'Copied!';
-            setTimeout(() => ui.copyRssBtn.innerText = originalText, 2000);
-        });
-    });
-
-    // Share Button
-    if (ui.shareBtn) {
-        ui.shareBtn.addEventListener('click', () => {
-            const url = new URL(window.location.href);
-            url.searchParams.set('ep', currentIndex);
-            url.searchParams.set('t', Math.floor(ui.audio.currentTime));
-
-            navigator.clipboard.writeText(url.toString()).then(() => {
-                // Show tooltip/toast - Reusing error toast for generic notification for now or custom
-                // Or just button text change like RSS
-                const originalHTML = ui.shareBtn.innerHTML;
-                ui.shareBtn.innerHTML = '<span style="font-size:0.7rem; font-weight:bold;">Copied!</span>';
-                setTimeout(() => ui.shareBtn.innerHTML = originalHTML, 2000);
-            });
-        });
-    }
-
-    // Manual Mastery Event (from Context Menu)
+    // Context Menu Event (Manual Mastery)
     document.addEventListener('manual-mastery', (e) => {
         const title = e.detail.title;
         if (title) {
             state.incrementCompletion(title);
-            // Re-render UI to show new badge
-            // We need to re-run renderLibrary but keep scroll/view. 
-            // Or just call ui.updateEpisodeStatus if we had it exposed for list. 
-            // Since incrementCompletion saves state, a full re-render is safest.
             renderLibrary(ui.searchInput.value);
-            // Also update main player if it's the current track
             if (episodes[currentIndex].title === title) {
                 ui.updateTrack(episodes[currentIndex], true);
             }
         }
     });
 
-    // Sticky Player Events
+    // Sticky Player
     if (ui.stickyPlayBtn) {
-        ui.stickyPlayBtn.addEventListener('click', () => {
-            if (ui.audio.paused) playAudio(); else pauseAudio();
-        });
+        ui.stickyPlayBtn.addEventListener('click', () => { if (currentAudio.paused) playAudio(); else pauseAudio(); });
     }
-    if (ui.stickySkipBack) {
-        ui.stickySkipBack.addEventListener('click', () => skip(-10));
-    }
-    if (ui.stickySkipFwd) {
-        ui.stickySkipFwd.addEventListener('click', () => skip(10));
-    }
+    if (ui.stickySkipBack) ui.stickySkipBack.addEventListener('click', () => skip(-10));
+    if (ui.stickySkipFwd) ui.stickySkipFwd.addEventListener('click', () => skip(10));
 
-    if (ui.stickyProgressContainer) {
-        addScrubbingListeners(ui.stickyProgressContainer, (percent) => {
-            // Visual Update during drag (handled by ui.updateProgress via generic logic or explicit here)
-            // Check: ui.updateProgress calls this.progressBar.style.width... it also updates sticky. 
-            // We can manually force width here for smoothness
-            ui.stickyProgressBar.style.width = `${percent}%`;
-            ui.progressBar.style.width = `${percent}%`;
-        }, (percent) => {
-            if (ui.audio.duration) {
-                ui.audio.currentTime = (percent / 100) * ui.audio.duration;
-                saveCurrentPosition();
-            }
-        });
-    }
+    // Drag Scrubbing
+    if (ui.progressContainer) setupScrub(ui.progressContainer);
+    if (ui.stickyProgressContainer) setupScrub(ui.stickyProgressContainer);
+
+    // Error Handling
+    currentAudio.addEventListener('error', () => {
+        ui.showError('Error playing audio.');
+        ui.setPlaying(false);
+    });
+}
+
+function setupScrub(container) {
+    addScrubbingListeners(container, (percent) => {
+        ui.updateProgress(currentAudio.duration * (percent / 100), currentAudio.duration);
+    }, (percent) => {
+        if (currentAudio.duration) {
+            currentAudio.currentTime = (percent / 100) * currentAudio.duration;
+            saveCurrentPosition();
+        }
+    });
 }
 
 /**
- * Helper to add Mouse/Touch scrubbing events to a progress container
+ * Helper to add Mouse/Touch scrubbing events (retained as helper)
  */
 function addScrubbingListeners(container, onDrag, onCommit) {
     const handleMove = (e) => {
         if (!ui.isDragging) return;
         const rect = container.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const offsetX = clientX - rect.left;
-        let percent = (offsetX / rect.width) * 100;
+        let percent = ((clientX - rect.left) / rect.width) * 100;
         percent = Math.max(0, Math.min(100, percent));
         onDrag(percent);
     };
@@ -544,17 +368,11 @@ function addScrubbingListeners(container, onDrag, onCommit) {
     const handleEnd = (e) => {
         if (!ui.isDragging) return;
         ui.isDragging = false;
-
-        // Calculate final pos
         const rect = container.getBoundingClientRect();
-        // Use changedTouches for end event if touch
         const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-        const offsetX = clientX - rect.left;
-        let percent = (offsetX / rect.width) * 100;
+        let percent = ((clientX - rect.left) / rect.width) * 100;
         percent = Math.max(0, Math.min(100, percent));
-
         onCommit(percent);
-
         document.removeEventListener('mousemove', handleMove);
         document.removeEventListener('touchmove', handleMove);
         document.removeEventListener('mouseup', handleEnd);
@@ -563,9 +381,7 @@ function addScrubbingListeners(container, onDrag, onCommit) {
 
     const handleStart = (e) => {
         ui.isDragging = true;
-        // Optionally update immediately on click too
         handleMove(e);
-
         document.addEventListener('mousemove', handleMove);
         document.addEventListener('touchmove', handleMove, { passive: false });
         document.addEventListener('mouseup', handleEnd);
@@ -574,21 +390,4 @@ function addScrubbingListeners(container, onDrag, onCommit) {
 
     container.addEventListener('mousedown', handleStart);
     container.addEventListener('touchstart', handleStart, { passive: false });
-
-    // Error Handling
-    ui.audio.addEventListener('error', (e) => {
-        const error = ui.audio.error;
-        let message = 'An error occurred while playing audio.';
-        if (error.code === 1) message = 'Playback aborted.';
-        if (error.code === 2) message = 'Network error. Please check your connection.';
-        if (error.code === 3) message = 'Audio decoding failed.';
-        if (error.code === 4) message = 'Audio file not found or unsupported.'; // 404 falls here
-
-        ui.showError(message);
-        ui.setPlaying(false);
-        const episode = episodes[currentIndex];
-        ui.updateListPlayStates(episode.title, false, state);
-    });
 }
-
-// Start the app
