@@ -144,9 +144,10 @@ function loadEpisode(index) {
             ui.audio.currentTime = startTime;
         } else {
             ui.audio.currentTime = 0;
-            // Only save 0 if we are actually restarting (and not just glitching)
-            // saveCurrentPosition(); 
         }
+
+        // Force Visual Update Immediately (Fixes 'ticker' showing 0 on reload)
+        ui.updateProgress(ui.audio.currentTime, ui.audio.duration);
 
         if (isFirstLoad) {
             isFirstLoad = false;
