@@ -13,6 +13,7 @@ let playPromise = undefined; // Track valid play request
 let isPreloading = false;    // Track auto-preloading state
 let isPlayingSilence = false; // Track mobile-safe gap state
 let autoplayTimer = null;    // Track 5s delay timer (safety ref)
+let needsRestoration = false; // Flag to ensure currentTime sticks on mobile
 const preloadAudio = new Audio(); // Singleton for hover preloading
 const currentAudio = ui.audio; // Alias
 
@@ -123,13 +124,26 @@ function loadEpisode(index) {
         const startTime = determineStartTime(state, episode.title, currentAudio.duration, isFirstLoad);
         console.log(`Loaded ${episode.title}. StartTime: ${startTime}`);
 
-        if (startTime > 0) {
-            currentAudio.currentTime = startTime;
-        } else {
-            currentAudio.currentTime = 0;
-        }
+        // Robust Seek: Mobile browsers often ignore the first seek attempt
+        const performSeek = () => {
+            if (startTime > 0) {
+                try {
+                    currentAudio.currentTime = startTime;
+                    ui.updateProgress(currentAudio.currentTime, currentAudio.duration);
+                } catch (e) {
+                    console.log("Seek pending buffer...");
+                }
+            }
+        };
 
-        ui.updateProgress(currentAudio.currentTime, currentAudio.duration);
+        performSeek();
+        setTimeout(performSeek, 100); // Quick retry
+        setTimeout(performSeek, 500); // Safety retry
+
+        needsRestoration = startTime > 0;
+
+        // Visual update immediately using saved state if audio isn't ready
+        ui.updateProgress(startTime, currentAudio.duration || state.getDuration(episode.title));
 
         // Store active 'isFirstLoad' state for this execution context
         const wasFirstLoad = isFirstLoad;
@@ -139,7 +153,6 @@ function loadEpisode(index) {
         }
 
         isPreloading = false;
-
         updateMediaSession(episode);
 
         // Auto-play ONLY if NOT initial load
@@ -148,6 +161,7 @@ function loadEpisode(index) {
         }
     };
 
+    currentAudio.preload = 'auto';
     currentAudio.addEventListener('loadedmetadata', handleMetadata, { once: true });
     currentAudio.src = episode.url;
 }
@@ -184,6 +198,17 @@ function playAudio() {
     const currentSpeed = state.getSpeed();
     if (currentAudio.playbackRate !== currentSpeed) {
         currentAudio.playbackRate = currentSpeed;
+    }
+
+    // Double-check restoration on play (Crucial for Mobile/Safari)
+    if (needsRestoration) {
+        const episode = episodes[currentIndex];
+        const savedPos = state.getPosition(episode.title);
+        if (savedPos > 0 && Math.abs(currentAudio.currentTime - savedPos) > 2) {
+            console.log("Restoring position on play event...");
+            currentAudio.currentTime = savedPos;
+        }
+        needsRestoration = false;
     }
 
     playPromise = currentAudio.play();
@@ -273,8 +298,12 @@ function setupEventListeners() {
         ui.stickySpeedSelect.addEventListener('change', () => handleSpeed(parseFloat(ui.stickySpeedSelect.value)));
     }
 
-    // Save on unload
+    // Save on unload and state changes
     window.addEventListener('beforeunload', saveCurrentPosition);
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) saveCurrentPosition();
+    });
+    window.addEventListener('pagehide', saveCurrentPosition);
 
     // Search
     ui.searchInput.addEventListener('input', (e) => renderLibrary(e.target.value));
