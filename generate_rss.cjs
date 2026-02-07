@@ -70,8 +70,8 @@ async function generate() {
         xml += `    <item>
       <title>${escapeXml(ep.title)}</title>
       <description>${escapeXml(ep.description)}</description>
-      <enclosure url="${ep.url}" length="${length}" type="audio/x-m4a" />
-      <guid isPermaLink="false">${ep.url}</guid>
+      <enclosure url="${escapeXml(ep.url)}" length="${length}" type="audio/x-m4a" />
+      <guid isPermaLink="false">${escapeXml(ep.url)}</guid>
       <pubDate>${new Date(Date.now() - (i * 86400000)).toUTCString()}</pubDate>
       <itunes:summary>${escapeXml(ep.description)}</itunes:summary>
       <itunes:episodeType>full</itunes:episodeType>
