@@ -196,8 +196,8 @@ export const WelcomeModal = {
                 </div>
                 <div class="modal-body">
                     <p>
-                        Welcome to the new <strong>Midnight Board Review</strong>—a premium study platform designed for the modern PM&R resident. 
-                        This tool transforms over 60 hours of high-yield audio into a surgical study experience, allowing you to master complex topics during commutes, gym sessions, or clinic downtime.
+                        This site hosts a comprehensive 120-episode (60-hour) audio breakdown of the <strong>PM&R Board Review</strong>. 
+                        Whether you're prepping for SAEs, Part 1, or just surviving your rotation, this tool turns your "dead time"—commutes, gym sessions, pre-charting—into high-yield study time.
                     </p>
                     
                     <ul class="feature-list">
@@ -206,33 +206,33 @@ export const WelcomeModal = {
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                             </div>
                             <div class="feature-text">
-                                <strong>Searchable Clinical Pearls</strong>
-                                Instantly find specific breakdowns. Searching for "EMG" or "SCI" filters 120+ episodes to exactly what you need to hear right now.
+                                <strong>Searchable Pearls</strong>
+                                Use the search bar to instantly find a specific podcast that discusses topics like "neurogenic bowel" or "autonomic dysreflexia."
                             </div>
                         </li>
                         <li>
                             <div class="feature-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
                             </div>
                             <div class="feature-text">
-                                <strong>Apple Podcasts & RSS Sync</strong>
-                                Take the library with you. Use the secure RSS feed to follow the show in Apple Podcasts or any professional podcast player.
+                                <strong>Go Mobile</strong>
+                                Use "Add to Home Screen" on your phone for a full app experience, or sync via RSS to your favorite podcast player.
                             </div>
                         </li>
                         <li>
                             <div class="feature-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                             </div>
                             <div class="feature-text">
-                                <strong>Integrated Glassmorphism Player</strong>
-                                A custom, low-latency audio engine with interactive progress tracking, designed to look stunning on both desktop and mobile.
+                                <strong>Full Coverage</strong>
+                                Content is organized by chapter to mirror the "Red Book" flow perfectly.
                             </div>
                         </li>
                     </ul>
 
                     <div class="modal-footer">
-                        <button id="close-modal-btn" class="start-btn">Begin Studying</button>
-                        <div class="credits">Curated by <strong>Zach Shumake</strong> — A Board Prep Utility.</div>
+                        <button id="close-modal-btn" class="start-btn">Let's Study</button>
+                        <div class="credits">Created by <strong>Zach Shumake</strong> — For residents, by a resident.</div>
                     </div>
                 </div>
             </div>
