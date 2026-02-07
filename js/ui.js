@@ -95,7 +95,7 @@ export const ui = {
         if (cat.includes('TBI')) return 'TBI';
         if (cat.includes('SCI')) return 'SCI';
         if (cat.includes('CVA') || cat.includes('Cerebrovascular')) return 'CVA';
-        if (cat.includes('Miscellaneous')) return 'Neuro: Misc';
+        if (cat === 'Neurology: Miscellaneous') return 'Neuro: Misc'; // Strict match
         if (cat.startsWith('Neurology:')) return cat.replace('Neurology:', 'Neuro:'); // Fallback
 
         // Others
