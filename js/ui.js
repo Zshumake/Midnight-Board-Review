@@ -71,14 +71,7 @@ export const ui = {
         if (!this.categoryTabs) return;
         this.categoryTabs.innerHTML = '';
 
-        // "All" Tab
-        const allTab = document.createElement('div');
-        allTab.className = `category-tab ${activeCategory === 'All' ? 'active' : ''}`;
-        allTab.innerText = 'All';
-        allTab.onclick = () => onSelect('All');
-        this.categoryTabs.appendChild(allTab);
-
-        // Dynamic Tabs
+        // Dynamic Tabs (includes 'All' if passed in array)
         categories.forEach(cat => {
             const tab = document.createElement('div');
             tab.className = `category-tab ${activeCategory === cat ? 'active' : ''}`;
