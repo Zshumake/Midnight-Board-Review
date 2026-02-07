@@ -19,6 +19,7 @@ let hasCreditedSession = false;
 
 // Load saved state from localStorage
 state.load();
+currentIndex = state.data.lastIndex || 0;
 
 // Initialize (Hoisted functions will work, but vars must be ready)
 ui.renderLibrary(episodes, currentIndex, state, (index, action) => {
