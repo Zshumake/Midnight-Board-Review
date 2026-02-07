@@ -13,14 +13,17 @@ export const Library = {
         // Extract Unique Categories (remove null/empty)
         const categories = ['All', ...new Set(episodes.map(e => e.category))].filter(Boolean);
 
-        // Initial Render
-        ui.renderCategoryTabs(categories, this.activeCategory, (selected) => {
+        // Define Handler to be used recursively
+        const handleSelect = (selected) => {
             this.activeCategory = selected;
-            // Update Tab UI
-            ui.renderCategoryTabs(categories, this.activeCategory, (cat) => this.activeCategory = cat);
+            // Update Tab UI (Pass SAME handler)
+            ui.renderCategoryTabs(categories, this.activeCategory, handleSelect);
             // Trigger Filter Callback
             onFilterChange();
-        });
+        };
+
+        // Initial Render
+        ui.renderCategoryTabs(categories, this.activeCategory, handleSelect);
     },
 
     /**
