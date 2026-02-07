@@ -209,6 +209,8 @@ function playAudio() {
     if (playPromise !== undefined) {
         playPromise.then(_ => {
             ui.setPlaying(true);
+            updateMediaSessionState(); // Sync after play starts
+
             // Final safety check: If after play starts we are still at 0, force the jump
             if (needsRestoration) {
                 const ep = episodes[currentIndex];
@@ -223,6 +225,7 @@ function playAudio() {
             .catch(error => {
                 if (error.name !== 'AbortError') ui.showError(error.message);
                 ui.setPlaying(false);
+                updateMediaSessionState();
             });
     }
 
@@ -235,11 +238,13 @@ function pauseAudio() {
         playPromise.then(_ => {
             currentAudio.pause();
             ui.setPlaying(false);
+            updateMediaSessionState();
             saveCurrentPosition(); // Critical for iOS PWA!
         }).catch(() => { });
     } else {
         currentAudio.pause();
         ui.setPlaying(false);
+        updateMediaSessionState();
         saveCurrentPosition();
     }
     const episode = episodes[currentIndex];
@@ -248,6 +253,7 @@ function pauseAudio() {
 
 function skip(amount) {
     currentAudio.currentTime = Math.max(0, Math.min(currentAudio.duration || 0, currentAudio.currentTime + amount));
+    updateMediaSessionState();
     saveCurrentPosition();
 }
 
@@ -283,6 +289,32 @@ function updateMediaSession(episode) {
         navigator.mediaSession.setActionHandler('seekforward', () => skip(10));
         navigator.mediaSession.setActionHandler('previoustrack', playPrev);
         navigator.mediaSession.setActionHandler('nexttrack', playNext);
+
+        // Initial state sync
+        updateMediaSessionState();
+    }
+}
+
+/**
+ * Synchronize the lock screen timer and state with the actual audio element
+ */
+function updateMediaSessionState() {
+    if ('mediaSession' in navigator) {
+        // Update Playback State
+        navigator.mediaSession.playbackState = currentAudio.paused ? 'paused' : 'playing';
+
+        // Update Position State (Lock screen timer accuracy)
+        if ('setPositionState' in navigator.mediaSession) {
+            try {
+                navigator.mediaSession.setPositionState({
+                    duration: currentAudio.duration || 0,
+                    playbackRate: currentAudio.playbackRate || 1.0,
+                    position: currentAudio.currentTime || 0
+                });
+            } catch (e) {
+                // Ignore if audio isn't ready
+            }
+        }
     }
 }
 
@@ -347,6 +379,7 @@ function setupEventListeners() {
         // 5. Save State Throttled
         if (Math.floor(currentTime) % 5 === 0) {
             saveCurrentPosition();
+            updateMediaSessionState(); // Keep lock screen honest
         }
     });
 
