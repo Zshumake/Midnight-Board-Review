@@ -13,7 +13,8 @@ let playPromise = undefined; // Track valid play request
 let isPreloading = false;    // Track auto-preloading state
 let isPlayingSilence = false; // Track mobile-safe gap state
 let autoplayTimer = null;    // Track 5s delay timer (safety ref)
-let needsRestoration = false; // Flag to ensure currentTime sticks on mobile
+let needsRestoration = false; // Flag for emergency jump
+let targetStartTime = 0;     // Lock for saveCurrentPosition
 const preloadAudio = new Audio(); // Singleton for hover preloading
 const currentAudio = ui.audio; // Alias
 
@@ -104,60 +105,45 @@ function loadEpisode(index) {
     document.getElementById('current-track-title').innerText = episode.title;
     const descEl = document.getElementById('current-track-description');
     if (descEl) descEl.innerText = episode.description || '';
-
     const startTime = determineStartTime(state, episode.title, state.getDuration(episode.title), isFirstLoad);
-    needsRestoration = startTime > 5; // Only need emergency restore if significant progress exists
+    targetStartTime = startTime;
+    needsRestoration = startTime > 5;
 
-    // Initial UI Setup (BEFORE Audio loads)
+    // Initial UI Setup
     const listened = state.isListened(episode.title);
     ui.updateTrack(episode, listened);
     ui.updateProgress(startTime, state.getDuration(episode.title));
     ui.setPlaying(false);
     ui.updateListPlayStates(episode.title, false, state);
 
-    // Define resume logic (Metadata Handler)
-    // This now ONLY handles post-load adjustments (seek, speed)
     const handleMetadata = () => {
         const savedSpeed = state.getSpeed();
         currentAudio.playbackRate = savedSpeed;
-
         if (ui.speedSelect) ui.speedSelect.value = savedSpeed;
         if (ui.stickySpeedSelect) ui.stickySpeedSelect.value = savedSpeed;
-
         state.setDuration(episode.title, currentAudio.duration);
 
-        // Re-calculate with real duration just in case
+        // Even with fragment, we seek again for safety
         const realStartTime = determineStartTime(state, episode.title, currentAudio.duration, isFirstLoad);
-        console.log(`Loaded ${episode.title}. RealStartTime: ${realStartTime}`);
+        if (realStartTime > 0 && Math.abs(currentAudio.currentTime - realStartTime) > 2) {
+            currentAudio.currentTime = realStartTime;
+        }
 
-        // Robust Seek
-        const performSeek = () => {
-            if (realStartTime > 0) {
-                try {
-                    currentAudio.currentTime = realStartTime;
-                    ui.updateProgress(currentAudio.currentTime, currentAudio.duration);
-                } catch (e) {
-                    console.log("Seek pending buffer...");
-                }
-            }
-        };
-
-        performSeek();
-        setTimeout(performSeek, 100);
-        setTimeout(performSeek, 500);
-
+        isPreloading = false;
         updateMediaSession(episode);
     };
 
-    // Store 'isFirstLoad' state for this execution context
     const wasFirstLoad = isFirstLoad;
     if (isFirstLoad) isFirstLoad = false;
 
     currentAudio.preload = 'auto';
     currentAudio.addEventListener('loadedmetadata', handleMetadata, { once: true });
-    currentAudio.src = episode.url;
 
-    // CRITICAL: Call play() immediately in the same event loop as the click
+    // NUCLEAR OPTION: Source Fragment (#t=)
+    // This tells Safari to start at X seconds natively.
+    currentAudio.src = startTime > 1 ? `${episode.url}#t=${startTime}` : episode.url;
+    currentAudio.load();
+
     if (!wasFirstLoad) {
         playAudio();
     }
@@ -177,9 +163,14 @@ function saveCurrentPosition() {
     const episode = episodes[currentIndex];
     const currentTime = currentAudio.currentTime;
 
-    // Safety check: Don't overwrite progress with 0 while restoring
-    if (needsRestoration && currentTime < 5) {
-        return;
+    // SHIELD: Do not save 0:00 or low numbers if we are expecting a restore.
+    // This prevents the "0 overwrites progress" bug.
+    if (targetStartTime > 5) {
+        // If we haven't crossed/reached the targetStartTime yet, it means the seek is still working.
+        // We only unlock saving once we are safely within the restored range.
+        if (Math.abs(currentTime - targetStartTime) > 5 && currentTime < 5) {
+            return;
+        }
     }
 
     if (currentTime > 0) {
@@ -205,11 +196,11 @@ function playAudio() {
     if (needsRestoration) {
         const episode = episodes[currentIndex];
         const savedPos = state.getPosition(episode.title);
+        // If the fragment and metadata seek failed, do a hard jump
         if (savedPos > 0 && Math.abs(currentAudio.currentTime - savedPos) > 2) {
-            console.log("Restoring position on play event...");
+            console.log("Emergency Restore during Play Gesture");
             currentAudio.currentTime = savedPos;
         }
-        needsRestoration = false;
     }
 
     saveCurrentPosition(); // Save immediately when play starts
@@ -329,6 +320,12 @@ function setupEventListeners() {
     currentAudio.addEventListener('timeupdate', () => {
         const currentTime = currentAudio.currentTime;
         const duration = currentAudio.duration;
+
+        // Unlock Persistence Shield if seek succeeded
+        if (targetStartTime > 0 && Math.abs(currentTime - targetStartTime) < 2) {
+            targetStartTime = 0;
+            needsRestoration = false;
+        }
 
         // 1. Update Tracking (Anti-Skip)
         Tracking.update(currentTime, currentAudio.paused, ui.isDragging);
