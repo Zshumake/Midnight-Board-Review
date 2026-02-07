@@ -11,21 +11,29 @@ export const state = {
     data: {
         lastIndex: 0,
         positions: {},
-        durations: {}, // New: stores total time per episode
-        history: []
+        durations: {},
+        history: [],
+        completions: {} // New: stores count (1-3) per episode
     },
 
     load() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
             const parsed = JSON.parse(saved);
-            // Merge with defaults to ensure new keys (like durations) exist
             this.data = { ...this.data, ...parsed };
 
-            // Explicitly ensure objects exist if not present in saved data
+            // Ensure objects exist
             if (!this.data.durations) this.data.durations = {};
             if (!this.data.positions) this.data.positions = {};
             if (!this.data.history) this.data.history = [];
+            if (!this.data.completions) this.data.completions = {};
+
+            // Migration: If in history but not in completions, set to 1
+            this.data.history.forEach(title => {
+                if (!this.data.completions[title]) {
+                    this.data.completions[title] = 1;
+                }
+            });
         }
         return this.data;
     },
@@ -60,25 +68,53 @@ export const state = {
     },
 
     getProgressPercentage(title) {
-        // If we have data, calculate exact percentage
         const pos = this.getPosition(title);
         const dur = this.getDuration(title);
         if (dur > 0) {
             return Math.min(100, (pos / dur) * 100);
         }
-        // Fallback: if marked listened but no duration data (legacy), return 100
         if (this.isListened(title)) return 100;
         return 0;
     },
 
     markAsListened(title) {
+        // Legacy: keep history array for backward compat if needed, 
+        // but main logic moved to incrementCompletion
         if (!this.data.history.includes(title)) {
             this.data.history.push(title);
-            this.save();
         }
+        // Ensure at least 1 completion if marked listened via legacy path
+        if (!this.data.completions[title]) {
+            this.data.completions[title] = 1;
+        }
+        this.save();
+    },
+
+    incrementCompletion(title) {
+        // Initialize if empty
+        if (!this.data.completions[title]) {
+            this.data.completions[title] = 0;
+        }
+
+        // Max 3 badges
+        if (this.data.completions[title] < 3) {
+            this.data.completions[title]++;
+
+            // Also ensure legacy history is synced
+            if (!this.data.history.includes(title)) {
+                this.data.history.push(title);
+            }
+            this.save();
+            return true; // Return true if leveled up
+        }
+        return false;
+    },
+
+    getCompletionCount(title) {
+        return this.data.completions[title] || 0;
     },
 
     isListened(title) {
-        return this.data.history.includes(title);
+        return (this.data.completions[title] && this.data.completions[title] > 0) || this.data.history.includes(title);
     }
 };

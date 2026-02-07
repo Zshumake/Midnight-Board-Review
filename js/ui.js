@@ -114,8 +114,16 @@ export const ui = {
 
                 const statusSpan = document.createElement('span');
                 statusSpan.className = 'status-icon';
-                // Use checkmark if listened
-                statusSpan.innerText = listened ? '✓' : '';
+
+                // Get badge count (legacy 'isListened' check handled inside getCompletionCount wrapper or direct state check)
+                // We need extended state method or direct check
+                let badgeCount = state.getCompletionCount(item.title);
+
+                // If 0 but marked as listened in legacy history, treat as 1 (handled by migration but safe to assume)
+                if (badgeCount === 0 && state.isListened(item.title)) badgeCount = 1;
+
+                // Generate Badges
+                statusSpan.innerHTML = '✓'.repeat(badgeCount);
 
                 headerDiv.appendChild(listPlayBtn);
                 headerDiv.appendChild(titleSpan);
@@ -172,7 +180,15 @@ export const ui = {
      * Update the track metadata and title
      */
     updateTrack(episode, isListened) {
-        this.title.innerHTML = `${episode.title} ${isListened ? '<span style="color: var(--accent-gold); font-weight: bold; margin-left:8px;">✓</span>' : ''}`;
+        // Calculate badges
+        let badgeCount = state.getCompletionCount(episode.title);
+        if (badgeCount === 0 && isListened) badgeCount = 1;
+
+        const badgesHtml = badgeCount > 0
+            ? `<span style="color: var(--accent-gold); font-weight: bold; margin-left:8px; letter-spacing: 2px;">${'✓'.repeat(badgeCount)}</span>`
+            : '';
+
+        this.title.innerHTML = `${episode.title} ${badgesHtml}`;
 
         // Update Sticky Player
         if (this.stickyTitle) {
@@ -195,9 +211,29 @@ export const ui = {
             const titleEl = row.querySelector('.episode-title-text');
             if (titleEl && titleEl.innerText === title) {
                 // Update Badge
-                const statusIcon = row.querySelector('.status-icon');
-                if (statusIcon) {
-                    statusIcon.innerText = isListened ? '✓' : '';
+                let statusContainer = row.querySelector('.status-container');
+                // Backwards compat if refactoring live DOM (unlikely but safe)
+                if (!statusContainer) {
+                    const oldIcon = row.querySelector('.status-icon');
+                    if (oldIcon) {
+                        statusContainer = document.createElement('div');
+                        statusContainer.className = 'status-container';
+                        oldIcon.replaceWith(statusContainer);
+                    }
+                }
+
+                if (statusContainer) {
+                    statusContainer.innerHTML = ''; // Clear
+
+                    let badgeCount = state.getCompletionCount(title);
+                    if (badgeCount === 0 && isListened) badgeCount = 1;
+
+                    for (let i = 0; i < badgeCount; i++) {
+                        const badge = document.createElement('span');
+                        badge.className = 'status-badge';
+                        badge.innerText = '✓';
+                        statusContainer.appendChild(badge);
+                    }
                 }
                 // Update Finished Class: REMOVED per user request (no solid orange)
                 if (isListened && !row.classList.contains('active')) {
@@ -262,9 +298,22 @@ export const ui = {
 
             // Ensure status icon is up to date regardless of play state
             const isListened = state ? state.isListened(rowTitle) : false;
-            const statusIcon = row.querySelector('.status-icon');
-            if (statusIcon) {
-                statusIcon.innerText = isListened ? '✓' : '';
+            let badgeCount = state ? state.getCompletionCount(rowTitle) : 0;
+            if (badgeCount === 0 && isListened) badgeCount = 1;
+
+            const statusContainer = row.querySelector('.status-container');
+            if (statusContainer) {
+                // Only rebuild if count changed to avoid DOM thrashing? 
+                // Simple innerHTML replace is cheap enough for now
+                if (statusContainer.childElementCount !== badgeCount) {
+                    statusContainer.innerHTML = '';
+                    for (let i = 0; i < badgeCount; i++) {
+                        const badge = document.createElement('span');
+                        badge.className = 'status-badge';
+                        badge.innerText = '✓';
+                        statusContainer.appendChild(badge);
+                    }
+                }
             }
 
             if (rowTitle === currentTitle) {

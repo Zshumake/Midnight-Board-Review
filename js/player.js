@@ -12,6 +12,11 @@ let isPlayingSilence = false; // Track mobile-safe gap state
 let autoplayTimer = null;    // Track 5s delay timer (safety ref)
 const preloadAudio = new Audio(); // Singleton for hover preloading
 
+// Anti-Skip Logic
+let sessionValidTime = 0;
+let lastTimeUpdate = 0;
+let hasCreditedSession = false;
+
 // Load saved state from localStorage
 state.load();
 
@@ -85,6 +90,11 @@ function loadEpisode(index) {
 
     // Reset silence flag so we don't think we are in a gap
     isPlayingSilence = false;
+
+    // Reset Anti-Skip Validation for new track
+    sessionValidTime = 0;
+    lastTimeUpdate = 0;
+    hasCreditedSession = false;
 
     currentIndex = index;
     state.setLastIndex(index);
@@ -348,19 +358,48 @@ function setupEventListeners() {
     });
 
     ui.audio.addEventListener('timeupdate', () => {
+        const currentTime = ui.audio.currentTime;
+        const duration = ui.audio.duration;
+
+        // --- Anti-Skip Validation Logic ---
+        if (lastTimeUpdate > 0 && !ui.audio.paused && !ui.isDragging) {
+            const delta = currentTime - lastTimeUpdate;
+            // Only count time if it flows naturally (no seek jumps > 1s)
+            if (delta > 0 && delta < 1.0) {
+                sessionValidTime += delta;
+            }
+        }
+        lastTimeUpdate = currentTime;
+
+        // Check for Badge Award (80% threshold + Not already credited this session)
+        if (duration > 0 && !hasCreditedSession) {
+            // Threshold: 80% of duration
+            if (sessionValidTime > (duration * 0.8)) {
+                console.log(`Validation Passed! Time: ${sessionValidTime.toFixed(1)} / Req: ${(duration * 0.8).toFixed(1)}`);
+                const episode = episodes[currentIndex];
+                const leveledUp = state.incrementCompletion(episode.title);
+                if (leveledUp) {
+                    ui.updateTrack(episode, state.getCompletionCount(episode.title));
+                    // Optional: Show toast or effect? -> "Badge Earned!"
+                }
+                hasCreditedSession = true; // Only one badge per listen session
+            }
+        }
+        // ----------------------------------
+
         // Only update visual if NOT dragging
         if (!ui.isDragging) {
-            ui.updateProgress(ui.audio.currentTime, ui.audio.duration);
+            ui.updateProgress(currentTime, duration);
         }
 
         // Smart Preloading: 10 seconds before end
-        const timeLeft = ui.audio.duration - ui.audio.currentTime;
+        const timeLeft = duration - currentTime;
         if (timeLeft <= 10 && timeLeft > 0 && !isPreloading) {
             preloadNextEpisode();
         }
 
         // Throttle saving position to every 5 seconds to reduce UI lag
-        if (Math.floor(ui.audio.currentTime) % 5 === 0) {
+        if (Math.floor(currentTime) % 5 === 0) {
             saveCurrentPosition();
         }
     });
