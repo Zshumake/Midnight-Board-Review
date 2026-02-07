@@ -45,8 +45,8 @@ if (paramEp !== null) {
 
 let activeCategory = 'All';
 
-// Extract Categories
-const categories = ['All', ...new Set(episodes.map(e => e.category))];
+// Extract Categories (UI helper will add 'All')
+const categories = [...new Set(episodes.map(e => e.category))].filter(Boolean);
 ui.renderCategoryTabs(categories, activeCategory, (selected) => {
     activeCategory = selected;
     ui.renderCategoryTabs(categories, activeCategory, (cat) => activeCategory = cat); // Re-render to update active class

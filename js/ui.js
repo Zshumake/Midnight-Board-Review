@@ -82,10 +82,24 @@ export const ui = {
         categories.forEach(cat => {
             const tab = document.createElement('div');
             tab.className = `category-tab ${activeCategory === cat ? 'active' : ''}`;
-            tab.innerText = cat;
+            tab.innerText = this.formatCategoryName(cat); // Use short name
             tab.onclick = () => onSelect(cat);
             this.categoryTabs.appendChild(tab);
         });
+    },
+
+    /**
+     * Shorten specific long category names for UI pills
+     */
+    formatCategoryName(cat) {
+        if (!cat) return '';
+        if (cat.startsWith('Musculoskeletal:')) return cat.replace('Musculoskeletal:', 'MSK:');
+        if (cat.startsWith('Neurology:')) return cat.replace('Neurology:', 'Neuro:');
+        if (cat.includes('Cardiopulmonary')) return 'Cardio & Cancer';
+        if (cat.includes('Electrodiagnostic')) return 'EDX';
+        if (cat.includes('Prosthetics')) return 'Prosthetics';
+        if (cat.includes('Physical Modalities')) return 'Modalities';
+        return cat;
     },
 
     /**
