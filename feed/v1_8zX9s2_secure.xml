@@ -8,6 +8,14 @@
     <itunes:author>Midnight Review</itunes:author>
     <description>A 119-episode podcast covering everything in the PM&R board review.</description>
     <itunes:image href="https://zshumake.github.io/Midnight-Board-Review/cover.jpg" />
+    <itunes:category text="Health &amp; Fitness">
+        <itunes:category text="Medicine" />
+    </itunes:category>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:owner>
+        <itunes:name>Zachary Shumaker</itunes:name>
+        <itunes:email>zacharyshumaker@gmail.com</itunes:email>
+    </itunes:owner>
     <itunes:block>yes</itunes:block>
     <item>
       <title>Musculoskeletal: Shoulder 1</title>
