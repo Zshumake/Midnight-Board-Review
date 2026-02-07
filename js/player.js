@@ -89,6 +89,7 @@ function loadEpisode(index) {
     }
 
     isPlayingSilence = false;
+    needsRestoration = false; // Reset for new track
 
     // Reset Tracking
     Tracking.reset();
@@ -168,9 +169,8 @@ function determineStartTime(state, title, duration, isFirstLoad) {
     // Always load position (resume), but don't auto-play (handled by caller)
     if (isFirstLoad) return savedPos;
 
-    const isListened = state.isListened(title);
     const isNearEnd = duration > 0 && savedPos > (duration * 0.95);
-    if (isListened || isNearEnd) return 0;
+    if (isNearEnd) return 0;
     return savedPos;
 }
 
