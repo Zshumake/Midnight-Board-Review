@@ -218,6 +218,19 @@
         </div>
     </div>
 
+    <!-- Tutorial Modal -->
+    <div id="tutorial-modal" class="tutorial-modal">
+        <div class="tutorial-card">
+            <div class="tutorial-skip" onclick="document.dispatchEvent(new CustomEvent('tutorial-close'))">Skip</div>
+            <div id="tutorial-content"></div>
+            <div class="tutorial-dots" id="tutorial-dots"></div>
+            <div class="tutorial-controls">
+                <button class="tutorial-btn secondary" id="tutorial-prev">Back</button>
+                <button class="tutorial-btn" id="tutorial-next">Next</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Error Toast -->
     <div id="error-toast" class="error-toast">Error loading audio</div>
 

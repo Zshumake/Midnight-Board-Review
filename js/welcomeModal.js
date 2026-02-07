@@ -162,6 +162,26 @@ export const WelcomeModal = {
                 color: var(--text-muted);
                 opacity: 0.6;
             }
+
+            .tutorial-launcher-btn {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: var(--accent-gold);
+                padding: 10px 20px;
+                border-radius: 30px;
+                cursor: pointer;
+                margin-top: 10px;
+                font-size: 0.8rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.2s;
+            }
+
+            .tutorial-launcher-btn:hover {
+                background: var(--accent-gold);
+                color: #000;
+            }
         `;
         document.head.appendChild(style);
     },
@@ -224,11 +244,20 @@ export const WelcomeModal = {
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                             </div>
                             <div class="feature-text">
-                                <strong>Full Coverage</strong>
-                                Content is organized by chapter to mirror the "Red Book" flow perfectly.
+                                <strong>Advanced Mastering</strong>
+                                Earn gold badges by listening and tracking your progress across all devices.
                             </div>
                         </li>
                     </ul>
+
+                    <div style="text-align:center; margin-bottom: 20px;">
+                        <button id="launch-tutorial-btn" class="tutorial-launcher-btn">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                                <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                            </svg>
+                            Watch Visual Tutorial
+                        </button>
+                    </div>
 
                     <div class="modal-footer">
                         <button id="close-modal-btn" class="start-btn">Let's Study</button>
@@ -257,6 +286,15 @@ export const WelcomeModal = {
 
         if (closeBtn) closeBtn.onclick = closeModal;
         if (infoBtn) infoBtn.onclick = openModal;
+
+        const tutorialBtn = document.getElementById('launch-tutorial-btn');
+        if (tutorialBtn) {
+            tutorialBtn.onclick = () => {
+                closeModal();
+                // We'll dynamic import or rely on Tutorial being global
+                import('./modules/tutorial.js').then(m => m.Tutorial.show());
+            };
+        }
 
         // Close on clicking outside the card
         modal.onclick = (e) => {

@@ -5,6 +5,7 @@ import { WelcomeModal } from './welcomeModal.js';
 import { Share } from './share.js';
 import { Library } from './library.js';
 import { Tracking } from './tracking.js';
+import { Tutorial } from './modules/tutorial.js';
 
 // --- State Variables ---
 let currentIndex = 0;
@@ -49,10 +50,16 @@ const onEpisodeClick = (index, action) => {
 // Initial Render
 ui.renderLibrary(episodes, currentIndex, state, onEpisodeClick, (url) => preloadEpisode(url));
 
-// Initialize Modal
+// Initialize Modules
 WelcomeModal.init();
+Tutorial.init();
 
-// Start
+// Event Listeners for Tutorial
+document.getElementById('tutorial-next')?.addEventListener('click', () => Tutorial.next());
+document.getElementById('tutorial-prev')?.addEventListener('click', () => Tutorial.prev());
+document.addEventListener('tutorial-close', () => Tutorial.hide());
+
+// Filter and Show All initially
 loadEpisode(currentIndex);
 setupEventListeners();
 
