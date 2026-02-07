@@ -17,6 +17,8 @@ export const ui = {
     rssUrlText: document.getElementById('rss-url'),
     searchInput: document.getElementById('search-input'),
     episodeList: document.getElementById('episode-list'),
+    shareBtn: document.getElementById('share-btn'), // New
+    categoryTabs: document.getElementById('category-tabs'), // New
 
     // State
     isDragging: false,
@@ -60,6 +62,30 @@ export const ui = {
             }
         }
         return container;
+    },
+
+    /**
+     * Render the Category Filter Pills
+     */
+    renderCategoryTabs(categories, activeCategory, onSelect) {
+        if (!this.categoryTabs) return;
+        this.categoryTabs.innerHTML = '';
+
+        // "All" Tab
+        const allTab = document.createElement('div');
+        allTab.className = `category-tab ${activeCategory === 'All' ? 'active' : ''}`;
+        allTab.innerText = 'All';
+        allTab.onclick = () => onSelect('All');
+        this.categoryTabs.appendChild(allTab);
+
+        // Dynamic Tabs
+        categories.forEach(cat => {
+            const tab = document.createElement('div');
+            tab.className = `category-tab ${activeCategory === cat ? 'active' : ''}`;
+            tab.innerText = cat;
+            tab.onclick = () => onSelect(cat);
+            this.categoryTabs.appendChild(tab);
+        });
     },
 
     /**
@@ -169,6 +195,22 @@ export const ui = {
                     // Toggle Current
                     epDiv.classList.toggle('expanded');
                 };
+
+                // Context Menu: Mark as Mastered (Manual Badge)
+                epDiv.addEventListener('contextmenu', (e) => {
+                    e.preventDefault(); // Block default browser menu
+
+                    // Simple Confirm Dialog
+                    if (confirm(`Mark "${item.title}" as Mastered? 🏅\n(This will award 1 badge)`)) {
+                        // We need a callback or direct state access. 
+                        // Since we are in renderLibrary, we can pass a callback or just use the state object if exposed?
+                        // Ideally pass 'onMastery' callback. But to save refactoring 5 tiers, we'll dispatch a custom event or check if we can access logic.
+                        // Let's modify renderLibrary signature in next step or assume global access/callback.
+                        // For now, let's dispatch a custom event on the document.
+                        const event = new CustomEvent('manual-mastery', { detail: { title: item.title } });
+                        document.dispatchEvent(event);
+                    }
+                });
 
                 // Hover Preload Logic (Debounced)
                 let hoverTimer = null;

@@ -19,30 +19,57 @@ let hasCreditedSession = false;
 
 // Load saved state from localStorage
 state.load();
-currentIndex = state.data.lastIndex || 0;
+
+// --- Deep Linking & Init Logic ---
+const urlParams = new URLSearchParams(window.location.search);
+const paramEp = urlParams.get('ep');
+const paramT = urlParams.get('t');
+
+if (paramEp !== null) {
+    currentIndex = parseInt(paramEp, 10);
+    // If timestamp provided, override saved position temporarily 
+    // (We set it in state so loadEpisode picks it up, or we handle in loadEpisode)
+    if (paramT !== null) {
+        // We defer this until after loadEpisode reads state. 
+        // Or we just update state now. Updating state is cleaner for consistency.
+        const epTitle = episodes[currentIndex]?.title;
+        if (epTitle) {
+            state.setPosition(epTitle, parseFloat(paramT));
+        }
+    }
+} else {
+    // Default to last played if no URL params
+    currentIndex = state.data.lastIndex || 0;
+}
+// --------------------------------
+
+let activeCategory = 'All';
+
+// Extract Categories
+const categories = ['All', ...new Set(episodes.map(e => e.category))];
+ui.renderCategoryTabs(categories, activeCategory, (selected) => {
+    activeCategory = selected;
+    ui.renderCategoryTabs(categories, activeCategory, (cat) => activeCategory = cat); // Re-render to update active class
+    renderLibrary(ui.searchInput.value); // Re-render list with filter
+});
 
 // Initialize (Hoisted functions will work, but vars must be ready)
-ui.renderLibrary(episodes, currentIndex, state, (index, action) => {
+const onEpisodeClick = (index, action) => {
     if (action === 'play') {
         if (Number(currentIndex) === Number(index)) {
-            // Toggle Play/Pause
             if (ui.audio.paused) playAudio(); else pauseAudio();
         } else {
-            // Load new
             loadEpisode(index);
         }
-    } else if (action === 'skip-back') {
-        skip(-10);
-    } else if (action === 'skip-fwd') {
-        skip(10);
     }
-}, (url) => preloadEpisode(url)); // Pass preload callback
+};
 
+ui.renderLibrary(episodes, currentIndex, state, onEpisodeClick, (url) => preloadEpisode(url));
 
 // Initialize Welcome Modal (Modular)
 WelcomeModal.init();
 
-loadEpisode(currentIndex); // Load first episode but don't auto-play
+loadEpisode(currentIndex);
 setupEventListeners();
 
 /**
@@ -51,11 +78,15 @@ setupEventListeners();
 function renderLibrary(filter = '') {
     const filtered = episodes
         .map((ep, index) => ({ ...ep, originalIndex: index }))
-        .filter(ep =>
-            ep.title.toLowerCase().includes(filter.toLowerCase()) ||
-            ep.category.toLowerCase().includes(filter.toLowerCase()) ||
-            (ep.description && ep.description.toLowerCase().includes(filter.toLowerCase()))
-        );
+        .filter(ep => {
+            // 1. Category Filter
+            if (activeCategory !== 'All' && ep.category !== activeCategory) return false;
+
+            // 2. Search Filter
+            return ep.title.toLowerCase().includes(filter.toLowerCase()) ||
+                ep.category.toLowerCase().includes(filter.toLowerCase()) ||
+                (ep.description && ep.description.toLowerCase().includes(filter.toLowerCase()));
+        });
 
     // We pass the full episodes list to the UI but with filter applied
     ui.renderLibrary(filtered, currentIndex, state, (index, action) => {
@@ -431,6 +462,40 @@ function setupEventListeners() {
             ui.copyRssBtn.innerText = 'Copied!';
             setTimeout(() => ui.copyRssBtn.innerText = originalText, 2000);
         });
+    });
+
+    // Share Button
+    if (ui.shareBtn) {
+        ui.shareBtn.addEventListener('click', () => {
+            const url = new URL(window.location.href);
+            url.searchParams.set('ep', currentIndex);
+            url.searchParams.set('t', Math.floor(ui.audio.currentTime));
+
+            navigator.clipboard.writeText(url.toString()).then(() => {
+                // Show tooltip/toast - Reusing error toast for generic notification for now or custom
+                // Or just button text change like RSS
+                const originalHTML = ui.shareBtn.innerHTML;
+                ui.shareBtn.innerHTML = '<span style="font-size:0.7rem; font-weight:bold;">Copied!</span>';
+                setTimeout(() => ui.shareBtn.innerHTML = originalHTML, 2000);
+            });
+        });
+    }
+
+    // Manual Mastery Event (from Context Menu)
+    document.addEventListener('manual-mastery', (e) => {
+        const title = e.detail.title;
+        if (title) {
+            state.incrementCompletion(title);
+            // Re-render UI to show new badge
+            // We need to re-run renderLibrary but keep scroll/view. 
+            // Or just call ui.updateEpisodeStatus if we had it exposed for list. 
+            // Since incrementCompletion saves state, a full re-render is safest.
+            renderLibrary(ui.searchInput.value);
+            // Also update main player if it's the current track
+            if (episodes[currentIndex].title === title) {
+                ui.updateTrack(episodes[currentIndex], true);
+            }
+        }
     });
 
     // Sticky Player Events
