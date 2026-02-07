@@ -119,9 +119,13 @@ function loadEpisode(index) {
 
     // Define resume logic (Metadata Handler)
     const handleMetadata = () => {
-        // Restore playback speed
-        const currentSpeed = parseFloat(ui.speedSelect.value) || 1.0;
-        ui.audio.playbackRate = currentSpeed;
+        // Restore playback speed from STATE
+        const savedSpeed = state.getSpeed();
+        ui.audio.playbackRate = savedSpeed;
+
+        // Sync UI toggles
+        if (ui.speedSelect) ui.speedSelect.value = savedSpeed;
+        if (ui.stickySpeedSelect) ui.stickySpeedSelect.value = savedSpeed;
 
         // Save duration for library progress tracking
         state.setDuration(episode.title, ui.audio.duration);
@@ -226,9 +230,12 @@ function preloadEpisode(url) {
 }
 
 function playAudio() {
-    // Enforce playback speed before playing
-    const currentSpeed = parseFloat(ui.speedSelect.value) || 1.0;
-    ui.audio.playbackRate = currentSpeed;
+    // Enforce playback speed before playing (UI should be in sync)
+    // We trust the UI/Object state now
+    const currentSpeed = state.getSpeed();
+    if (ui.audio.playbackRate !== currentSpeed) {
+        ui.audio.playbackRate = currentSpeed;
+    }
 
     playPromise = ui.audio.play();
 
@@ -338,6 +345,7 @@ function setupEventListeners() {
         const speed = parseFloat(ui.speedSelect.value);
         ui.audio.playbackRate = speed;
         if (ui.stickySpeedSelect) ui.stickySpeedSelect.value = speed;
+        state.setSpeed(speed); // Save persistence
     });
 
     // Save on close/refresh
@@ -350,6 +358,7 @@ function setupEventListeners() {
             const speed = parseFloat(ui.stickySpeedSelect.value);
             ui.audio.playbackRate = speed;
             ui.speedSelect.value = speed;
+            state.setSpeed(speed); // Save persistence
         });
     }
 

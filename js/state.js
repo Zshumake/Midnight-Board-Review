@@ -13,7 +13,8 @@ export const state = {
         positions: {},
         durations: {},
         history: [],
-        completions: {} // New: stores count (1-3) per episode
+        completions: {}, // New: stores count (1-3) per episode
+        playbackSpeed: 1.0 // Default speed
     },
 
     load() {
@@ -116,5 +117,14 @@ export const state = {
 
     isListened(title) {
         return (this.data.completions[title] && this.data.completions[title] > 0) || this.data.history.includes(title);
+    },
+
+    setSpeed(speed) {
+        this.data.playbackSpeed = speed;
+        this.save();
+    },
+
+    getSpeed() {
+        return this.data.playbackSpeed || 1.0;
     }
 };
