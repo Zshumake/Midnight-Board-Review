@@ -232,7 +232,7 @@ export const WelcomeModal = {
 
                     <div class="modal-footer">
                         <button id="close-modal-btn" class="start-btn">Let's Study</button>
-                        <div class="credits">Created by <strong>Zach Shumake</strong> — For residents, by a resident.</div>
+                        <div class="credits">Created by <strong>Zach Shumaker</strong> — For residents, by a resident.</div>
                     </div>
                 </div>
             </div>
