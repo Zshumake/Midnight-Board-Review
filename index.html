@@ -212,6 +212,15 @@
     <!-- Error Toast -->
     <div id="error-toast" class="error-toast">Error loading audio</div>
 
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker failed', err));
+            });
+        }
+    </script>
     <script type="module" src="js/player.js"></script>
 </body>
 
