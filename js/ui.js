@@ -86,12 +86,23 @@ export const ui = {
      */
     formatCategoryName(cat) {
         if (!cat) return '';
-        if (cat.startsWith('Musculoskeletal:')) return cat.replace('Musculoskeletal:', 'MSK:');
-        if (cat.startsWith('Neurology:')) return cat.replace('Neurology:', 'Neuro:');
+        // Musculoskeletal
+        if (cat.includes('Upper Extremity')) return 'Upper Extremity';
+        if (cat.includes('Lower Extremity')) return 'Lower Extremity';
+        if (cat.startsWith('Musculoskeletal:')) return cat.replace('Musculoskeletal:', 'MSK:'); // Fallback for others
+
+        // Neurology
+        if (cat.includes('TBI')) return 'TBI';
+        if (cat.includes('SCI')) return 'SCI';
+        if (cat.includes('CVA') || cat.includes('Cerebrovascular')) return 'CVA';
+        if (cat.startsWith('Neurology:')) return cat.replace('Neurology:', 'Neuro:'); // Fallback
+
+        // Others
         if (cat.includes('Cardiopulmonary')) return 'Cardio & Cancer';
         if (cat.includes('Electrodiagnostic')) return 'EDX';
         if (cat.includes('Prosthetics')) return 'Prosthetics';
         if (cat.includes('Physical Modalities')) return 'Modalities';
+
         return cat;
     },
 
