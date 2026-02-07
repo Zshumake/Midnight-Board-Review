@@ -16,6 +16,8 @@ export const ui = {
     copyRssBtn: document.getElementById('copy-rss'),
     rssUrlText: document.getElementById('rss-url'),
     searchInput: document.getElementById('search-input'),
+    currentTimeLabel: document.getElementById('current-time'), // New
+    durationLabel: document.getElementById('duration'), // New
     episodeList: document.getElementById('episode-list'),
     shareBtn: document.getElementById('share-btn'), // New
     categoryTabs: document.getElementById('category-tabs'), // New
@@ -357,16 +359,31 @@ export const ui = {
                 this.stickyProgressBar.style.width = `${percent}%`;
             }
 
+            // Update Numeric Labels
+            if (this.currentTimeLabel) this.currentTimeLabel.innerText = this.formatTime(currentTime);
+            if (this.durationLabel) this.durationLabel.innerText = this.formatTime(duration);
+
             // Update the active item's progress fill in real-time
             const activeItem = document.querySelector('.episode-item.active');
             if (activeItem) {
                 const fill = activeItem.querySelector('.episode-progress-fill');
-                // Ensure we are in "progress mode" (transparent) not "finished mode" (solid)
-                if (fill) {
-                    fill.style.width = `${percent}%`;
-                }
+                if (fill) fill.style.width = `${percent}%`;
             }
         }
+    },
+
+    /**
+     * Format seconds into M:SS or H:MM:SS
+     */
+    formatTime(seconds) {
+        if (isNaN(seconds)) return '0:00';
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = Math.floor(seconds % 60);
+        if (h > 0) {
+            return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+        return `${m}:${s.toString().padStart(2, '0')}`;
     },
 
     /**
