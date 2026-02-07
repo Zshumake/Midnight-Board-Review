@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Midnight Board Review (Private)</title>
     <link>https://zshumake.github.io/Midnight-Board-Review/</link>
@@ -16,7 +16,7 @@
         <itunes:name>Zachary Shumaker</itunes:name>
         <itunes:email>zacharyshumaker@gmail.com</itunes:email>
     </itunes:owner>
-    <itunes:block>yes</itunes:block>
+    <atom:link href="https://zshumake.github.io/Midnight-Board-Review/feed/v1_8zX9s2_secure.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Musculoskeletal: Shoulder 1</title>
       <description>Musculoskeletal: Upper Extremity & Spine</description>
