@@ -202,16 +202,34 @@ export const ui = {
         let badgeCount = state.getCompletionCount(episode.title);
         if (badgeCount === 0 && isListened) badgeCount = 1;
 
-        const badgesHtml = badgeCount > 0
-            ? `<span style="color: var(--accent-gold); font-weight: bold; margin-left:8px; letter-spacing: 2px;">${'✓'.repeat(badgeCount)}</span>`
-            : '';
+        // 1. Update Main Title
+        this.title.innerHTML = ''; // Clear
+        const textNode = document.createTextNode(episode.title + ' ');
+        this.title.appendChild(textNode);
 
-        this.title.innerHTML = `${episode.title} ${badgesHtml}`;
-
-        // Update Sticky Player
-        if (this.stickyTitle) {
-            this.stickyTitle.innerText = episode.title;
+        if (badgeCount > 0) {
+            const container = this.createBadgeContainer(badgeCount);
+            container.style.display = 'inline-flex';
+            container.style.marginLeft = '12px';
+            container.style.verticalAlign = 'middle';
+            this.title.appendChild(container);
         }
+
+        // 2. Update Sticky Player Title
+        if (this.stickyTitle) {
+            this.stickyTitle.innerHTML = '';
+            const stickyText = document.createTextNode(episode.title + ' ');
+            this.stickyTitle.appendChild(stickyText);
+
+            if (badgeCount > 0) {
+                const stickyContainer = this.createBadgeContainer(badgeCount);
+                stickyContainer.style.display = 'inline-flex';
+                stickyContainer.style.marginLeft = '12px';
+                stickyContainer.style.verticalAlign = 'middle';
+                this.stickyTitle.appendChild(stickyContainer);
+            }
+        }
+
         if (this.stickyPlayer) {
             this.stickyPlayer.classList.add('visible');
         }
