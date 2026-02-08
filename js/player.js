@@ -326,8 +326,8 @@ function updateMediaSession(episode) {
             album: 'Board Review Podcast',
             artwork: [{ src: 'cover.jpg?v=6', sizes: '512x512', type: 'image/jpeg' }]
         });
-        navigator.mediaSession.setActionHandler('play', playAudio);
-        navigator.mediaSession.setActionHandler('pause', pauseAudio);
+        navigator.mediaSession.setActionHandler('play', () => playAudio(null));
+        navigator.mediaSession.setActionHandler('pause', () => pauseAudio());
         navigator.mediaSession.setActionHandler('seekbackward', () => skip(-10));
         navigator.mediaSession.setActionHandler('seekforward', () => skip(10));
         navigator.mediaSession.setActionHandler('previoustrack', playPrev);
