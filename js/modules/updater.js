@@ -3,7 +3,7 @@
  * Handles Service Worker lifecycle, update notifications, and app maintenance.
  */
 export const Updater = {
-    version: '1.2.3',
+    version: '1.2.4',
     swRegistration: null,
 
     /**
