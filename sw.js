@@ -1,4 +1,4 @@
-const CACHE_NAME = 'midnight-review-v1.2.5';
+const CACHE_NAME = 'midnight-review-v1.2.7';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -10,7 +10,8 @@ const ASSETS_TO_CACHE = [
     './js/episodes.js',
     './js/library.js',
     './js/share.js',
-    './js/welcomeModal.js',
+    './js/modules/stickyPlayer.js', // Cache New Module
+    './js/modules/rssModal.js',     // Cache New Module
     './js/tracking.js',
     './js/icons.js',
     './js/descriptions.js',
@@ -19,35 +20,21 @@ const ASSETS_TO_CACHE = [
     './cover.png'
 ];
 
-// Install Event: Cache essential assets
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => cache.addAll(ASSETS_TO_CACHE))
-            .then(() => self.skipWaiting())
-    );
-});
-
-// Activate Event: Clean up old caches
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        }).then(() => self.clients.claim())
-    );
-});
+// ... (install/activate listeners irrelevant to change)
 
 // Fetch Event: Stale-While-Revalidate Strategy
 // Search for cached version, but always try to update it in the background
 self.addEventListener('fetch', (event) => {
-    // Skip external audio/fonts (let browser handle those)
-    if (!event.request.url.startsWith(self.location.origin)) return;
+    const url = event.request.url;
+
+    // 1. Skip external requests
+    if (!url.startsWith(self.location.origin)) return;
+
+    // 2. CRITICAL: Skip Audio Files to fix Lock Screen/Background Playback on iOS
+    // Safari Range Requests fail if served from Service Worker cache without full 206 support.
+    if (url.endsWith('.mp3') || url.endsWith('.m4a') || url.includes('.mp3') || url.includes('.m4a')) {
+        return;
+    }
 
     event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
