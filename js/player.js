@@ -270,9 +270,12 @@ function playAudio(loadId = null) {
                 if (pos > 5 && currentAudio.currentTime < 2) {
                     currentAudio.currentTime = pos;
                 }
+                if (pos > 5 && currentAudio.currentTime < 2) {
+                    currentAudio.currentTime = pos;
+                }
                 needsRestoration = false;
             }
-        }).catch(error => {
+            updateMediaSessionState(); // Force lock screen to know we are playing
             if (error.name !== 'AbortError') {
                 console.error("Play rejected:", error);
                 ui.showError("Click again to play");
@@ -329,15 +332,14 @@ function updateMediaSession(episode) {
             artwork: [{ src: 'cover.jpg?v=6', sizes: '512x512', type: 'image/jpeg' }]
         });
         navigator.mediaSession.setActionHandler('play', () => {
-            console.log("MediaSession Play Triggered");
-            currentAudio.play()
-                .then(() => {
-                    ui.setPlaying(true);
-                    updateMediaSessionState();
-                })
-                .catch(e => console.error("MediaSession Play Error:", e));
+            // Revert to main play logic to handle promises correctly
+            playAudio(null);
+            navigator.mediaSession.playbackState = 'playing'; // Immediate optimistic update
         });
-        navigator.mediaSession.setActionHandler('pause', () => pauseAudio());
+        navigator.mediaSession.setActionHandler('pause', () => {
+            pauseAudio();
+            navigator.mediaSession.playbackState = 'paused'; // Immediate optimistic update
+        });
         navigator.mediaSession.setActionHandler('seekbackward', () => skip(-10));
         navigator.mediaSession.setActionHandler('seekforward', () => skip(10));
         navigator.mediaSession.setActionHandler('previoustrack', playPrev);
