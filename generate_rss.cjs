@@ -55,32 +55,34 @@ async function generate() {
     <itunes:category text="${escapeXml(config.category)}">
         <itunes:category text="${escapeXml(config.subCategory)}" />
     </itunes:category>
-    <itunes:explicit>false</itunes:explicit>
+    <itunes:type>serial</itunes:type>
     <itunes:owner>
         <itunes:name>${escapeXml(config.ownerName)}</itunes:name>
         <itunes:email>${escapeXml(config.ownerEmail)}</itunes:email>
     </itunes:owner>\n`;
 
     // 3. Add Items
-    // In RSS, the first <item> in the file is displayed as the "Latest Episode".
-    // We want Episode 120 at the top (newest) and Episode 1 at the bottom (oldest).
-    // The 'episodes' array is already 1 to 120.
-    const totalEpisodes = episodes.length;
+    // We want "Serial" order (Oldest first). 
+    // Episode 1 should be at the top of the list in Apple Podcasts (physically bottom, but logic handles sort).
+    // By setting type=serial, Apple will sort by old->new.
+    // We will ensure dates reflect this: Ep 1 = Oldest Date, Ep 120 = Newest Date.
 
-    // We reverse the array so that index 0 is Episode 120, index 1 is Episode 119...
-    // This puts the highest number at the top of the XML file.
-    [...episodes].reverse().forEach((ep, i) => {
+    const totalEpisodes = episodes.length;
+    const now = Date.now();
+
+    // Iterate 1..N (Standard Order)
+    episodes.forEach((ep, i) => {
         const filename = ep.url.split('/').pop();
         const length = sizes[filename] || "60000000";
 
-        // episodeNumber is 120, 119, 118...
-        const episodeNumber = totalEpisodes - i;
+        // episodeNumber is 1, 2, 3...
+        const episodeNumber = i + 1;
 
-        // Date calculation: Today - (i days)
-        // Episode 120 (at the top) = Today
-        // Episode 119 = Yesterday
-        // ... Episode 1 = 119 days ago
-        const pubDate = new Date(Date.now() - (i * 86400000)).toUTCString();
+        // Date calculation: 
+        // Ep 1 (i=0) -> Oldest (Now - Total Days)
+        // Ep 120 (i=119) -> Newest (Now - 1 Day)
+        const daysAgo = totalEpisodes - i;
+        const pubDate = new Date(now - (daysAgo * 86400000)).toUTCString();
 
         xml += `    <item>
       <title>${escapeXml(ep.title)}</title>

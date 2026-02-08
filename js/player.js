@@ -84,7 +84,6 @@ const onEpisodeClick = (idx, action) => {
 ui.renderLibrary(episodes, currentIndex, state, onEpisodeClick, (url) => preloadEpisode(url));
 
 // 7. Modals
-WelcomeModal.init();
 Tutorial.init();
 
 
@@ -247,7 +246,8 @@ function playAudio(loadId = null) {
     }
 
     // 2. Load ID Guard: If valid play request from a specific load, but we changed load, abort
-    if (loadId !== null && loadId !== activeLoadId) return;
+    // Fix: MediaSession passes an event object, which is not null. Ensure loadId is a number before checking.
+    if (typeof loadId === 'number' && loadId !== activeLoadId) return;
 
     // 3. Prioritize play() promise for Safari trust
     playPromise = currentAudio.play();
@@ -255,7 +255,7 @@ function playAudio(loadId = null) {
     if (playPromise !== undefined) {
         playPromise.then(_ => {
             // Guard: If load changed while we were waiting for the engine
-            if (loadId !== null && loadId !== activeLoadId) {
+            if (typeof loadId === 'number' && loadId !== activeLoadId) {
                 currentAudio.pause();
                 return;
             }
