@@ -273,9 +273,9 @@ function playAudio(loadId = null) {
                 if (pos > 5 && currentAudio.currentTime < 2) {
                     currentAudio.currentTime = pos;
                 }
-                needsRestoration = false;
             }
             updateMediaSessionState(); // Force lock screen to know we are playing
+        }).catch(error => {
             if (error.name !== 'AbortError') {
                 console.error("Play rejected:", error);
                 // SHOW ERROR ON SCREEN FOR DEBUGGING
