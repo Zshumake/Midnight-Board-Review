@@ -373,11 +373,14 @@ function updateMediaSessionState() {
         // Update Position State (Lock screen timer accuracy)
         if ('setPositionState' in navigator.mediaSession) {
             try {
+                // BUG FIX v1.2.14: Commented out to prevent iOS Lock Screen freeze
+                /*
                 navigator.mediaSession.setPositionState({
                     duration: currentAudio.duration || 0,
                     playbackRate: currentAudio.playbackRate || 1.0,
                     position: currentAudio.currentTime || 0
                 });
+                */
             } catch (e) {
                 // Ignore if audio isn't ready
             }
