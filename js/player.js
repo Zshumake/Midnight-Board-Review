@@ -243,7 +243,6 @@ function preloadEpisode(url) {
 function playAudio(loadId = null) {
     // 1. Safe Guard: If no src, load current index first
     if (!currentAudio.src || currentAudio.src === window.location.href) {
-        ui.showError("DEBUG: Reloading (No Src)"); // Diagnostic
         loadEpisode(currentIndex);
         return;
     }
@@ -275,28 +274,6 @@ function playAudio(loadId = null) {
                 needsRestoration = false;
             }
             updateMediaSessionState(); // Force lock screen to know we are playing
-
-            // --- v1.2.13 DEEP DIAGNOSIS ---
-            console.warn("--- PLAY SUCCESS DIAGNOSIS ---");
-            console.table({
-                paused: currentAudio.paused,
-                readyState: currentAudio.readyState,
-                networkState: currentAudio.networkState,
-                currentTime: currentAudio.currentTime,
-                duration: currentAudio.duration,
-                volume: currentAudio.volume,
-                muted: currentAudio.muted,
-                src: currentAudio.src
-            });
-
-            // Check Buffer
-            const ranges = [];
-            for (let i = 0; i < currentAudio.buffered.length; i++) {
-                ranges.push(`${currentAudio.buffered.start(i)}-${currentAudio.buffered.end(i)}`);
-            }
-            console.log("Buffered Ranges:", ranges.join(', '));
-
-            ui.showError(`DEBUG: Success. Ready=${currentAudio.readyState} Net=${currentAudio.networkState}`);
         }).catch(error => {
             if (error.name !== 'AbortError') {
                 console.error("Play rejected:", error);
@@ -462,12 +439,18 @@ function setupEventListeners() {
     // --- MediaSession Listeners (Init Once) ---
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', () => {
-            ui.showError("DEBUG: Lock Screen Play"); // Diagnostic
-            playAudio(null);
-            navigator.mediaSession.playbackState = 'playing';
+            // v1.2.15 Fix: Bare Metal Play (Bypass complex logic)
+            // Ensure speed is enforced to wake up driver
+            currentAudio.playbackRate = state.getSpeed();
+            currentAudio.play().then(() => {
+                navigator.mediaSession.playbackState = 'playing';
+            }).catch(e => {
+                console.error("Lock Screen Play Failed:", e);
+                ui.showError(`LS Play Error: ${e.name}`);
+            });
         });
         navigator.mediaSession.setActionHandler('pause', () => {
-            pauseAudio();
+            currentAudio.pause();
             navigator.mediaSession.playbackState = 'paused';
         });
         navigator.mediaSession.setActionHandler('seekbackward', () => skip(-10));
