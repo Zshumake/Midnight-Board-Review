@@ -3,7 +3,7 @@
  * Handles Service Worker lifecycle, update notifications, and app maintenance.
  */
 export const Updater = {
-    version: '1.2.10',
+    version: '1.2.11',
     swRegistration: null,
     checkInterval: 60 * 60 * 1000, // Check every hour
     intervalId: null,

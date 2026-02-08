@@ -86,7 +86,7 @@ const onEpisodeClick = (idx, action) => {
 ui.renderLibrary(episodes, currentIndex, state, onEpisodeClick, (url) => preloadEpisode(url));
 
 // 7. Modals
-Tutorial.init();
+// Tutorial.init() removed as it was replaced by InfoModal
 
 
 /**
