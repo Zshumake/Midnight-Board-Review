@@ -302,6 +302,70 @@ button:hover {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* --- Category Pills --- */
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Hide scrollbar (kept for legacy if needed, but not used with wrap) */
+.category-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  padding: 0.5rem 1.2rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-family: 'Lato', sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pill.active {
+  background: var(--accent-gold);
+  color: #000;
+  border-color: var(--accent-gold);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+/* --- Report Button --- */
+.report-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+}
+
+.report-btn:hover {
+  color: var(--accent-orange);
+  /* Orange to signal 'issue' */
+  background: rgba(249, 115, 22, 0.1);
+  opacity: 1;
+}
+
 .search-container {
   margin: 1.5rem 0 2rem 0;
   /* Significant spacing from header and list */
@@ -991,6 +1055,22 @@ button:hover {
   color: #e74c3c;
 }
 
+.report-btn-footer {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  text-decoration: underline;
+  opacity: 0.8;
+  padding: 4px;
+}
+
+.report-btn-footer:hover {
+  color: var(--accent-orange);
+  opacity: 1;
+}
+
 /* --- Info Button (Header) --- */
 .info-btn {
   background: none;
@@ -1135,4 +1215,29 @@ button:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-light);
   }
+}
+
+/* --- Accordion Report Button --- */
+.accordion-report-btn {
+  background: var(--accent-orange);
+  color: #000;
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+  transition: all 0.2s ease;
+}
+
+.accordion-report-btn:hover {
+  background: var(--accent-gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
 }

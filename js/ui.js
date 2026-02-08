@@ -108,7 +108,7 @@ export const ui = {
 
         categories.forEach(cat => {
             const tab = document.createElement('div');
-            tab.className = `category-tab ${activeCategory === cat ? 'active' : ''}`;
+            tab.className = `category-tab pill ${activeCategory === cat ? 'active' : ''}`;
             tab.innerText = this.formatCategoryName(cat);
             tab.onclick = () => onSelect(cat);
             this.categoryTabs.appendChild(tab);

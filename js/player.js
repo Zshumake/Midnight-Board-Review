@@ -6,6 +6,7 @@ import { Share } from './share.js';
 import { Library } from './library.js';
 import { Tracking } from './tracking.js';
 import { InfoModal } from './modules/infoModal.js';
+import { ReportModal } from './modules/reportModal.js';
 
 // --- State Variables ---
 let currentIndex = 0;
@@ -39,6 +40,14 @@ InfoModal.init();
 document.getElementById('info-btn')?.addEventListener('click', () => {
     console.log('Info button clicked');
     InfoModal.show();
+});
+
+// Init Report Modal
+ReportModal.init(episodes);
+document.getElementById('report-issue-btn')?.addEventListener('click', () => {
+    const currentEpisode = episodes[currentIndex];
+    // Pass current episode title to pre-select
+    ReportModal.show(currentEpisode ? currentEpisode.title : null);
 });
 
 // 2. Library & Category Logic
@@ -172,11 +181,16 @@ function loadEpisode(index) {
     currentAudio.addEventListener('loadedmetadata', handleMetadata, { once: true });
 
     currentAudio.src = startTime > 1 ? `${episode.url}#t=${startTime}` : episode.url;
-    currentAudio.autoplay = true; // Fix for auto-play falling asleep
+
+    // Only auto-play if it's NOT the first load
+    currentAudio.autoplay = !wasFirstLoad;
+
     updateMediaSession(episode); // Immediate update for lock screen continuity
 
     if (wasFirstLoad) {
+        // Just load metadata/buffer, don't play
         currentAudio.load();
+        ui.setPlaying(false); // Ensure UI shows paused state
     } else {
         playAudio(currentId);
     }
@@ -348,14 +362,7 @@ function setupEventListeners() {
     ui.skipFwdBtn.addEventListener('click', () => skip(10));
     currentAudio.addEventListener('ended', playNext);
 
-    if (ui.reportBtn) {
-        ui.reportBtn.addEventListener('click', () => {
-            const currentEp = episodes[currentIndex];
-            const subject = encodeURIComponent(`Issue Report: ${currentEp.title}`);
-            const body = encodeURIComponent(`I found an issue with the episode "${currentEp.title}":\n\n[Describe issue here]\n\nTime: ${ui.formatTime(currentAudio.currentTime)}\nDevice: ${navigator.userAgent}`);
-            window.location.href = `mailto:zshumaker12@gmail.com?subject=${subject}&body=${body}`;
-        });
-    }
+
 
     // Speed Control
     const handleSpeed = (speed) => {
