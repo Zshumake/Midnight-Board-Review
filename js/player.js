@@ -243,6 +243,7 @@ function preloadEpisode(url) {
 function playAudio(loadId = null) {
     // 1. Safe Guard: If no src, load current index first
     if (!currentAudio.src || currentAudio.src === window.location.href) {
+        ui.showError("DEBUG: Reloading (No Src)"); // Diagnostic
         loadEpisode(currentIndex);
         return;
     }
@@ -270,11 +271,11 @@ function playAudio(loadId = null) {
                 if (pos > 5 && currentAudio.currentTime < 2) {
                     currentAudio.currentTime = pos;
                 }
-                if (pos > 5 && currentAudio.currentTime < 2) {
-                    currentAudio.currentTime = pos;
-                }
+
+                needsRestoration = false;
             }
             updateMediaSessionState(); // Force lock screen to know we are playing
+            ui.showError(`DEBUG: Success. Paused=${currentAudio.paused}`); // Diagnostic
         }).catch(error => {
             if (error.name !== 'AbortError') {
                 console.error("Play rejected:", error);
@@ -437,6 +438,7 @@ function setupEventListeners() {
     // --- MediaSession Listeners (Init Once) ---
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', () => {
+            ui.showError("DEBUG: Lock Screen Play"); // Diagnostic
             playAudio(null);
             navigator.mediaSession.playbackState = 'playing';
         });
