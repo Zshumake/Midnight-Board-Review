@@ -363,21 +363,7 @@ function updateMediaSessionState() {
     }
 }
 
-// v1.2.17: Heartbeat to keep iOS Session Alive
-let heartbeatInterval = null;
-function startSessionHeartbeat() {
-    if (heartbeatInterval) clearInterval(heartbeatInterval);
-    heartbeatInterval = setInterval(() => {
-        if (!currentAudio.paused && 'mediaSession' in navigator) {
-            navigator.mediaSession.playbackState = 'playing';
-            updateMediaSessionState();
-        }
-    }, 1000);
-}
-function stopSessionHeartbeat() {
-    if (heartbeatInterval) clearInterval(heartbeatInterval);
-    heartbeatInterval = null;
-}
+// v1.2.18: Heartbeat Removed (Caused Rubber Banding)
 
 function setupEventListeners() {
     ui.playBtn.addEventListener('click', () => { if (currentAudio.paused) playAudio(); else pauseAudio(); });
@@ -439,28 +425,27 @@ function setupEventListeners() {
             preloadNextEpisode();
         }
 
-        // 5. Save State Throttled
-        if (Math.floor(currentTime) % 5 === 0) {
-            saveCurrentPosition();
-            updateMediaSessionState(); // Keep lock screen honest
-        }
-        if (Math.floor(currentTime) % 5 === 0) {
-            saveCurrentPosition();
-            updateMediaSessionState(); // Keep lock screen honest
+        // 5. Save State Throttled (Fix: Stop spamming every frame for a full second)
+        // Only save if 5 seconds have passed since last save
+        if (currentTime - lastKnownTime > 5) {
+            saveCurrentPosition(); // This updates lastKnownTime
+            updateMediaSessionState();
         }
     });
 
     // --- MediaSession Listeners (Init Once) ---
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', async () => {
-            // v1.2.17 Fix: Heartbeat & Restore
+            // v1.2.18 Fix: "The Nudge" (Decode a new frame to break Ghost Mode)
             // 1. Force Audio Pipeline Logic
             currentAudio.volume = 1.0;
             currentAudio.muted = false;
 
-            // 2. Self-Seek to force buffer re-sync
-            const t = currentAudio.currentTime;
-            if (t > 0) currentAudio.currentTime = t;
+            // 2. THE NUDGE: Seek forward slightly to force decoder to flush/sync
+            // This is the magic "anti-ghost" move
+            if (currentAudio.duration) {
+                currentAudio.currentTime = Math.min(currentAudio.currentTime + 0.1, currentAudio.duration);
+            }
 
             // 3. Ensure speed is enforced
             currentAudio.playbackRate = state.getSpeed();
@@ -468,7 +453,7 @@ function setupEventListeners() {
             try {
                 await currentAudio.play();
                 navigator.mediaSession.playbackState = 'playing';
-                updateMediaSessionState(); // Force immediate sync
+                updateMediaSessionState();
             } catch (e) {
                 console.error("Lock Screen Play Failed:", e);
                 ui.showError(`LS Play Error: ${e.name}`);
@@ -520,14 +505,12 @@ function setupEventListeners() {
         ui.setPlaying(true);
         ui.updateListPlayStates(currentIndex, true, state);
         updateMediaSessionState();
-        startSessionHeartbeat(); // v1.2.17: Start Heartbeat
     });
 
     currentAudio.addEventListener('pause', () => {
         ui.setPlaying(false);
         ui.updateListPlayStates(currentIndex, false, state);
         updateMediaSessionState();
-        stopSessionHeartbeat(); // v1.2.17: Stop Heartbeat
     });
 
     currentAudio.addEventListener('waiting', () => {
