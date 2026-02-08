@@ -278,7 +278,8 @@ function playAudio(loadId = null) {
             updateMediaSessionState(); // Force lock screen to know we are playing
             if (error.name !== 'AbortError') {
                 console.error("Play rejected:", error);
-                ui.showError("Click again to play");
+                // SHOW ERROR ON SCREEN FOR DEBUGGING
+                ui.showError(`Play Error: ${error.message || error.name}`);
             }
         });
     }
@@ -331,19 +332,8 @@ function updateMediaSession(episode) {
             album: 'Board Review Podcast',
             artwork: [{ src: 'cover.jpg?v=6', sizes: '512x512', type: 'image/jpeg' }]
         });
-        navigator.mediaSession.setActionHandler('play', () => {
-            // Revert to main play logic to handle promises correctly
-            playAudio(null);
-            navigator.mediaSession.playbackState = 'playing'; // Immediate optimistic update
-        });
-        navigator.mediaSession.setActionHandler('pause', () => {
-            pauseAudio();
-            navigator.mediaSession.playbackState = 'paused'; // Immediate optimistic update
-        });
-        navigator.mediaSession.setActionHandler('seekbackward', () => skip(-10));
-        navigator.mediaSession.setActionHandler('seekforward', () => skip(10));
-        navigator.mediaSession.setActionHandler('previoustrack', playPrev);
-        navigator.mediaSession.setActionHandler('nexttrack', playNext);
+
+        // Handlers moved to setupEventListeners to run ONCE.
 
         // Initial state sync
         updateMediaSessionState();
@@ -438,7 +428,27 @@ function setupEventListeners() {
             saveCurrentPosition();
             updateMediaSessionState(); // Keep lock screen honest
         }
+        if (Math.floor(currentTime) % 5 === 0) {
+            saveCurrentPosition();
+            updateMediaSessionState(); // Keep lock screen honest
+        }
     });
+
+    // --- MediaSession Listeners (Init Once) ---
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('play', () => {
+            playAudio(null);
+            navigator.mediaSession.playbackState = 'playing';
+        });
+        navigator.mediaSession.setActionHandler('pause', () => {
+            pauseAudio();
+            navigator.mediaSession.playbackState = 'paused';
+        });
+        navigator.mediaSession.setActionHandler('seekbackward', () => skip(-10));
+        navigator.mediaSession.setActionHandler('seekforward', () => skip(10));
+        navigator.mediaSession.setActionHandler('previoustrack', playPrev);
+        navigator.mediaSession.setActionHandler('nexttrack', playNext);
+    }
 
     // Share & Deep Linking Listeners
 
