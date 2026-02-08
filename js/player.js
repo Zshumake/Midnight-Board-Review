@@ -44,11 +44,18 @@ document.getElementById('info-btn')?.addEventListener('click', () => {
 
 // Init Report Modal
 ReportModal.init(episodes);
-document.getElementById('report-issue-btn')?.addEventListener('click', () => {
-    const currentEpisode = episodes[currentIndex];
-    // Pass current episode title to pre-select
-    ReportModal.show(currentEpisode ? currentEpisode.title : null);
-});
+const reportBtn = document.getElementById('report-issue-btn');
+if (reportBtn) {
+    const showReport = (e) => {
+        if (e.type === 'touchstart') e.preventDefault(); // Prevent double-fire on some devices
+        const currentEpisode = episodes[currentIndex];
+        ReportModal.show(currentEpisode ? currentEpisode.title : null);
+    };
+    reportBtn.addEventListener('click', showReport);
+    reportBtn.addEventListener('touchstart', showReport, { passive: false });
+} else {
+    console.error('Report Issue Button not found in DOM');
+}
 
 // 2. Library & Category Logic
 Library.initCategories(episodes, ui, () => {
