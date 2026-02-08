@@ -275,7 +275,28 @@ function playAudio(loadId = null) {
                 needsRestoration = false;
             }
             updateMediaSessionState(); // Force lock screen to know we are playing
-            ui.showError(`DEBUG: Success. Paused=${currentAudio.paused}`); // Diagnostic
+
+            // --- v1.2.13 DEEP DIAGNOSIS ---
+            console.warn("--- PLAY SUCCESS DIAGNOSIS ---");
+            console.table({
+                paused: currentAudio.paused,
+                readyState: currentAudio.readyState,
+                networkState: currentAudio.networkState,
+                currentTime: currentAudio.currentTime,
+                duration: currentAudio.duration,
+                volume: currentAudio.volume,
+                muted: currentAudio.muted,
+                src: currentAudio.src
+            });
+
+            // Check Buffer
+            const ranges = [];
+            for (let i = 0; i < currentAudio.buffered.length; i++) {
+                ranges.push(`${currentAudio.buffered.start(i)}-${currentAudio.buffered.end(i)}`);
+            }
+            console.log("Buffered Ranges:", ranges.join(', '));
+
+            ui.showError(`DEBUG: Success. Ready=${currentAudio.readyState} Net=${currentAudio.networkState}`);
         }).catch(error => {
             if (error.name !== 'AbortError') {
                 console.error("Play rejected:", error);
