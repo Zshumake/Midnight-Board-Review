@@ -429,39 +429,38 @@ function setupEventListeners() {
         // Only save if 5 seconds have passed since last save
         if (currentTime - lastKnownTime > 5) {
             saveCurrentPosition(); // This updates lastKnownTime
-            updateMediaSessionState();
+            // REMOVED v1.2.20: updateMediaSessionState(); 
+            // We trust the OS to extrapolate time. Updating here causes stutter.
         }
     });
 
     // --- MediaSession Listeners (Init Once) ---
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', async () => {
-            // v1.2.19 Fix: "The Re-Loader" (Nuclear Option)
-            // Ghost Mode persists (Time moves, no audio).
-            // This means the decoder is running but desynced from output.
-            // We must FORCE iOS to rebuild the audio pipeline.
+            // v1.2.20 Fix: "Breathing Room"
+            // Ghost Mode persists. Re-Loader didn't work.
+            // Hypothesis: iOS needs a moment of "silence" to reset the session.
 
-            const t = currentAudio.currentTime;
+            // 1. Explicit Pause
+            currentAudio.pause();
+            navigator.mediaSession.playbackState = 'paused';
 
-            // 1. Force Reload (Drops audio connection hard)
-            currentAudio.load();
+            // 2. Async Delay (50ms Breathing Room)
+            setTimeout(async () => {
+                currentAudio.volume = 1.0;
+                currentAudio.muted = false;
+                currentAudio.playbackRate = state.getSpeed();
 
-            // 2. Restore Time (Jump back to where we were)
-            if (t > 0) currentAudio.currentTime = t;
-
-            // 3. Force Volume/Mute (Just in case)
-            currentAudio.volume = 1.0;
-            currentAudio.muted = false;
-            currentAudio.playbackRate = state.getSpeed();
-
-            try {
-                await currentAudio.play();
-                navigator.mediaSession.playbackState = 'playing';
-                updateMediaSessionState();
-            } catch (e) {
-                console.error("Lock Screen Play Failed:", e);
-                ui.showError(`LS Play Error: ${e.name}`);
-            }
+                try {
+                    await currentAudio.play();
+                    navigator.mediaSession.playbackState = 'playing';
+                    // We do NOT call updateMediaSessionState() here to avoid stutter
+                    // unless metadata changed.
+                } catch (e) {
+                    console.error("Lock Screen Play Failed:", e);
+                    ui.showError(`LS Play Error: ${e.name}`);
+                }
+            }, 50);
         });
         navigator.mediaSession.setActionHandler('pause', () => {
             currentAudio.pause();
