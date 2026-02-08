@@ -436,18 +436,22 @@ function setupEventListeners() {
     // --- MediaSession Listeners (Init Once) ---
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', async () => {
-            // v1.2.18 Fix: "The Nudge" (Decode a new frame to break Ghost Mode)
-            // 1. Force Audio Pipeline Logic
+            // v1.2.19 Fix: "The Re-Loader" (Nuclear Option)
+            // Ghost Mode persists (Time moves, no audio).
+            // This means the decoder is running but desynced from output.
+            // We must FORCE iOS to rebuild the audio pipeline.
+
+            const t = currentAudio.currentTime;
+
+            // 1. Force Reload (Drops audio connection hard)
+            currentAudio.load();
+
+            // 2. Restore Time (Jump back to where we were)
+            if (t > 0) currentAudio.currentTime = t;
+
+            // 3. Force Volume/Mute (Just in case)
             currentAudio.volume = 1.0;
             currentAudio.muted = false;
-
-            // 2. THE NUDGE: Seek forward slightly to force decoder to flush/sync
-            // This is the magic "anti-ghost" move
-            if (currentAudio.duration) {
-                currentAudio.currentTime = Math.min(currentAudio.currentTime + 0.1, currentAudio.duration);
-            }
-
-            // 3. Ensure speed is enforced
             currentAudio.playbackRate = state.getSpeed();
 
             try {
