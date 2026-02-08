@@ -439,9 +439,19 @@ function setupEventListeners() {
     // --- MediaSession Listeners (Init Once) ---
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', () => {
-            // v1.2.15 Fix: Bare Metal Play (Bypass complex logic)
-            // Ensure speed is enforced to wake up driver
+            // v1.2.16 Fix: The "Decoder Kick" (Force Re-Sync)
+            // 1. Force Audio Pipeline Logic
+            currentAudio.volume = 1.0;
+            currentAudio.muted = false;
+
+            // 2. Self-Seek to force buffer re-sync (Critical for Ghost Mode)
+            // We do this BEFORE play to set the driver state
+            const t = currentAudio.currentTime;
+            if (t > 0) currentAudio.currentTime = t;
+
+            // 3. Ensure speed is enforced to wake up driver
             currentAudio.playbackRate = state.getSpeed();
+
             currentAudio.play().then(() => {
                 navigator.mediaSession.playbackState = 'playing';
             }).catch(e => {
