@@ -3,8 +3,10 @@
  * Handles Service Worker lifecycle, update notifications, and app maintenance.
  */
 export const Updater = {
-    version: '1.2.4',
+    version: '1.2.6',
     swRegistration: null,
+    checkInterval: 60 * 60 * 1000, // Check every hour
+    intervalId: null,
 
     /**
      * Initialize the update system
@@ -17,7 +19,7 @@ export const Updater = {
                         this.swRegistration = reg;
                         console.log('Updater: Service Worker registered');
 
-                        // Check for updates on load
+                        // 1. Listen for new workers
                         reg.addEventListener('updatefound', () => {
                             const newWorker = reg.installing;
                             newWorker.addEventListener('statechange', () => {
@@ -25,6 +27,19 @@ export const Updater = {
                                     this.showUpdateToast();
                                 }
                             });
+                        });
+
+                        // 2. Initial Check
+                        this.checkForUpdates();
+
+                        // 3. Setup Auto-Polling
+                        this.startAutoCheck();
+
+                        // 4. Check on Visibility Change (Foreground)
+                        document.addEventListener('visibilitychange', () => {
+                            if (document.visibilityState === 'visible') {
+                                this.checkForUpdates();
+                            }
                         });
                     })
                     .catch(err => console.error('Updater: Registration failed', err));
@@ -37,6 +52,26 @@ export const Updater = {
         }
 
         this.setupMaintenanceListeners();
+    },
+
+    /**
+     * Manually check for updates
+     */
+    checkForUpdates() {
+        if (this.swRegistration) {
+            console.log('Updater: Checking for updates...');
+            this.swRegistration.update();
+        }
+    },
+
+    /**
+     * Start periodic checks
+     */
+    startAutoCheck() {
+        if (this.intervalId) clearInterval(this.intervalId);
+        this.intervalId = setInterval(() => {
+            this.checkForUpdates();
+        }, this.checkInterval);
     },
 
     /**

@@ -7,6 +7,8 @@ import { Library } from './library.js';
 import { Tracking } from './tracking.js';
 import { InfoModal } from './modules/infoModal.js';
 import { ReportModal } from './modules/reportModal.js';
+import { StickyPlayer } from './modules/stickyPlayer.js';
+import { RssModal } from './modules/rssModal.js';
 
 // --- State Variables ---
 let currentIndex = 0;
@@ -168,7 +170,7 @@ function loadEpisode(index) {
         const savedSpeed = state.getSpeed();
         currentAudio.playbackRate = savedSpeed;
         if (ui.speedSelect) ui.speedSelect.value = savedSpeed;
-        if (ui.stickySpeedSelect) ui.stickySpeedSelect.value = savedSpeed;
+        StickyPlayer.syncSpeed(savedSpeed);
         state.setDuration(episode.title, currentAudio.duration);
 
         const realStartTime = determineStartTime(state, episode.title, currentAudio.duration, isFirstLoad);
@@ -430,7 +432,7 @@ function setupEventListeners() {
 
     // Share & Deep Linking Listeners
 
-    Share.setupRssCopy(ui);
+    RssModal.init();
 
     // Context Menu Events
     document.addEventListener('manual-mastery', (e) => {
@@ -444,12 +446,16 @@ function setupEventListeners() {
         }
     });
 
-    // Sticky Player
-    if (ui.stickyPlayBtn) {
-        ui.stickyPlayBtn.addEventListener('click', () => { if (currentAudio.paused) playAudio(); else pauseAudio(); });
-    }
-    if (ui.stickySkipBack) ui.stickySkipBack.addEventListener('click', () => skip(-10));
-    if (ui.stickySkipFwd) ui.stickySkipFwd.addEventListener('click', () => skip(10));
+    // Sticky Player (Modular)
+    StickyPlayer.init({
+        togglePlay: () => { if (currentAudio.paused) playAudio(); else pauseAudio(); },
+        skip: (val) => skip(val),
+        setSpeed: (speed) => {
+            currentAudio.playbackRate = speed;
+            state.setSpeed(speed);
+            if (ui.speedSelect) ui.speedSelect.value = speed;
+        }
+    });
 
     // Drag Scrubbing
     if (ui.progressContainer) setupScrub(ui.progressContainer);

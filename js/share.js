@@ -32,18 +32,5 @@ export const Share = {
 
 
 
-    /**
-     * Setup RSS Copy Listener
-     */
-    setupRssCopy(ui) {
-        if (!ui.copyRssBtn) return;
 
-        ui.copyRssBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(ui.rssUrlText.innerText).then(() => {
-                const originalText = ui.copyRssBtn.innerText;
-                ui.copyRssBtn.innerText = 'Copied!';
-                setTimeout(() => ui.copyRssBtn.innerText = originalText, 2000);
-            });
-        });
-    }
 };
