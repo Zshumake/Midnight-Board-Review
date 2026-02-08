@@ -350,19 +350,33 @@ function updateMediaSessionState() {
         // Update Position State (Lock screen timer accuracy)
         if ('setPositionState' in navigator.mediaSession) {
             try {
-                // BUG FIX v1.2.14: Commented out to prevent iOS Lock Screen freeze
-                /*
+                // RESTORED v1.2.17: Essential for timeline accuracy
                 navigator.mediaSession.setPositionState({
                     duration: currentAudio.duration || 0,
                     playbackRate: currentAudio.playbackRate || 1.0,
                     position: currentAudio.currentTime || 0
                 });
-                */
             } catch (e) {
                 // Ignore if audio isn't ready
             }
         }
     }
+}
+
+// v1.2.17: Heartbeat to keep iOS Session Alive
+let heartbeatInterval = null;
+function startSessionHeartbeat() {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    heartbeatInterval = setInterval(() => {
+        if (!currentAudio.paused && 'mediaSession' in navigator) {
+            navigator.mediaSession.playbackState = 'playing';
+            updateMediaSessionState();
+        }
+    }, 1000);
+}
+function stopSessionHeartbeat() {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    heartbeatInterval = null;
 }
 
 function setupEventListeners() {
@@ -438,26 +452,27 @@ function setupEventListeners() {
 
     // --- MediaSession Listeners (Init Once) ---
     if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('play', () => {
-            // v1.2.16 Fix: The "Decoder Kick" (Force Re-Sync)
+        navigator.mediaSession.setActionHandler('play', async () => {
+            // v1.2.17 Fix: Heartbeat & Restore
             // 1. Force Audio Pipeline Logic
             currentAudio.volume = 1.0;
             currentAudio.muted = false;
 
-            // 2. Self-Seek to force buffer re-sync (Critical for Ghost Mode)
-            // We do this BEFORE play to set the driver state
+            // 2. Self-Seek to force buffer re-sync
             const t = currentAudio.currentTime;
             if (t > 0) currentAudio.currentTime = t;
 
-            // 3. Ensure speed is enforced to wake up driver
+            // 3. Ensure speed is enforced
             currentAudio.playbackRate = state.getSpeed();
 
-            currentAudio.play().then(() => {
+            try {
+                await currentAudio.play();
                 navigator.mediaSession.playbackState = 'playing';
-            }).catch(e => {
+                updateMediaSessionState(); // Force immediate sync
+            } catch (e) {
                 console.error("Lock Screen Play Failed:", e);
                 ui.showError(`LS Play Error: ${e.name}`);
-            });
+            }
         });
         navigator.mediaSession.setActionHandler('pause', () => {
             currentAudio.pause();
@@ -505,12 +520,14 @@ function setupEventListeners() {
         ui.setPlaying(true);
         ui.updateListPlayStates(currentIndex, true, state);
         updateMediaSessionState();
+        startSessionHeartbeat(); // v1.2.17: Start Heartbeat
     });
 
     currentAudio.addEventListener('pause', () => {
         ui.setPlaying(false);
         ui.updateListPlayStates(currentIndex, false, state);
         updateMediaSessionState();
+        stopSessionHeartbeat(); // v1.2.17: Stop Heartbeat
     });
 
     currentAudio.addEventListener('waiting', () => {
