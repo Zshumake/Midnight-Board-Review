@@ -386,34 +386,20 @@ function setupEventListeners() {
         ui.stickySpeedSelect.addEventListener('change', () => handleSpeed(parseFloat(ui.stickySpeedSelect.value)));
     }
 
-    // State Shield Interval
-    let stateShieldInterval = null;
-
     // Save on unload and state changes
     window.addEventListener('beforeunload', saveCurrentPosition);
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
             saveCurrentPosition();
-            // v1.2.23 Fix: State Shield
-            // 1. Immediate Force
+            // v1.2.22 Fix: Visibility Enforcer
+            // Force OS to recognize we are playing the SPECIFIC MOMENT we go background.
+            // This prevents the "Paused" UI state on Lock Screen.
             if (!currentAudio.paused && 'mediaSession' in navigator) {
                 navigator.mediaSession.playbackState = 'playing';
             }
-            // 2. Continuous Shield (Fights iOS drift every 1s)
-            if (stateShieldInterval) clearInterval(stateShieldInterval);
-            stateShieldInterval = setInterval(() => {
-                if (!currentAudio.paused && 'mediaSession' in navigator) {
-                    navigator.mediaSession.playbackState = 'playing';
-                    // We don't call updateMediaSessionState() here to avoid full metadata re-parse overhead
-                }
-            }, 1000);
-        } else {
-            // App is visible, stop the shield
-            if (stateShieldInterval) {
-                clearInterval(stateShieldInterval);
-                stateShieldInterval = null;
-            }
         }
+        // v1.2.24: State Shield Interval REMOVED. Reference v1.2.23 for history.
+        // We now enforce state during timeupdate.
     });
     window.addEventListener('pagehide', saveCurrentPosition);
 
@@ -442,6 +428,13 @@ function setupEventListeners() {
             ui.updateProgress(currentTime, duration);
         }
 
+        // v1.2.24 Fix: Aggressive State Enforcement
+        // If we are here, audio is playing/moving. FORCE IT.
+        // This overrides any Lock Screen desync or OS drift.
+        if ('mediaSession' in navigator && !currentAudio.paused) {
+            navigator.mediaSession.playbackState = 'playing';
+        }
+
         // 4. Preload
         const timeLeft = duration - currentTime;
         if (timeLeft <= 10 && timeLeft > 0 && !isPreloading) {
@@ -449,54 +442,25 @@ function setupEventListeners() {
         }
 
         // 5. Save State & Sync UI (Throttled to 1s integers)
-        // Fix v1.2.21: Restore updates to keep Lock Screen in sync, but avoid 60fps spam
         if (Math.floor(currentTime) !== Math.floor(lastKnownTime)) {
-            saveCurrentPosition(); // Updates lastKnownTime effectively enough for this check
+            saveCurrentPosition();
             updateMediaSessionState();
         }
-        lastKnownTime = currentTime; // Update tracker
+        lastKnownTime = currentTime;
     });
 
     // --- MediaSession Listeners (Init Once) ---
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', async () => {
-            // v1.2.23 Fix: Safe Play Check
-            // If we are ALREADY playing, the button is lying.
-            // Just correct the state and DO NOT nuke the stream.
-            if (!currentAudio.paused) {
-                navigator.mediaSession.playbackState = 'playing';
-                updateMediaSessionState();
-                return;
-            }
-
-            // v1.2.22 Fix: "Full Source Reset" (The Wipe)
-            // Only run this if we are genuinely paused/stuck.
-
-            const t = currentAudio.currentTime;
-            const src = currentAudio.src;
-
-            // 1. The Wipe
-            currentAudio.src = '';
-            currentAudio.load(); // Flush
-
-            // 2. The Restore
-            currentAudio.src = src;
-            currentAudio.load(); // Re-init
-            currentAudio.currentTime = t;
-
-            // 3. Force Audio Props
-            currentAudio.volume = 1.0;
-            currentAudio.muted = false;
-            currentAudio.playbackRate = state.getSpeed();
-
+            // v1.2.24 Fix: Gentle Resume (Nuke the Nuke)
+            // The "Full Source Reset" was causing chaos.
+            // Now we just want to play. Simple.
             try {
-                // 4. Play
                 await currentAudio.play();
                 navigator.mediaSession.playbackState = 'playing';
                 updateMediaSessionState();
             } catch (e) {
                 console.error("Lock Screen Play Failed:", e);
-                ui.showError(`LS Play Error: ${e.name}`);
             }
         });
         navigator.mediaSession.setActionHandler('pause', () => {
