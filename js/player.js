@@ -425,42 +425,46 @@ function setupEventListeners() {
             preloadNextEpisode();
         }
 
-        // 5. Save State Throttled (Fix: Stop spamming every frame for a full second)
-        // Only save if 5 seconds have passed since last save
-        if (currentTime - lastKnownTime > 5) {
-            saveCurrentPosition(); // This updates lastKnownTime
-            // REMOVED v1.2.20: updateMediaSessionState(); 
-            // We trust the OS to extrapolate time. Updating here causes stutter.
+        // 5. Save State & Sync UI (Throttled to 1s integers)
+        // Fix v1.2.21: Restore updates to keep Lock Screen in sync, but avoid 60fps spam
+        if (Math.floor(currentTime) !== Math.floor(lastKnownTime)) {
+            saveCurrentPosition(); // Updates lastKnownTime effectively enough for this check
+            updateMediaSessionState();
         }
+        lastKnownTime = currentTime; // Update tracker
     });
 
     // --- MediaSession Listeners (Init Once) ---
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', async () => {
-            // v1.2.20 Fix: "Breathing Room"
-            // Ghost Mode persists. Re-Loader didn't work.
-            // Hypothesis: iOS needs a moment of "silence" to reset the session.
+            // v1.2.21 Fix: "The Rewind" (Buffer Flush)
+            // Ghost Mode persists (Time moves, no sound).
+            // "Breathing Room" (50ms) failed. "Re-Loader" failed.
+            // New Strategy: Force a buffer flush by seeking slightly backwards.
 
-            // 1. Explicit Pause
+            // 1. Explicit Pause (Halt decoder)
             currentAudio.pause();
             navigator.mediaSession.playbackState = 'paused';
 
-            // 2. Async Delay (50ms Breathing Room)
-            setTimeout(async () => {
-                currentAudio.volume = 1.0;
-                currentAudio.muted = false;
-                currentAudio.playbackRate = state.getSpeed();
+            // 2. The Rewind (Forces decoder to drop current frame and fetch previous)
+            const t = currentAudio.currentTime;
+            if (t > 0.1) {
+                currentAudio.currentTime = Math.max(0, t - 0.1);
+            }
 
-                try {
-                    await currentAudio.play();
-                    navigator.mediaSession.playbackState = 'playing';
-                    // We do NOT call updateMediaSessionState() here to avoid stutter
-                    // unless metadata changed.
-                } catch (e) {
-                    console.error("Lock Screen Play Failed:", e);
-                    ui.showError(`LS Play Error: ${e.name}`);
-                }
-            }, 50);
+            // 3. Force Audio Props
+            currentAudio.volume = 1.0;
+            currentAudio.muted = false;
+            currentAudio.playbackRate = state.getSpeed();
+
+            try {
+                await currentAudio.play();
+                navigator.mediaSession.playbackState = 'playing';
+                updateMediaSessionState();
+            } catch (e) {
+                console.error("Lock Screen Play Failed:", e);
+                ui.showError(`LS Play Error: ${e.name}`);
+            }
         });
         navigator.mediaSession.setActionHandler('pause', () => {
             currentAudio.pause();
