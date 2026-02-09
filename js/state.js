@@ -1,62 +1,95 @@
-const STORAGE_KEY = 'cuccurullo_podcast_state';
-
 /**
- * @typedef {Object} PodcastState
- * @property {number} lastIndex - The index of the last played episode.
- * @property {Object.<string, number>} positions - Timestamps for each episode by title.
- * @property {string[]} history - Titles of episodes completed (>95%).
+ * State Module (Event-Driven)
+ * Manages application state and emits events when data changes.
  */
 
-export const state = {
-    data: {
-        lastIndex: 0,
-        positions: {},
-        durations: {},
-        history: [],
-        completions: {}, // New: stores count (1-3) per episode
-        playbackSpeed: 1.0 // Default speed
-    },
+const STORAGE_KEY = 'cuccurullo_podcast_state';
+
+class StateManager {
+    constructor() {
+        this.data = {
+            lastIndex: 0,
+            positions: {},
+            durations: {},
+            history: [],
+            completions: {},
+            playbackSpeed: 1.0
+        };
+        this.listeners = {};
+    }
+
+    // --- Event Emitter ---
+
+    on(event, callback) {
+        if (!this.listeners[event]) {
+            this.listeners[event] = [];
+        }
+        this.listeners[event].push(callback);
+    }
+
+    off(event, callback) {
+        if (!this.listeners[event]) return;
+        this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
+    }
+
+    emit(event, payload) {
+        if (!this.listeners[event]) return;
+        this.listeners[event].forEach(cb => cb(payload));
+    }
+
+    // --- Persistence ---
 
     load() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
-            const parsed = JSON.parse(saved);
-            this.data = { ...this.data, ...parsed };
+            try {
+                const parsed = JSON.parse(saved);
+                this.data = { ...this.data, ...parsed };
 
-            // Ensure objects exist
-            if (!this.data.durations) this.data.durations = {};
-            if (!this.data.positions) this.data.positions = {};
-            if (!this.data.history) this.data.history = [];
-            if (!this.data.completions) this.data.completions = {};
+                // Ensure strict types for critical paths
+                if (!this.data.durations) this.data.durations = {};
+                if (!this.data.positions) this.data.positions = {};
+                if (!this.data.history) this.data.history = [];
+                if (!this.data.completions) this.data.completions = {};
 
-            // Migration: If in history but not in completions, set to 1
-            this.data.history.forEach(title => {
-                if (!this.data.completions[title]) {
-                    this.data.completions[title] = 1;
-                }
-            });
+                // Migration: Sync history to completions
+                this.data.history.forEach(title => {
+                    if (!this.data.completions[title]) {
+                        this.data.completions[title] = 1;
+                    }
+                });
+            } catch (e) {
+                console.error("State Load Error:", e);
+            }
         }
         return this.data;
-    },
+    }
 
     save() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
-    },
+    }
+
+    // --- Getters & Setters ---
 
     setLastIndex(index) {
-        this.data.lastIndex = index;
-        this.save();
-    },
+        if (this.data.lastIndex !== index) {
+            this.data.lastIndex = index;
+            this.save();
+            this.emit('indexChanged', index);
+        }
+    }
 
     setPosition(title, position) {
         const key = title.trim();
+        // Optimization: Don't emit for every second of position change unless needed
+        // but definitley save.
         this.data.positions[key] = position;
         this.save();
-    },
+    }
 
     getPosition(title) {
         return this.data.positions[title.trim()] || 0;
-    },
+    }
 
     setDuration(title, duration) {
         const key = title.trim();
@@ -64,11 +97,11 @@ export const state = {
             this.data.durations[key] = duration;
             this.save();
         }
-    },
+    }
 
     getDuration(title) {
         return this.data.durations[title.trim()] || 0;
-    },
+    }
 
     getProgressPercentage(title) {
         const pos = this.getPosition(title);
@@ -80,47 +113,48 @@ export const state = {
         return 0;
     },
 
-    markAsListened(title) {
-        // Legacy: keep history array for backward compat if needed, 
-        // but main logic moved to incrementCompletion
-        if (!this.data.history.includes(title)) {
-            this.data.history.push(title);
-        }
-        // Ensure at least 1 completion if marked listened via legacy path
-        if (!this.data.completions[title]) {
-            this.data.completions[title] = 1;
-        }
-        this.save();
-    },
-
+    /**
+     * Increment badge count (Logic: Max 3)
+     * Returns true if a new badge was awarded (level up)
+     */
     incrementCompletion(title) {
         const key = title.trim();
-        // Initialize if empty
-        if (!this.data.completions[key]) {
-            this.data.completions[key] = 0;
-        }
+        if (!this.data.completions[key]) this.data.completions[key] = 0;
 
-        // Max 3 badges
         if (this.data.completions[key] < 3) {
             this.data.completions[key]++;
 
-            // Also ensure legacy history is synced
+            // Sync Legacy History
             if (!this.data.history.includes(key)) {
                 this.data.history.push(key);
             }
+
             this.save();
-            return true; // Return true if leveled up
+            this.emit('completionChange', { title: key, count: this.data.completions[key] });
+            return true;
         }
         return false;
+    },
+
+    resetCompletion(title) {
+        const key = title.trim();
+        if (this.data.completions[key]) {
+            delete this.data.completions[key];
+            this.data.history = this.data.history.filter(t => t !== key);
+            this.save();
+            this.emit('completionChange', { title: key, count: 0 });
+        }
+    },
+
+    // Legacy helper (called from Tracking sometimes directly, though we prefer incrementCompletion)
+    recordListen(title) {
+        return this.incrementCompletion(title);
     },
 
     getCompletionCount(title) {
         const key = title.trim();
         const count = this.data.completions[key] || 0;
-        // Fallback: If marked listened in legacy history but no count, return 1
-        if (count === 0 && this.isListened(key)) {
-            return 1;
-        }
+        if (count === 0 && this.isListened(key)) return 1;
         return count;
     },
 
@@ -130,11 +164,17 @@ export const state = {
     },
 
     setSpeed(speed) {
-        this.data.playbackSpeed = speed;
-        this.save();
+        if (this.data.playbackSpeed !== speed) {
+            this.data.playbackSpeed = speed;
+            this.save();
+            this.emit('speedChange', speed);
+        }
     },
 
     getSpeed() {
         return this.data.playbackSpeed || 1.0;
     }
-};
+}
+
+// Export Singleton
+export const state = new StateManager();

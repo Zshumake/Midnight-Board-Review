@@ -104,7 +104,25 @@ export const LibraryRenderer = {
         });
     },
 
-    // --- Internal Helpers ---
+    _updateBadgeForTitle(title, count) {
+        // Find row by title
+        // Note: dataset.title values might need escaping in selector
+        const safeTitle = title.replace(/"/g, '\\"');
+        const rows = document.querySelectorAll(`.episode-item[data-title="${safeTitle}"]`);
+
+        rows.forEach(row => {
+            const statusSpan = row.querySelector('.status-icon');
+            if (statusSpan) {
+                statusSpan.innerHTML = '';
+                if (count > 0) {
+                    statusSpan.appendChild(this._createBadgeContainer(count));
+                    statusSpan.classList.add('visible');
+                } else {
+                    statusSpan.classList.remove('visible');
+                }
+            }
+        });
+    },
 
     _createEpisodeItem(item, activeIndex, searchTerm, onEpisodeClick, onEpisodeHover) {
         const epDiv = document.createElement('div');

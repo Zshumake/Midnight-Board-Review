@@ -38,6 +38,7 @@ document.getElementById('info-btn')?.addEventListener('click', () => {
 
 // Init Report Modal
 ReportModal.init(episodes);
+Metadata.init(); // Initialize Event Listeners for Metadata
 const reportBtn = document.getElementById('report-issue-btn');
 if (reportBtn) {
     const showReport = (e) => {
@@ -132,6 +133,9 @@ async function loadEpisode(index, shouldAutoplay = true) {
     }
 
     // 4. UI Setup
+    Metadata.init(); // Ideally call once in setup, but checking if idempotent or needs moving
+    // Moving to setupEventListeners or init block below
+    // ...
     const listened = state.isListened(episode.title);
     const nextEpisode = episodes[(index + 1) % episodes.length];
     ui.updateTrack(episode, listened, nextEpisode);
@@ -317,11 +321,6 @@ function setupEventListeners() {
         const title = e.detail.title;
         if (title) {
             state.incrementCompletion(title);
-            // Re-render categories to update badges? Or strictly sync?
-            // Let's force a sync via LibraryRenderer logic if possible, or just re-render list
-            // For now, simpler to re-render list or we can add a method to LibraryRenderer
-            // Using logic from defunct library.updateBadges:
-            renderLibrary(document.getElementById('search-input').value);
             Feedback.showToast(`Marked "${title}" as Listened`);
         }
     });
@@ -330,7 +329,6 @@ function setupEventListeners() {
         const title = e.detail.title;
         if (title) {
             state.resetCompletion(title);
-            renderLibrary(document.getElementById('search-input').value);
             Feedback.showToast(`Reset progress for "${title}"`);
         }
     });

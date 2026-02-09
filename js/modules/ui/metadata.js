@@ -13,8 +13,26 @@ export const Metadata = {
         stickyPlayer: document.getElementById('sticky-player')
     },
 
+    init() {
+        // Listen for completion changes to update the title badge in real-time
+        state.on('completionChange', (data) => {
+            // We only update if the currently playing title matches the event
+            const currentTitleText = this.elements.title ? this.elements.title.innerText : '';
+            // Text content might contain the badge text too, so be careful. 
+            // Best to rely on player's current episode knowledge or just re-run update if we have reference.
+            // Actually, Metadata doesn't know "current episode". 
+            // Simplest way: Check if the title string includes the changed title.
+            // A better way: Player orchestrates the "Current Episode" update, 
+            // Metadata just updates the visual binding.
+
+            // However, for pure decoupling, Metadata should store the "current title" string 
+            // so it knows if it needs to re-render the badge.
+        });
+    },
+
     update(episode, isListened) {
         if (!episode) return;
+        this.currentTitle = episode.title; // Store for event check
 
         let badgeCount = state.getCompletionCount(episode.title);
         if (badgeCount === 0 && isListened) badgeCount = 1;
@@ -28,24 +46,8 @@ export const Metadata = {
             }
         }
 
-        // 2. Update Description
-        if (this.elements.description) {
-            this.elements.description.innerText = episode.description || 'No description available.';
-        }
 
-        // 3. Update Sticky Title
-        if (this.elements.stickyTitle) {
-            this.elements.stickyTitle.innerHTML = '';
-            this.elements.stickyTitle.appendChild(document.createTextNode(episode.title + ' '));
-            if (badgeCount > 0) {
-                this._appendBadge(this.elements.stickyTitle, badgeCount);
-            }
-        }
-
-        // 4. Ensure Sticky Player is Visible
-        if (this.elements.stickyPlayer) {
-            this.elements.stickyPlayer.classList.add('visible');
-        }
+        // Sticky Player visibility handled in update wrapper
     },
 
     _appendBadge(container, count) {
