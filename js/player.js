@@ -9,20 +9,14 @@ import { InfoModal } from './modules/infoModal.js';
 import { ReportModal } from './modules/reportModal.js';
 import { StickyPlayer } from './modules/stickyPlayer.js';
 import { RssModal } from './modules/rssModal.js';
+import { audioEngine } from './modules/audioEngine.js'; // NEW: Import Engine
 
 // --- State Variables ---
 let currentIndex = 0;
-let isFirstLoad = true;
-let playPromise = undefined; // Track valid play request
-let isPreloading = false;    // Track auto-preloading state
-let isPlayingSilence = false; // Track mobile-safe gap state
-let autoplayTimer = null;    // Track 5s delay timer (safety ref)
-let needsRestoration = false; // Flag for emergency jump
-let targetStartTime = 0;     // Lock for saveCurrentPosition
+let isPreloading = false;
 let activeLoadId = 0;       // Safeguard for rapid switching
 let lastKnownTime = 0;      // Cache for atomic saves
-const preloadAudio = new Audio(); // Singleton for hover preloading
-const currentAudio = ui.audio; // Alias
+const preloadAudio = new Audio(); // Helper for hover preloading (independent of Engine)
 
 // Load saved state
 state.load();
@@ -39,7 +33,6 @@ if (deepLinkIndex !== null) {
 console.log('Player.js: Calling InfoModal.init()...');
 InfoModal.init();
 document.getElementById('info-btn')?.addEventListener('click', () => {
-    console.log('Info button clicked');
     InfoModal.show();
 });
 
@@ -48,14 +41,12 @@ ReportModal.init(episodes);
 const reportBtn = document.getElementById('report-issue-btn');
 if (reportBtn) {
     const showReport = (e) => {
-        if (e.type === 'touchstart') e.preventDefault(); // Prevent double-fire on some devices
+        if (e.type === 'touchstart') e.preventDefault();
         const currentEpisode = episodes[currentIndex];
         ReportModal.show(currentEpisode ? currentEpisode.title : null);
     };
     reportBtn.addEventListener('click', showReport);
     reportBtn.addEventListener('touchstart', showReport, { passive: false });
-} else {
-    console.error('Report Issue Button not found in DOM');
 }
 
 // 2. Library & Category Logic
@@ -63,29 +54,26 @@ Library.initCategories(episodes, ui, () => {
     renderLibrary(ui.searchInput.value);
 });
 
-// 3. Setup Main Player Event Listeners
+// 3. Setup Main Player Event Listeners (UI -> Engine)
 setupEventListeners();
 
 // 4. Initial Episode Load (Prep)
-loadEpisode(currentIndex);
+loadEpisode(currentIndex, false); // False = Don't Autoplay
 
 // 5. Shared Click Handler for Library
 const onEpisodeClick = (idx, action) => {
     const index = Number(idx);
     if (action === 'play') {
         if (Number(currentIndex) === index) {
-            if (currentAudio.paused) playAudio(); else pauseAudio();
+            audioEngine.toggle();
         } else {
-            loadEpisode(index);
+            loadEpisode(index, true); // True = Autoplay
         }
     }
 };
 
 // 6. Initial Full Library Render
 ui.renderLibrary(episodes, currentIndex, state, onEpisodeClick, (url) => preloadEpisode(url));
-
-// 7. Modals
-// Tutorial.init() removed as it was replaced by InfoModal
 
 
 /**
@@ -98,16 +86,16 @@ function renderLibrary(filter = '') {
         const index = Number(idx);
         if (action === 'play') {
             if (currentIndex === index) {
-                if (currentAudio.paused) playAudio(); else pauseAudio();
+                audioEngine.toggle();
             } else {
-                loadEpisode(index);
+                loadEpisode(index, true);
             }
         } else if (action === 'skip-back') {
-            skip(-10);
+            audioEngine.seekRelative(-10);
         } else if (action === 'skip-fwd') {
-            skip(10);
+            audioEngine.seekRelative(10);
         } else {
-            loadEpisode(index);
+            loadEpisode(index, true);
         }
     }, (url) => preloadEpisode(url), filter);
 }
@@ -115,118 +103,82 @@ function renderLibrary(filter = '') {
 /**
  * Load an episode
  */
-function loadEpisode(index) {
+async function loadEpisode(index, shouldAutoplay = true) {
     activeLoadId++;
     const currentId = activeLoadId;
 
-    if (autoplayTimer) {
-        clearTimeout(autoplayTimer);
-        autoplayTimer = null;
-    }
-
-    // 1. Immediately Save Previous Using Cache
-    if (lastKnownTime > 1) {
+    // 1. Save Previous State
+    if (lastKnownTime > 5) {
         state.setPosition(episodes[currentIndex].title, lastKnownTime);
     }
-    lastKnownTime = 0; // Reset for new track
+    lastKnownTime = 0;
 
-    // 2. Halt Previous
-    currentAudio.pause();
-    currentAudio.src = '';
-    // ui.setLoading(true) moved down to ensure it targets the correct new row
-    isPlayingSilence = false;
-    needsRestoration = false;
-
-    // Reset Tracking
-    Tracking.reset();
-
+    // 2. Update Index & UI Loading State
     currentIndex = index;
     state.setLastIndex(index);
-
-    // Force UI to acknowledge new index immediately so setLoading targets correct row
     ui.updateListPlayStates(currentIndex, false, state);
-    ui.setLoading(true); // Now targets the newly active row
+    ui.setLoading(true);
 
     const episode = episodes[index];
-    const startTime = determineStartTime(state, episode.title, state.getDuration(episode.title), isFirstLoad);
-    targetStartTime = startTime;
-    needsRestoration = startTime > 5;
 
-    // Initial UI Setup
+    // 3. Determine Start Time (Resume or Restart)
+    const savedPos = state.getPosition(episode.title);
+    const duration = state.getDuration(episode.title) || 0;
+    let startTime = savedPos;
+
+    // Resume Logic: If near end (95%), restart.
+    if (duration > 0 && savedPos > (duration * 0.95)) {
+        startTime = 0;
+    }
+
+    // 4. UI Setup
     const listened = state.isListened(episode.title);
     const nextEpisode = episodes[(index + 1) % episodes.length];
-
     ui.updateTrack(episode, listened, nextEpisode);
-    ui.updateProgress(startTime, state.getDuration(episode.title));
+    ui.updateProgress(startTime, duration);
     ui.setPlaying(false);
 
-    // updateListPlayStates will be called by 'pause' listener above due to .pause()
+    // 5. Engine Load (Async)
+    const metadata = {
+        title: episode.title,
+        artist: 'Midnight Review',
+        artwork: [{ src: 'cover.jpg?v=6', sizes: '512x512', type: 'image/jpeg' }]
+    };
 
-    const handleMetadata = () => {
-        // Guard: If a new load has started, ignore this one
+    try {
+        await audioEngine.load(episode.url, startTime, metadata);
+
+        // Check if load ID changed during await
         if (currentId !== activeLoadId) return;
-
-        const savedSpeed = state.getSpeed();
-        currentAudio.playbackRate = savedSpeed;
-        if (ui.speedSelect) ui.speedSelect.value = savedSpeed;
-        StickyPlayer.syncSpeed(savedSpeed);
-        state.setDuration(episode.title, currentAudio.duration);
-
-        const realStartTime = determineStartTime(state, episode.title, currentAudio.duration, isFirstLoad);
-        if (realStartTime > 0 && Math.abs(currentAudio.currentTime - realStartTime) > 2) {
-            currentAudio.currentTime = realStartTime;
-        }
 
         ui.setLoading(false);
         isPreloading = false;
-        updateMediaSession(episode);
-    };
 
-    const wasFirstLoad = isFirstLoad;
-    if (isFirstLoad) isFirstLoad = false;
+        // Restore Speed
+        const savedSpeed = state.getSpeed();
+        audioEngine.setSpeed(savedSpeed);
+        if (ui.speedSelect) ui.speedSelect.value = savedSpeed;
+        StickyPlayer.syncSpeed(savedSpeed);
 
-    currentAudio.addEventListener('loadedmetadata', handleMetadata, { once: true });
-
-    currentAudio.src = startTime > 1 ? `${episode.url}#t=${startTime}` : episode.url;
-
-    // Only auto-play if it's NOT the first load
-    currentAudio.autoplay = !wasFirstLoad;
-
-    updateMediaSession(episode); // Immediate update for lock screen continuity
-
-    if (wasFirstLoad) {
-        // Just load metadata/buffer, don't play
-        currentAudio.load();
-        ui.setPlaying(false); // Ensure UI shows paused state
-    } else {
-        playAudio(currentId);
+        if (shouldAutoplay) {
+            audioEngine.play(); // Auto-play on user-initiated load
+        }
+    } catch (e) {
+        console.error("Player Load Error:", e);
+        ui.setLoading(false);
+        ui.showError("Failed to load episode.");
     }
-}
-
-function determineStartTime(state, title, duration, isFirstLoad) {
-    const savedPos = state.getPosition(title);
-    // Always load position (resume), but don't auto-play (handled by caller)
-    if (isFirstLoad) return savedPos;
-
-    const isNearEnd = duration > 0 && savedPos > (duration * 0.95);
-    if (isNearEnd) return 0;
-    return savedPos;
 }
 
 function saveCurrentPosition() {
     const episode = episodes[currentIndex];
     if (!episode) return;
 
-    const currentTime = currentAudio.currentTime;
-    if (currentTime > 0) lastKnownTime = currentTime;
+    // Get state directly from engine
+    const { currentTime } = audioEngine.state;
 
-    // SHIELD: Ignore 0 if we are in the middle of a restore
-    if (needsRestoration && currentTime < 5) return;
-
-    // TargetStartTime check: if we haven't crossed the target yet, don't save a low number
-    if (targetStartTime > 5 && currentTime < 5) return;
-
-    if (currentTime > 0) {
+    if (currentTime > 5) {
+        lastKnownTime = currentTime;
         state.setPosition(episode.title, currentTime);
     }
 }
@@ -239,144 +191,37 @@ function preloadEpisode(url) {
     }
 }
 
-function playAudio(loadId = null) {
-    // 1. Safe Guard: If no src, load current index first
-    if (!currentAudio.src || currentAudio.src === window.location.href) {
-        loadEpisode(currentIndex);
-        return;
-    }
-
-    // 2. Load ID Guard: If valid play request from a specific load, but we changed load, abort
-    // Fix: MediaSession passes an event object, which is not null. Ensure loadId is a number before checking.
-    if (typeof loadId === 'number' && loadId !== activeLoadId) return;
-
-    // 3. Prioritize play() promise for Safari trust
-    playPromise = currentAudio.play();
-
-    if (playPromise !== undefined) {
-        playPromise.then(_ => {
-            // Guard: If load changed while we were waiting for the engine
-            if (typeof loadId === 'number' && loadId !== activeLoadId) {
-                currentAudio.pause();
-                return;
-            }
-
-            saveCurrentPosition();
-
-            if (needsRestoration) {
-                const ep = episodes[currentIndex];
-                const pos = state.getPosition(ep.title);
-                if (pos > 5 && currentAudio.currentTime < 2) {
-                    currentAudio.currentTime = pos;
-                }
-
-                needsRestoration = false;
-            }
-            updateMediaSessionState(); // Force lock screen to know we are playing
-        }).catch(error => {
-            if (error.name !== 'AbortError') {
-                console.error("Play rejected:", error);
-                // SHOW ERROR ON SCREEN FOR DEBUGGING
-                ui.showError(`Play Error: ${error.message || error.name}`);
-            }
-        });
-    }
-}
-
-function pauseAudio() {
-    if (playPromise !== undefined) {
-        playPromise.then(_ => {
-            currentAudio.pause();
-            saveCurrentPosition();
-        }).catch(() => {
-            // Even if play failed, try to pause if it somehow started
-            currentAudio.pause();
-        });
-    } else {
-        currentAudio.pause();
-        saveCurrentPosition();
-    }
-}
-
-function skip(amount) {
-    currentAudio.currentTime = Math.max(0, Math.min(currentAudio.duration || 0, currentAudio.currentTime + amount));
-    updateMediaSessionState();
-    saveCurrentPosition();
-}
-
 function playNext() {
-    loadEpisode((Number(currentIndex) + 1) % episodes.length);
+    loadEpisode((Number(currentIndex) + 1) % episodes.length, true);
 }
 
 function playPrev() {
-    loadEpisode((Number(currentIndex) - 1 + episodes.length) % episodes.length);
+    loadEpisode((Number(currentIndex) - 1 + episodes.length) % episodes.length, true);
 }
 
 function preloadNextEpisode() {
     const nextIndex = (currentIndex + 1) % episodes.length;
     const nextEpisode = episodes[nextIndex];
     if (!nextEpisode) return;
-    const preloadAudio = new Audio();
-    preloadAudio.src = nextEpisode.url;
-    preloadAudio.preload = 'auto';
+    const preload = new Audio(); // Local scope
+    preload.src = nextEpisode.url;
+    preload.preload = 'auto';
     isPreloading = true;
 }
 
-function updateMediaSession(episode) {
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: episode.title,
-            artist: 'Midnight Review',
-            album: 'Board Review Podcast',
-            artwork: [{ src: 'cover.jpg?v=6', sizes: '512x512', type: 'image/jpeg' }]
-        });
-
-        // Handlers moved to setupEventListeners to run ONCE.
-
-        // Initial state sync
-        updateMediaSessionState();
-    }
-}
-
-/**
- * Synchronize the lock screen timer and state with the actual audio element
- */
-function updateMediaSessionState() {
-    if ('mediaSession' in navigator) {
-        // Update Playback State
-        navigator.mediaSession.playbackState = currentAudio.paused ? 'paused' : 'playing';
-
-        // Update Position State (Lock screen timer accuracy)
-        if ('setPositionState' in navigator.mediaSession) {
-            try {
-                // RESTORED v1.2.17: Essential for timeline accuracy
-                navigator.mediaSession.setPositionState({
-                    duration: currentAudio.duration || 0,
-                    playbackRate: currentAudio.playbackRate || 1.0,
-                    position: currentAudio.currentTime || 0
-                });
-            } catch (e) {
-                // Ignore if audio isn't ready
-            }
-        }
-    }
-}
-
-// v1.2.18: Heartbeat Removed (Caused Rubber Banding)
+// --- Event Listeners ---
 
 function setupEventListeners() {
-    ui.playBtn.addEventListener('click', () => { if (currentAudio.paused) playAudio(); else pauseAudio(); });
+    // UI -> Engine Handlers
+    ui.playBtn.addEventListener('click', () => audioEngine.toggle());
     ui.prevBtn.addEventListener('click', playPrev);
     ui.nextBtn.addEventListener('click', playNext);
-    ui.skipBackBtn.addEventListener('click', () => skip(-10));
-    ui.skipFwdBtn.addEventListener('click', () => skip(10));
-    currentAudio.addEventListener('ended', playNext);
-
-
+    ui.skipBackBtn.addEventListener('click', () => audioEngine.seekRelative(-10));
+    ui.skipFwdBtn.addEventListener('click', () => audioEngine.seekRelative(10));
 
     // Speed Control
     const handleSpeed = (speed) => {
-        currentAudio.playbackRate = speed;
+        audioEngine.setSpeed(speed);
         if (ui.speedSelect) ui.speedSelect.value = speed;
         if (ui.stickySpeedSelect) ui.stickySpeedSelect.value = speed;
         state.setSpeed(speed);
@@ -386,39 +231,37 @@ function setupEventListeners() {
         ui.stickySpeedSelect.addEventListener('change', () => handleSpeed(parseFloat(ui.stickySpeedSelect.value)));
     }
 
-    // Save on unload and state changes
-    window.addEventListener('beforeunload', saveCurrentPosition);
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            saveCurrentPosition();
-            // v1.2.22 Fix: Visibility Enforcer
-            // Force OS to recognize we are playing the SPECIFIC MOMENT we go background.
-            // This prevents the "Paused" UI state on Lock Screen.
-            if (!currentAudio.paused && 'mediaSession' in navigator) {
-                navigator.mediaSession.playbackState = 'playing';
-            }
-        }
-        // v1.2.24: State Shield Interval REMOVED. Reference v1.2.23 for history.
-        // We now enforce state during timeupdate.
+    // Scrubbing
+    // ui.isDragging is handled by UI, but we need to update engine on release
+    // (This part depends on how ui.js handles the progress bar events. 
+    // Assuming standard input listener on range)
+    const progressBar = document.getElementById('progress-bar');
+    if (progressBar) {
+        progressBar.addEventListener('change', (e) => {
+            const time = parseFloat(e.target.value);
+            audioEngine.seek(time);
+        });
+    }
+
+    // Engine -> UI Listeners
+    audioEngine.on('play', () => {
+        ui.setPlaying(true);
+        ui.updateListPlayStates(currentIndex, true, state);
     });
-    window.addEventListener('pagehide', saveCurrentPosition);
 
-    // Search
-    ui.searchInput.addEventListener('input', (e) => renderLibrary(e.target.value));
+    audioEngine.on('pause', () => {
+        ui.setPlaying(false);
+        ui.updateListPlayStates(currentIndex, false, state);
+        saveCurrentPosition();
+    });
 
-    // Time Update & Tracking
-    currentAudio.addEventListener('timeupdate', () => {
-        const currentTime = currentAudio.currentTime;
-        const duration = currentAudio.duration;
-
-        // Unlock Persistence Shield if seek succeeded
-        if (targetStartTime > 0 && Math.abs(currentTime - targetStartTime) < 2) {
-            targetStartTime = 0;
-            needsRestoration = false;
-        }
+    audioEngine.on('timeupdate', (data) => {
+        const { currentTime, duration } = data;
 
         // 1. Update Tracking (Anti-Skip)
-        Tracking.update(currentTime, currentAudio.paused, ui.isDragging);
+        // Note: We need to pass 'paused' state. 
+        // Engine state is truth.
+        Tracking.update(currentTime, audioEngine.state.paused, ui.isDragging);
 
         // 2. Check for Badge
         Tracking.checkCompletion(duration, episodes[currentIndex], state, ui);
@@ -428,53 +271,39 @@ function setupEventListeners() {
             ui.updateProgress(currentTime, duration);
         }
 
-        // v1.2.24 Fix: Aggressive State Enforcement
-        // If we are here, audio is playing/moving. FORCE IT.
-        // This overrides any Lock Screen desync or OS drift.
-        if ('mediaSession' in navigator && !currentAudio.paused) {
-            navigator.mediaSession.playbackState = 'playing';
-        }
-
-        // 4. Preload
+        // 4. Preload Next
         const timeLeft = duration - currentTime;
         if (timeLeft <= 10 && timeLeft > 0 && !isPreloading) {
             preloadNextEpisode();
         }
 
-        // 5. Save State & Sync UI (Throttled to 1s integers)
+        // 5. Save State (Throttled)
         if (Math.floor(currentTime) !== Math.floor(lastKnownTime)) {
             saveCurrentPosition();
-            updateMediaSessionState();
         }
         lastKnownTime = currentTime;
     });
 
-    // --- MediaSession Listeners (Init Once) ---
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('play', async () => {
-            // v1.2.24 Fix: Gentle Resume (Nuke the Nuke)
-            // The "Full Source Reset" was causing chaos.
-            // Now we just want to play. Simple.
-            try {
-                await currentAudio.play();
-                navigator.mediaSession.playbackState = 'playing';
-                updateMediaSessionState();
-            } catch (e) {
-                console.error("Lock Screen Play Failed:", e);
-            }
-        });
-        navigator.mediaSession.setActionHandler('pause', () => {
-            currentAudio.pause();
-            navigator.mediaSession.playbackState = 'paused';
-        });
-        navigator.mediaSession.setActionHandler('seekbackward', () => skip(-10));
-        navigator.mediaSession.setActionHandler('seekforward', () => skip(10));
-        navigator.mediaSession.setActionHandler('previoustrack', playPrev);
-        navigator.mediaSession.setActionHandler('nexttrack', playNext);
-    }
+    audioEngine.on('ended', () => {
+        playNext();
+    });
 
-    // Share & Deep Linking Listeners
+    audioEngine.on('durationchange', (duration) => {
+        state.setDuration(episodes[currentIndex].title, duration);
+    });
 
+    // MediaSession Remote Commands (Lock Screen -> Engine -> Here)
+    audioEngine.on('next', playNext);
+    audioEngine.on('prev', playPrev);
+
+    // Save on unload
+    window.addEventListener('beforeunload', saveCurrentPosition);
+    window.addEventListener('pagehide', saveCurrentPosition);
+
+    // Search
+    ui.searchInput.addEventListener('input', (e) => renderLibrary(e.target.value));
+
+    // RssModal
     RssModal.init();
 
     // Context Menu Events
