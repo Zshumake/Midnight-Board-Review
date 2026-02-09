@@ -1,4 +1,4 @@
-const CACHE_NAME = 'midnight-review-v1.3.2';
+const CACHE_NAME = 'midnight-review-v2.0.0';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -6,16 +6,27 @@ const ASSETS_TO_CACHE = [
     './site.webmanifest',
     './js/player.js',
     './js/state.js',
-    './js/ui.js',
-    './js/episodes.js',
-    './js/library.js',
+    './js/library.js', // Keeps library logic
     './js/share.js',
-    './js/modules/stickyPlayer.js', // Cache New Module
-    './js/modules/rssModal.js',     // Cache New Module
     './js/tracking.js',
+    './js/episodes.js',
     './js/icons.js',
     './js/descriptions.js',
     './js/series/pmr_board_review.js',
+    // New Modules
+    './js/modules/audioEngine.js',
+    './js/modules/infoModal.js',
+    './js/modules/reportModal.js',
+    './js/modules/rssModal.js',
+    './js/modules/searchEngine.js',
+    './js/modules/synonyms.js',
+    './js/modules/updater.js',
+    './js/modules/ui/controls.js',
+    './js/modules/ui/feedback.js',
+    './js/modules/ui/libraryRenderer.js',
+    './js/modules/ui/metadata.js',
+    './js/modules/ui/progressBar.js',
+    // Assets
     './cover.jpg',
     './cover.png'
 ];

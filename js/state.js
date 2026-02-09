@@ -111,7 +111,7 @@ class StateManager {
         }
         if (this.isListened(title)) return 100;
         return 0;
-    },
+    }
 
     /**
      * Increment badge count (Logic: Max 3)
