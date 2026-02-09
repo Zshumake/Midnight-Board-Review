@@ -138,6 +138,10 @@ async function loadEpisode(index, shouldAutoplay = true) {
     ui.updateProgress(startTime, duration);
     ui.setPlaying(false);
 
+    // REGRESSION FIX: Update Sticky Player Info
+    StickyPlayer.updateTrack(episode.title);
+    StickyPlayer.setPlaying(false);
+
     // 5. Engine Load (Async)
     const metadata = {
         title: episode.title,
@@ -218,6 +222,11 @@ function setupEventListeners() {
     ui.nextBtn.addEventListener('click', playNext);
     ui.skipBackBtn.addEventListener('click', () => audioEngine.seekRelative(-10));
     ui.skipFwdBtn.addEventListener('click', () => audioEngine.seekRelative(10));
+
+    ui.stickyPlayBtn.addEventListener('click', () => audioEngine.toggle());
+
+    ui.stickySkipBack.addEventListener('click', () => audioEngine.seekRelative(-10));
+    ui.stickySkipFwd.addEventListener('click', () => audioEngine.seekRelative(10));
 
     // Speed Control
     const handleSpeed = (speed) => {

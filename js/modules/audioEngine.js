@@ -54,9 +54,16 @@ class AudioEngine {
             this._updateMediaSessionMetadata(metadata);
 
             // 3. Load (Forces browser to negotiate stream)
-            // Note: We do NOT await 'canplay' here because on iOS
-            // we might want to call .play() immediately in the same user gesture.
-            this.audio.load();
+            // FIX: Wait for 'canplay' to ensure we have a valid buffer before resolving.
+            // This prevents "Ghost Mode" where the engine thinks it's ready but the hardware isn't.
+            await new Promise((resolve) => {
+                const onCanPlay = () => {
+                    this.audio.removeEventListener('canplay', onCanPlay);
+                    resolve();
+                };
+                this.audio.addEventListener('canplay', onCanPlay);
+                this.audio.load();
+            });
 
             // 4. Update State
             this._updateMediaSessionState();
