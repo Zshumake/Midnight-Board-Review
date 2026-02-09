@@ -390,7 +390,13 @@ function setupEventListeners() {
     // Save on unload and state changes
     window.addEventListener('beforeunload', saveCurrentPosition);
     document.addEventListener('visibilitychange', () => {
-        if (document.hidden) saveCurrentPosition();
+        if (document.hidden) {
+            saveCurrentPosition();
+            // v1.2.22 Fix: Visibility Enforcer
+            if (!currentAudio.paused && 'mediaSession' in navigator) {
+                navigator.mediaSession.playbackState = 'playing';
+            }
+        }
     });
     window.addEventListener('pagehide', saveCurrentPosition);
 
