@@ -386,16 +386,32 @@ function setupEventListeners() {
         ui.stickySpeedSelect.addEventListener('change', () => handleSpeed(parseFloat(ui.stickySpeedSelect.value)));
     }
 
+    // State Shield Interval
+    let stateShieldInterval = null;
+
     // Save on unload and state changes
     window.addEventListener('beforeunload', saveCurrentPosition);
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
             saveCurrentPosition();
-            // v1.2.22 Fix: Visibility Enforcer
-            // Force OS to recognize we are playing the SPECIFIC MOMENT we go background.
-            // This prevents the "Paused" UI state on Lock Screen.
+            // v1.2.23 Fix: State Shield
+            // 1. Immediate Force
             if (!currentAudio.paused && 'mediaSession' in navigator) {
                 navigator.mediaSession.playbackState = 'playing';
+            }
+            // 2. Continuous Shield (Fights iOS drift every 1s)
+            if (stateShieldInterval) clearInterval(stateShieldInterval);
+            stateShieldInterval = setInterval(() => {
+                if (!currentAudio.paused && 'mediaSession' in navigator) {
+                    navigator.mediaSession.playbackState = 'playing';
+                    // We don't call updateMediaSessionState() here to avoid full metadata re-parse overhead
+                }
+            }, 1000);
+        } else {
+            // App is visible, stop the shield
+            if (stateShieldInterval) {
+                clearInterval(stateShieldInterval);
+                stateShieldInterval = null;
             }
         }
     });
@@ -444,9 +460,17 @@ function setupEventListeners() {
     // --- MediaSession Listeners (Init Once) ---
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', async () => {
+            // v1.2.23 Fix: Safe Play Check
+            // If we are ALREADY playing, the button is lying.
+            // Just correct the state and DO NOT nuke the stream.
+            if (!currentAudio.paused) {
+                navigator.mediaSession.playbackState = 'playing';
+                updateMediaSessionState();
+                return;
+            }
+
             // v1.2.22 Fix: "Full Source Reset" (The Wipe)
-            // Ghost Mode persists. The "Rewind" wasn't enough.
-            // We must destroy the decoder instance and rebuild it.
+            // Only run this if we are genuinely paused/stuck.
 
             const t = currentAudio.currentTime;
             const src = currentAudio.src;
