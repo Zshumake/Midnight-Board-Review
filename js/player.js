@@ -309,19 +309,20 @@ function setupEventListeners() {
     window.addEventListener('beforeunload', saveCurrentPosition);
     window.addEventListener('pagehide', saveCurrentPosition);
 
-    // Search
-    ui.searchInput.addEventListener('input', (e) => renderLibrary(e.target.value));
-
-    // RssModal
-    RssModal.init();
+    // Search (Handled by LibraryRenderer init, but let's keep specific binding if needed or remove validly)
+    // LibraryRenderer init handles the input event now.
 
     // Context Menu Events
     document.addEventListener('manual-mastery', (e) => {
         const title = e.detail.title;
         if (title) {
             state.incrementCompletion(title);
-            Library.updateBadges(episodes, state, ui);
-            ui.showToast(`Marked "${title}" as Listened`);
+            // Re-render categories to update badges? Or strictly sync?
+            // Let's force a sync via LibraryRenderer logic if possible, or just re-render list
+            // For now, simpler to re-render list or we can add a method to LibraryRenderer
+            // Using logic from defunct library.updateBadges:
+            renderLibrary(document.getElementById('search-input').value);
+            Feedback.showToast(`Marked "${title}" as Listened`);
         }
     });
 
@@ -329,8 +330,8 @@ function setupEventListeners() {
         const title = e.detail.title;
         if (title) {
             state.resetCompletion(title);
-            Library.updateBadges(episodes, state, ui);
-            ui.showToast(`Reset progress for "${title}"`);
+            renderLibrary(document.getElementById('search-input').value);
+            Feedback.showToast(`Reset progress for "${title}"`);
         }
     });
 }
