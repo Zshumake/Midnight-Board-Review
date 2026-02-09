@@ -4,20 +4,15 @@ import { state } from './state.js';
 export const ui = {
     // Elements
     audio: document.getElementById('audio'),
-    playBtn: document.getElementById('play'),
-    prevBtn: document.getElementById('prev'),
-    nextBtn: document.getElementById('next'),
-    skipBackBtn: document.getElementById('skip-back'),
-    skipFwdBtn: document.getElementById('skip-fwd'),
+    // Elements - MANAGED BY MODULES (Controls.js / ProgressBar.js)
+    // playBtn, prevBtn, nextBtn, skipped...
+
+    // Remaining UI Elements
     speedSelect: document.getElementById('speed-select'),
-    progressContainer: document.getElementById('progress-container'),
-    progressBar: document.getElementById('progress-bar'),
     title: document.getElementById('current-track-title'),
     copyRssBtn: document.getElementById('copy-rss'),
     rssUrlText: document.getElementById('rss-url'),
     searchInput: document.getElementById('search-input'),
-    currentTimeLabel: document.getElementById('current-time'),
-    durationLabel: document.getElementById('duration'),
     episodeList: document.getElementById('episode-list'),
     categoryTabs: document.getElementById('category-tabs'),
     trackDescription: document.getElementById('current-track-description'),
@@ -26,15 +21,11 @@ export const ui = {
     // State
     isDragging: false,
 
-    // Sticky Player Elements
+    // Sticky Player Elements (Managed by Modules or Stuck Here for Title?)
     stickyPlayer: document.getElementById('sticky-player'),
-    stickyPlayBtn: document.getElementById('sticky-play'),
-    stickySkipBack: document.getElementById('sticky-skip-back'),
-    stickySkipFwd: document.getElementById('sticky-skip-fwd'),
     stickyTitle: document.getElementById('sticky-title'),
-    stickyProgressBar: document.getElementById('sticky-progress-bar'),
-    stickyProgressContainer: document.getElementById('sticky-progress-container'),
     stickySpeedSelect: document.getElementById('sticky-speed-select'),
+
     errorToast: document.getElementById('error-toast'),
     loadingDisclaimer: document.getElementById('loading-disclaimer'),
 

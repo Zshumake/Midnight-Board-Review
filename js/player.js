@@ -140,7 +140,7 @@ async function loadEpisode(index, shouldAutoplay = true) {
 
     // REGRESSION FIX: Update Sticky Player Info
     StickyPlayer.updateTrack(episode.title);
-    StickyPlayer.setPlaying(false);
+    Controls.setPlaying(false); // Use Controls instead of StickyPlayer
 
     // 5. Engine Load (Async)
     const metadata = {
