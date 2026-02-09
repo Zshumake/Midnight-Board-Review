@@ -36,7 +36,6 @@ if (deepLinkIndex !== null) {
 }
 
 // 1. Setup Local Listeners (Non-Player)
-// 1. Setup Local Listeners (Non-Player)
 console.log('Player.js: Calling InfoModal.init()...');
 InfoModal.init();
 document.getElementById('info-btn')?.addEventListener('click', () => {
@@ -393,6 +392,8 @@ function setupEventListeners() {
         if (document.hidden) {
             saveCurrentPosition();
             // v1.2.22 Fix: Visibility Enforcer
+            // Force OS to recognize we are playing the SPECIFIC MOMENT we go background.
+            // This prevents the "Paused" UI state on Lock Screen.
             if (!currentAudio.paused && 'mediaSession' in navigator) {
                 navigator.mediaSession.playbackState = 'playing';
             }
@@ -443,20 +444,21 @@ function setupEventListeners() {
     // --- MediaSession Listeners (Init Once) ---
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', async () => {
-            // v1.2.21 Fix: "The Rewind" (Buffer Flush)
-            // Ghost Mode persists (Time moves, no sound).
-            // "Breathing Room" (50ms) failed. "Re-Loader" failed.
-            // New Strategy: Force a buffer flush by seeking slightly backwards.
+            // v1.2.22 Fix: "Full Source Reset" (The Wipe)
+            // Ghost Mode persists. The "Rewind" wasn't enough.
+            // We must destroy the decoder instance and rebuild it.
 
-            // 1. Explicit Pause (Halt decoder)
-            currentAudio.pause();
-            navigator.mediaSession.playbackState = 'paused';
-
-            // 2. The Rewind (Forces decoder to drop current frame and fetch previous)
             const t = currentAudio.currentTime;
-            if (t > 0.1) {
-                currentAudio.currentTime = Math.max(0, t - 0.1);
-            }
+            const src = currentAudio.src;
+
+            // 1. The Wipe
+            currentAudio.src = '';
+            currentAudio.load(); // Flush
+
+            // 2. The Restore
+            currentAudio.src = src;
+            currentAudio.load(); // Re-init
+            currentAudio.currentTime = t;
 
             // 3. Force Audio Props
             currentAudio.volume = 1.0;
@@ -464,6 +466,7 @@ function setupEventListeners() {
             currentAudio.playbackRate = state.getSpeed();
 
             try {
+                // 4. Play
                 await currentAudio.play();
                 navigator.mediaSession.playbackState = 'playing';
                 updateMediaSessionState();
@@ -491,105 +494,17 @@ function setupEventListeners() {
         const title = e.detail.title;
         if (title) {
             state.incrementCompletion(title);
-            renderLibrary(ui.searchInput.value);
-            if (episodes[currentIndex].title === title) {
-                ui.updateTrack(episodes[currentIndex], true, episodes[(currentIndex + 1) % episodes.length]);
-            }
+            Library.updateBadges(episodes, state, ui);
+            ui.showToast(`Marked "${title}" as Listened`);
         }
     });
 
-    // Sticky Player (Modular)
-    StickyPlayer.init({
-        togglePlay: () => { if (currentAudio.paused) playAudio(); else pauseAudio(); },
-        skip: (val) => skip(val),
-        setSpeed: (speed) => {
-            currentAudio.playbackRate = speed;
-            state.setSpeed(speed);
-            if (ui.speedSelect) ui.speedSelect.value = speed;
+    document.addEventListener('manual-reset', (e) => {
+        const title = e.detail.title;
+        if (title) {
+            state.resetCompletion(title);
+            Library.updateBadges(episodes, state, ui);
+            ui.showToast(`Reset progress for "${title}"`);
         }
     });
-
-    // Drag Scrubbing
-    if (ui.progressContainer) setupScrub(ui.progressContainer);
-    if (ui.stickyProgressContainer) setupScrub(ui.stickyProgressContainer);
-
-    // --- Audio Engine Core Listeners (Single Source of Truth) ---
-    currentAudio.addEventListener('playing', () => {
-        ui.setPlaying(true);
-        ui.updateListPlayStates(currentIndex, true, state);
-        updateMediaSessionState();
-    });
-
-    currentAudio.addEventListener('pause', () => {
-        ui.setPlaying(false);
-        ui.updateListPlayStates(currentIndex, false, state);
-        updateMediaSessionState();
-    });
-
-    currentAudio.addEventListener('waiting', () => {
-        ui.setLoading(true);
-    });
-
-    currentAudio.addEventListener('canplay', () => {
-        ui.setLoading(false);
-    });
-
-    currentAudio.addEventListener('error', () => {
-        console.error("Audio Error Code:", currentAudio.error ? currentAudio.error.code : "unknown");
-        ui.showError('Error playing audio. Please try again.');
-        ui.setPlaying(false);
-    });
-
-    currentAudio.addEventListener('ended', playNext);
-}
-
-function setupScrub(container) {
-    addScrubbingListeners(container, (percent) => {
-        ui.updateProgress(currentAudio.duration * (percent / 100), currentAudio.duration);
-    }, (percent) => {
-        if (currentAudio.duration) {
-            currentAudio.currentTime = (percent / 100) * currentAudio.duration;
-            saveCurrentPosition();
-        }
-    });
-}
-
-/**
- * Helper to add Mouse/Touch scrubbing events (retained as helper)
- */
-function addScrubbingListeners(container, onDrag, onCommit) {
-    const handleMove = (e) => {
-        if (!ui.isDragging) return;
-        const rect = container.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        let percent = ((clientX - rect.left) / rect.width) * 100;
-        percent = Math.max(0, Math.min(100, percent));
-        onDrag(percent);
-    };
-
-    const handleEnd = (e) => {
-        if (!ui.isDragging) return;
-        ui.isDragging = false;
-        const rect = container.getBoundingClientRect();
-        const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-        let percent = ((clientX - rect.left) / rect.width) * 100;
-        percent = Math.max(0, Math.min(100, percent));
-        onCommit(percent);
-        document.removeEventListener('mousemove', handleMove);
-        document.removeEventListener('touchmove', handleMove);
-        document.removeEventListener('mouseup', handleEnd);
-        document.removeEventListener('touchend', handleEnd);
-    };
-
-    const handleStart = (e) => {
-        ui.isDragging = true;
-        handleMove(e);
-        document.addEventListener('mousemove', handleMove);
-        document.addEventListener('touchmove', handleMove, { passive: false });
-        document.addEventListener('mouseup', handleEnd);
-        document.addEventListener('touchend', handleEnd);
-    };
-
-    container.addEventListener('mousedown', handleStart);
-    container.addEventListener('touchstart', handleStart, { passive: false });
 }
