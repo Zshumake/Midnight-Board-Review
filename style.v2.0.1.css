@@ -1368,6 +1368,16 @@ input[type=range]:focus {
   outline: none;
 }
 
+/* Ensure track is transparent so JS gradient on input shows through */
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+}
+
 /* Default Thumb */
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
