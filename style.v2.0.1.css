@@ -677,19 +677,59 @@ button:hover {
 
 .sticky-progress-container {
   width: 100%;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.1);
+  height: 16px;
+  /* Larger touch target */
+  background: transparent;
   cursor: pointer;
   position: absolute;
-  top: 0;
+  top: -8px;
+  /* Straddle the border */
   left: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+}
+
+/* The visual background track */
+.sticky-progress-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
 }
 
 .sticky-progress-bar {
-  height: 100%;
+  height: 4px;
   background: var(--accent-gold);
   width: 0%;
+  position: relative;
+  border-radius: 2px;
   transition: width 0.1s linear;
+}
+
+/* The Fun Marker (Glowing Orb) */
+.sticky-progress-bar::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border: 2px solid var(--accent-gold);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent-gold);
+  z-index: 11;
+  transition: transform 0.1s;
+}
+
+.sticky-progress-container:hover .sticky-progress-bar::after {
+  transform: translateY(-50%) scale(1.2);
 }
 
 .sticky-content {
