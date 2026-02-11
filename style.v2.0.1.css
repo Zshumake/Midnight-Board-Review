@@ -32,6 +32,9 @@ body {
   max-width: 600px;
   margin: 0 auto;
   padding: 3rem 2rem;
+  position: relative;
+  z-index: 1;
+  /* Sit above floating heads */
 }
 
 header {
