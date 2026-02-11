@@ -1341,10 +1341,10 @@ button:hover {
   transform: translateY(-50%) scale(1);
   right: -20px;
   /* Center on tip */
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-transform: translateY(-50%) scale(1.5) rotate(10deg);
+.bockenek-mode .sticky-progress-container:hover .sticky-progress-bar::after {
+  transform: translateY(-50%) scale(1.5) rotate(10deg);
 }
 
 /* --- Main Player Range Input (Default) --- */
