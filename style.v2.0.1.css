@@ -1326,3 +1326,79 @@ button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
 }
+
+/* --- Bockenek Mode (Fun Easter Egg) --- */
+.bockenek-mode .sticky-progress-bar::after {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: url('Bockenek.png') no-repeat center center;
+  background-size: contain;
+  box-shadow: none;
+  border-radius: 0;
+  top: 50%;
+  transform: translateY(-50%) scale(1);
+  right: -20px;
+  /* Center on tip */
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.bockenek-mode .sticky-progress-container:hover .sticky-progress-bar::after {
+  transform: translateY(-50%) scale(1.5) rotate(10deg);
+}
+
+/* Main Player Input Range Thumb Override */
+.bockenek-mode input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 40px;
+  height: 40px;
+  background: url('Bockenek.png') no-repeat center center;
+  background-size: contain;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  margin-top: -18px;
+  /* Adjust for track alignment */
+  transform: scale(1);
+  transition: transform 0.2s;
+}
+
+.bockenek-mode input[type=range]:active::-webkit-slider-thumb {
+  transform: scale(1.5) rotate(-10deg);
+}
+
+/* Toggle Button Style */
+.bockenek-toggle {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  margin-top: 10px;
+  font-family: 'Lato', sans-serif;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bockenek-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.bockenek-toggle.active {
+  background: var(--accent-gold);
+  color: #000;
+  border-color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.bockenek-toggle img {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}

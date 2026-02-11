@@ -203,7 +203,30 @@
                     <span class="version-tag">Version 2.0.2</span>
 
                     <button id="reset-app-btn" class="reset-btn">Reset App & Clear Cache</button>
+
+                    <button id="bockenek-toggle" class="bockenek-toggle">
+                        <img src="Bockenek.png" alt="Icon">
+                        Bockenek Mode
+                    </button>
                 </div>
+
+                <script>
+                    // Bockenek Mode Easter Egg
+                    const bockenekToggle = document.getElementById('bockenek-toggle');
+                    const body = document.body;
+
+                    // Check saved state
+                    if (localStorage.getItem('bockenek_mode') === 'true') {
+                        body.classList.add('bockenek-mode');
+                        bockenekToggle.classList.add('active');
+                    }
+
+                    bockenekToggle.addEventListener('click', () => {
+                        const isActive = body.classList.toggle('bockenek-mode');
+                        bockenekToggle.classList.toggle('active');
+                        localStorage.setItem('bockenek_mode', isActive);
+                    });
+                </script>
         </footer>
     </div>
 
