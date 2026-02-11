@@ -6,23 +6,23 @@ export const Library = {
     /**
      * Initialize Category Tabs
      */
-    initCategories(episodes, ui, onFilterChange) {
-        if (!ui.categoryTabs) return;
+    initCategories(episodes, renderer, onFilterChange) {
+        if (!renderer.elements.categoryTabs) return;
 
         // Extract Unique Categories
-        const categories = ['All', ...new Set(episodes.map(e => e.category))].filter(Boolean);
+        const categories = [...new Set(episodes.map(e => e.category))].filter(Boolean);
 
         // Define Handler to be used recursively
         const handleSelect = (selected) => {
             this.activeCategory = selected;
             // Update Tab UI
-            ui.renderCategoryTabs(categories, this.activeCategory, handleSelect);
+            renderer.renderCategories(categories, this.activeCategory, handleSelect);
             // Trigger Filter Callback (which usually calls renderLibrary)
             onFilterChange();
         };
 
         // Initial Render
-        ui.renderCategoryTabs(categories, this.activeCategory, handleSelect);
+        renderer.renderCategories(categories, this.activeCategory, handleSelect);
     },
 
     /**

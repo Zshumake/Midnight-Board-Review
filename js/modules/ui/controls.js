@@ -58,8 +58,7 @@ export const Controls = {
             this.elements.stickyPlay.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
         }
 
-        // List Rows (handled largely by UI/render logic still, but we can helper here potentially)
-        // For now, list row icons are handled by ui.updateListPlayStates
+        // List Rows (handled by LibraryRenderer)
     },
 
     setLoading(isLoading) {

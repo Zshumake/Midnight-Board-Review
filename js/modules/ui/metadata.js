@@ -47,7 +47,15 @@ export const Metadata = {
         }
 
 
-        // Sticky Player visibility handled in update wrapper
+        // 2. Update Sticky Title
+        if (this.elements.stickyTitle) {
+            this.elements.stickyTitle.innerText = episode.title;
+        }
+
+        // 3. Show Sticky Player
+        if (this.elements.stickyPlayer) {
+            this.elements.stickyPlayer.classList.add('visible');
+        }
     },
 
     _appendBadge(container, count) {

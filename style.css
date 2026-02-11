@@ -1071,150 +1071,189 @@ button:hover {
   opacity: 1;
 }
 
+
+
 /* --- Info Button (Header) --- */
 .info-btn {
   background: none;
   border: none;
   color: var(--accent-gold);
   cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  opacity: 0.8;
+}
 
-  /* --- Info Button (Header) --- */
-  .info-btn {
-    background: none;
-    border: none;
-    color: var(--accent-gold);
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: auto;
-    /* Push to right if in flex container */
-    opacity: 0.8;
+.info-btn:hover {
+  background: rgba(217, 119, 6, 0.1);
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.header-content h1 {
+  margin: 0;
+}
+
+.header-content .info-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* --- Mobile/Small Screen Tweaks --- */
+@media (max-width: 480px) {
+  .container {
+    padding: 1.5rem 1rem;
   }
 
-  .info-btn:hover {
-    background: rgba(217, 119, 6, 0.1);
-    opacity: 1;
-    transform: scale(1.05);
+  .glass-panel {
+    padding: 1.5rem;
+    /* Reduce padding on mobile */
   }
 
-  .header-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
-
-  .header-content h1 {
-    margin: 0;
-  }
-
-  .header-content .info-btn {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  /* --- Mobile/Small Screen Tweaks --- */
-  @media (max-width: 480px) {
-    .sticky-content {
-      padding: 0.6rem 1rem;
-    }
-
-    .sticky-title {
-      font-size: 0.85rem;
-    }
-
-    .sticky-controls {
-      gap: 0.8rem;
-    }
-  }
-
-  /* Category Tabs (Fixed - Wrapped) */
-  .category-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    /* Allow wrapping */
-    gap: 8px;
-    /* Slightly tighter gap for grid look */
-    padding: 10px 0;
-    margin-bottom: 20px;
+  .track-controls {
+    gap: 12px;
+    /* Increased spacing */
+    margin: 2rem 0;
     width: 100%;
+    justify-content: center;
+    align-items: center;
   }
 
-  .category-tab {
-    display: inline-flex;
+  /* Main Play Button - Largest */
+  .play-btn {
+    width: 64px;
+    height: 64px;
+    font-size: 0;
+    background: var(--accent-orange);
+    border-radius: 50%;
+    /* Circle */
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+    display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-muted);
-    padding: 6px 12px;
-    /* Slightly smaller padding for density */
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    /* Keep individual label on one line */
+  }
+
+  .play-btn svg {
+    width: 32px;
+    height: 32px;
+    fill: #000;
+  }
+
+  /* Secondary Controls (Prev, Next, Skip) - Slightly Smaller circles */
+  .track-controls button:not(.play-btn) {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 0;
+    border-radius: 50%;
+    /* Circle */
+    background: rgba(255, 255, 255, 0.05);
+    /* Subtle circle background */
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.2s ease;
-  }
-
-  .category-tab:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: var(--text-light);
-  }
-
-  .category-tab.active {
-    background: var(--accent-gold);
-    color: #000;
-    border-color: var(--accent-gold);
-    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
-  }
-
-  /* Share Button (Fixed) */
-  .share-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  /* Report Button */
-  .report-btn {
-    background: none;
-    border: none;
+  .track-controls button:not(.play-btn) svg {
+    width: 22px;
+    height: 22px;
     color: var(--text-muted);
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 12px;
-    /* Spacing from loading disclaimer */
   }
 
-  .report-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+  /* Active State for tap feedback */
+  .track-controls button:active {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .play-btn:active {
+    transform: scale(0.95);
+    background: var(--accent-gold-light);
+  }
+
+  /* List Play Button specific override */
+  .list-play-btn {
+    width: 40px;
+    height: 40px;
+    margin-right: 0.8rem;
+    padding: 0;
+    background: rgba(255, 137, 51, 0.1);
+    /* Keep orange tint for list */
+    border: 1px solid rgba(255, 137, 51, 0.2);
+  }
+
+  .list-play-btn svg {
+    width: 18px;
+    height: 18px;
     color: var(--accent-orange);
+    /* Ensure color matches branding */
   }
 
-  .share-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-light);
+  .sticky-content {
+    padding: 0.6rem 1rem;
   }
+
+  .sticky-title {
+    font-size: 0.85rem;
+  }
+
+  .sticky-controls {
+    gap: 0.8rem;
+  }
+}
+
+/* Category Tabs (Fixed - Wrapped) */
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 0;
+  margin-bottom: 20px;
+  width: 100%;
+  justify-content: center;
+}
+
+.category-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.category-tab:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-light);
+}
+
+.category-tab.active {
+  background: var(--accent-gold);
+  color: #000;
+  border-color: var(--accent-gold);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
 }
 
 /* --- Accordion Report Button --- */

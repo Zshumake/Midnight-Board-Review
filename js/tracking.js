@@ -37,7 +37,7 @@ export const Tracking = {
     /**
      * Check if ready to award badge
      */
-    checkCompletion(duration, episode, state, ui) {
+    checkCompletion(duration, episode, state, Feedback) {
         if (duration > 0 && !this.hasCreditedSession) {
             // Threshold: 80% of duration
             if (this.sessionValidTime > (duration * 0.8)) {
@@ -45,7 +45,8 @@ export const Tracking = {
 
                 const leveledUp = state.incrementCompletion(episode.title);
                 if (leveledUp) {
-                    ui.updateTrack(episode, true, null); // Pass true because they definitely finished it
+                    // UI update handled by event 'completionChange' in Metadata/LibraryRenderer
+                    if (Feedback) Feedback.showToast(`Marked "${episode.title}" as Listened`);
                 }
                 this.hasCreditedSession = true; // Only one badge per listen session
             }

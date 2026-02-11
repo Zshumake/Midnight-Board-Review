@@ -1,15 +1,21 @@
 import { episodes } from './episodes.js';
-import { ui } from './ui.js';
 import { state } from './state.js';
 
+// Modules
 import { Share } from './share.js';
 import { Library } from './library.js';
 import { Tracking } from './tracking.js';
+import { audioEngine } from './modules/audioEngine.js';
 import { InfoModal } from './modules/infoModal.js';
 import { ReportModal } from './modules/reportModal.js';
-import { StickyPlayer } from './modules/stickyPlayer.js';
 import { RssModal } from './modules/rssModal.js';
-import { audioEngine } from './modules/audioEngine.js'; // NEW: Import Engine
+
+// UI Modules
+import { Controls } from './modules/ui/controls.js';
+import { ProgressBar } from './modules/ui/progressBar.js';
+import { Feedback } from './modules/ui/feedback.js';
+import { Metadata } from './modules/ui/metadata.js';
+import { LibraryRenderer } from './modules/ui/libraryRenderer.js';
 
 // --- State Variables ---
 let currentIndex = 0;
@@ -51,8 +57,11 @@ if (reportBtn) {
 }
 
 // 2. Library & Category Logic
-Library.initCategories(episodes, ui, () => {
-    renderLibrary(ui.searchInput.value);
+Library.initCategories(episodes, LibraryRenderer, () => {
+    // Search input is handled by LibraryRenderer internally for events, 
+    // but we need value for filtering.
+    const term = LibraryRenderer.elements.searchInput ? LibraryRenderer.elements.searchInput.value : '';
+    renderLibrary(term);
 });
 
 // 3. Setup Main Player Event Listeners (UI -> Engine)
@@ -74,7 +83,7 @@ const onEpisodeClick = (idx, action) => {
 };
 
 // 6. Initial Full Library Render
-ui.renderLibrary(episodes, currentIndex, state, onEpisodeClick, (url) => preloadEpisode(url));
+LibraryRenderer.render(episodes, currentIndex, onEpisodeClick, (url) => preloadEpisode(url));
 
 
 /**
@@ -83,7 +92,7 @@ ui.renderLibrary(episodes, currentIndex, state, onEpisodeClick, (url) => preload
 function renderLibrary(filter = '') {
     const filtered = Library.filterEpisodes(episodes, filter);
 
-    ui.renderLibrary(filtered, currentIndex, state, (idx, action) => {
+    LibraryRenderer.render(filtered, currentIndex, (idx, action) => {
         const index = Number(idx);
         if (action === 'play') {
             if (currentIndex === index) {
@@ -117,8 +126,8 @@ async function loadEpisode(index, shouldAutoplay = true) {
     // 2. Update Index & UI Loading State
     currentIndex = index;
     state.setLastIndex(index);
-    ui.updateListPlayStates(currentIndex, false, state);
-    ui.setLoading(true);
+    LibraryRenderer.updatePlayStates(currentIndex, false);
+    Feedback.setLoading(true);
 
     const episode = episodes[index];
 
@@ -133,18 +142,11 @@ async function loadEpisode(index, shouldAutoplay = true) {
     }
 
     // 4. UI Setup
-    Metadata.init(); // Ideally call once in setup, but checking if idempotent or needs moving
-    // Moving to setupEventListeners or init block below
-    // ...
+    // 4. UI Setup
     const listened = state.isListened(episode.title);
-    const nextEpisode = episodes[(index + 1) % episodes.length];
-    ui.updateTrack(episode, listened, nextEpisode);
-    ui.updateProgress(startTime, duration);
-    ui.setPlaying(false);
-
-    // REGRESSION FIX: Update Sticky Player Info
-    StickyPlayer.updateTrack(episode.title);
-    Controls.setPlaying(false); // Use Controls instead of StickyPlayer
+    Metadata.update(episode, listened);
+    ProgressBar.update(startTime, duration);
+    Controls.setPlaying(false);
 
     // 5. Engine Load (Async)
     const metadata = {
@@ -159,22 +161,27 @@ async function loadEpisode(index, shouldAutoplay = true) {
         // Check if load ID changed during await
         if (currentId !== activeLoadId) return;
 
-        ui.setLoading(false);
+        Feedback.setLoading(false);
         isPreloading = false;
 
         // Restore Speed
         const savedSpeed = state.getSpeed();
         audioEngine.setSpeed(savedSpeed);
-        if (ui.speedSelect) ui.speedSelect.value = savedSpeed;
-        StickyPlayer.syncSpeed(savedSpeed);
+        // Sync UI for Speed (Ideally Controls/Sticky handles this via state event, but for now manual)
+        const speedSelect = document.getElementById('speed-select');
+        if (speedSelect) speedSelect.value = savedSpeed;
+
+        // Update Sticky Speed UI manually if needed, or rely on event
+        const stickySpeed = document.getElementById('sticky-speed-select');
+        if (stickySpeed) stickySpeed.value = savedSpeed;
 
         if (shouldAutoplay) {
             audioEngine.play(); // Auto-play on user-initiated load
         }
     } catch (e) {
         console.error("Player Load Error:", e);
-        ui.setLoading(false);
-        ui.showError("Failed to load episode.");
+        Feedback.setLoading(false);
+        Feedback.showError("Failed to load episode.");
     }
 }
 
@@ -220,51 +227,46 @@ function preloadNextEpisode() {
 // --- Event Listeners ---
 
 function setupEventListeners() {
-    // UI -> Engine Handlers
-    ui.playBtn.addEventListener('click', () => audioEngine.toggle());
-    ui.prevBtn.addEventListener('click', playPrev);
-    ui.nextBtn.addEventListener('click', playNext);
-    ui.skipBackBtn.addEventListener('click', () => audioEngine.seekRelative(-10));
-    ui.skipFwdBtn.addEventListener('click', () => audioEngine.seekRelative(10));
+    // 1. Init Controls Module
+    // Handles Play/Pause/Skip for Main and Sticky Players
+    Controls.init(audioEngine, {
+        toggle: () => audioEngine.toggle(),
+        prev: playPrev,
+        next: playNext,
+        skip: (amount) => audioEngine.seekRelative(amount)
+    });
 
-    ui.stickyPlayBtn.addEventListener('click', () => audioEngine.toggle());
+    // 2. Init ProgressBar
+    // Handles Scrubbing and Time Updates
+    ProgressBar.init(audioEngine);
 
-    ui.stickySkipBack.addEventListener('click', () => audioEngine.seekRelative(-10));
-    ui.stickySkipFwd.addEventListener('click', () => audioEngine.seekRelative(10));
+    // 3. Init LibraryRenderer (Search)
+    LibraryRenderer.init({
+        onSearch: (term) => renderLibrary(term)
+    });
 
-    // Speed Control
+    // Speed Control (Manual Binding for now, could be in Controls)
+    const speedSelect = document.getElementById('speed-select');
+    const stickySpeed = document.getElementById('sticky-speed-select');
+
     const handleSpeed = (speed) => {
-        audioEngine.setSpeed(speed);
-        if (ui.speedSelect) ui.speedSelect.value = speed;
-        if (ui.stickySpeedSelect) ui.stickySpeedSelect.value = speed;
-        state.setSpeed(speed);
+        state.setSpeed(speed); // Triggers event for Engine
+        if (speedSelect) speedSelect.value = speed;
+        if (stickySpeed) stickySpeed.value = speed;
     };
-    ui.speedSelect.addEventListener('change', () => handleSpeed(parseFloat(ui.speedSelect.value)));
-    if (ui.stickySpeedSelect) {
-        ui.stickySpeedSelect.addEventListener('change', () => handleSpeed(parseFloat(ui.stickySpeedSelect.value)));
-    }
 
-    // Scrubbing
-    // ui.isDragging is handled by UI, but we need to update engine on release
-    // (This part depends on how ui.js handles the progress bar events. 
-    // Assuming standard input listener on range)
-    const progressBar = document.getElementById('progress-bar');
-    if (progressBar) {
-        progressBar.addEventListener('change', (e) => {
-            const time = parseFloat(e.target.value);
-            audioEngine.seek(time);
-        });
-    }
+    if (speedSelect) speedSelect.addEventListener('change', () => handleSpeed(parseFloat(speedSelect.value)));
+    if (stickySpeed) stickySpeed.addEventListener('change', () => handleSpeed(parseFloat(stickySpeed.value)));
 
     // Engine -> UI Listeners
     audioEngine.on('play', () => {
-        ui.setPlaying(true);
-        ui.updateListPlayStates(currentIndex, true, state);
+        Controls.setPlaying(true);
+        LibraryRenderer.updatePlayStates(currentIndex, true);
     });
 
     audioEngine.on('pause', () => {
-        ui.setPlaying(false);
-        ui.updateListPlayStates(currentIndex, false, state);
+        Controls.setPlaying(false);
+        LibraryRenderer.updatePlayStates(currentIndex, false);
         saveCurrentPosition();
     });
 
@@ -272,17 +274,13 @@ function setupEventListeners() {
         const { currentTime, duration } = data;
 
         // 1. Update Tracking (Anti-Skip)
-        // Note: We need to pass 'paused' state. 
-        // Engine state is truth.
-        Tracking.update(currentTime, audioEngine.state.paused, ui.isDragging);
+        Tracking.update(currentTime, audioEngine.state.paused, ProgressBar.isDragging);
 
         // 2. Check for Badge
-        Tracking.checkCompletion(duration, episodes[currentIndex], state, ui);
+        Tracking.checkCompletion(duration, episodes[currentIndex], state, Feedback);
 
         // 3. Visual Update
-        if (!ui.isDragging) {
-            ui.updateProgress(currentTime, duration);
-        }
+        ProgressBar.update(currentTime, duration);
 
         // 4. Preload Next
         const timeLeft = duration - currentTime;

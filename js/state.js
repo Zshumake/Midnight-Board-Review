@@ -134,7 +134,7 @@ class StateManager {
             return true;
         }
         return false;
-    },
+    }
 
     resetCompletion(title) {
         const key = title.trim();
@@ -144,24 +144,24 @@ class StateManager {
             this.save();
             this.emit('completionChange', { title: key, count: 0 });
         }
-    },
+    }
 
     // Legacy helper (called from Tracking sometimes directly, though we prefer incrementCompletion)
     recordListen(title) {
         return this.incrementCompletion(title);
-    },
+    }
 
     getCompletionCount(title) {
         const key = title.trim();
         const count = this.data.completions[key] || 0;
         if (count === 0 && this.isListened(key)) return 1;
         return count;
-    },
+    }
 
     isListened(title) {
         const key = title.trim();
         return (this.data.completions[key] && this.data.completions[key] > 0) || this.data.history.includes(key);
-    },
+    }
 
     setSpeed(speed) {
         if (this.data.playbackSpeed !== speed) {
@@ -169,7 +169,7 @@ class StateManager {
             this.save();
             this.emit('speedChange', speed);
         }
-    },
+    }
 
     getSpeed() {
         return this.data.playbackSpeed || 1.0;
