@@ -18,6 +18,8 @@ import { Metadata } from './modules/ui/metadata.js';
 
 import { LibraryRenderer } from './modules/ui/libraryRenderer.js';
 import { SpeedControl } from './modules/ui/speedControl.js';
+import { ThemeControl } from './modules/ui/themeControl.js';
+import { Updater } from './modules/updater.js';
 
 // --- State Variables ---
 let currentIndex = 0;
@@ -246,6 +248,12 @@ function setupEventListeners() {
 
     // 4. Init SpeedControl
     SpeedControl.init(audioEngine);
+
+    // 5. Init ThemeControl (Bockenek Mode)
+    ThemeControl.init();
+
+    // 6. Init Updater (PWA)
+    Updater.init();
 
     // Engine -> UI Listeners
     audioEngine.on('play', () => {

@@ -210,33 +210,9 @@
                     </button>
                 </div>
 
-                <script type="module">
-                    import { FloatingHeads } from './js/modules/ui/floatingHeads.js';
-
-                    // Bockenek Mode Easter Egg
-                    const bockenekToggle = document.getElementById('bockenek-toggle');
-                    const body = document.body;
-
-                    // Check saved state
-                    if (localStorage.getItem('bockenek_mode') === 'true') {
-                        body.classList.add('bockenek-mode');
-                        bockenekToggle.classList.add('active');
-                        FloatingHeads.init();
-                    }
-
-                    bockenekToggle.addEventListener('click', () => {
-                        const isActive = body.classList.toggle('bockenek-mode');
-                        bockenekToggle.classList.toggle('active');
-                        localStorage.setItem('bockenek_mode', isActive);
-
-                        if (isActive) {
-                            FloatingHeads.init();
-                        } else {
-                            FloatingHeads.destroy();
-                        }
-                    });
-                </script>
-        </footer>
+            </div>
+    </div>
+    </footer>
     </div>
 
     <!-- ... Sticky Player ... -->
@@ -289,10 +265,7 @@
         <button id="update-refresh-btn" class="update-btn">Update Now</button>
     </div>
 
-    <script type="module">
-        import { Updater } from './js/modules/updater.js';
-        Updater.init();
-    </script>
+
     <script type="module" src="js/player.js?v=2.0.0"></script>
 </body>
 
