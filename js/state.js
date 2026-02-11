@@ -154,6 +154,7 @@ class StateManager {
     getCompletionCount(title) {
         const key = title.trim();
         const count = this.data.completions[key] || 0;
+        // Legacy fallback: If tracked in history but no count, return 1
         if (count === 0 && this.isListened(key)) return 1;
         return count;
     }

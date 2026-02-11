@@ -54,9 +54,6 @@ export const Metadata = {
     _appendBadge(container, count) {
         const badgeContainer = document.createElement('div');
         badgeContainer.className = 'status-container';
-        badgeContainer.style.display = 'inline-flex';
-        badgeContainer.style.marginLeft = '12px';
-        badgeContainer.style.verticalAlign = 'middle';
 
         const badgeRow = document.createElement('div');
         badgeRow.className = 'badge-row';

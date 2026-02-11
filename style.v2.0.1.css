@@ -108,6 +108,9 @@ h1 {
   margin-bottom: 0.5rem;
   color: var(--text-main);
   line-height: 1.4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #current-track-artist {
@@ -919,12 +922,12 @@ button:hover {
 
 /* Orange Circle Badge with Black Check */
 .status-container {
-  margin-left: auto;
-  display: flex;
+  margin-left: 12px;
+  display: inline-flex;
   flex-direction: column;
-  align-items: flex-end;
-  /* Align badges and label to the right */
-  gap: 4px;
+  align-items: flex-start;
+  gap: 2px;
+  vertical-align: middle;
 }
 
 .badge-row {
