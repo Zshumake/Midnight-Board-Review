@@ -1341,6 +1341,7 @@ button:hover {
   transform: translateY(-50%) scale(1);
   right: -20px;
   /* Center on tip */
+  animation: bockenekGlow 1.5s infinite alternate ease-in-out;
 }
 
 .bockenek-mode .sticky-progress-container:hover .sticky-progress-bar::after {
@@ -1386,17 +1387,29 @@ input[type=range]::-webkit-slider-thumb:hover {
 /* Main Player Input Range Thumb Override (Bockenek Mode) */
 .bockenek-mode input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  /* Slightly larger for the glow */
+  height: 50px;
   background: url('Bockenek.png') no-repeat center center;
   background-size: contain;
   border: none;
   box-shadow: none;
   border-radius: 0;
-  margin-top: -18px;
+  margin-top: -22px;
   /* Adjust for track alignment */
   transform: scale(1);
   transition: transform 0.2s;
+  animation: bockenekGlow 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes bockenekGlow {
+  from {
+    filter: drop-shadow(0 0 2px var(--accent-gold));
+  }
+
+  to {
+    filter: drop-shadow(0 0 15px var(--accent-orange));
+  }
 }
 
 .bockenek-mode input[type=range]:active::-webkit-slider-thumb {
