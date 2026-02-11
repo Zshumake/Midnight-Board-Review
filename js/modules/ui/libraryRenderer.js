@@ -23,6 +23,11 @@ export const LibraryRenderer = {
                 if (this.callbacks.onSearch) this.callbacks.onSearch(e.target.value);
             });
         }
+
+        // Listen for Badge Updates
+        state.on('completionChange', (data) => {
+            this._updateBadgeForTitle(data.title, data.count);
+        });
     },
 
     renderCategories(categories, activeCategory, onSelect) {

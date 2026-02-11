@@ -16,17 +16,10 @@ export const Metadata = {
     init() {
         // Listen for completion changes to update the title badge in real-time
         state.on('completionChange', (data) => {
-            // We only update if the currently playing title matches the event
-            const currentTitleText = this.elements.title ? this.elements.title.innerText : '';
-            // Text content might contain the badge text too, so be careful. 
-            // Best to rely on player's current episode knowledge or just re-run update if we have reference.
-            // Actually, Metadata doesn't know "current episode". 
-            // Simplest way: Check if the title string includes the changed title.
-            // A better way: Player orchestrates the "Current Episode" update, 
-            // Metadata just updates the visual binding.
-
-            // However, for pure decoupling, Metadata should store the "current title" string 
-            // so it knows if it needs to re-render the badge.
+            // Check if currently displayed title matches the event
+            if (this.currentTitle === data.title) {
+                this.update({ title: data.title }, true);
+            }
         });
     },
 
