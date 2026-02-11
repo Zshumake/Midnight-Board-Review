@@ -87,6 +87,48 @@ export const ProgressBar = {
                 }
                 this.isDragging = false;
             });
+
+            // Mouse Drag Support (Added for Desktop)
+            this.elements.stickyContainer.addEventListener('mousedown', (e) => {
+                this.isDragging = true;
+                handleSeek(e); // Allow click-jump on mousedown
+            });
+
+            // Attach global listeners for smooth dragging outside the container
+            document.addEventListener('mousemove', (e) => {
+                if (this.isDragging) {
+                    e.preventDefault();
+
+                    // Re-use logic (adapted for global mouse)
+                    const rect = this.elements.stickyContainer.getBoundingClientRect();
+                    let offsetX = e.clientX - rect.left;
+                    if (offsetX < 0) offsetX = 0;
+                    if (offsetX > rect.width) offsetX = rect.width;
+
+                    const percent = offsetX / rect.width;
+                    const duration = this.audioEngine.getDuration();
+
+                    // Visual update only
+                    if (this.elements.stickyBar) this.elements.stickyBar.style.width = `${percent * 100}%`;
+                }
+            });
+
+            document.addEventListener('mouseup', (e) => {
+                if (this.isDragging) {
+                    // Final seek
+                    const rect = this.elements.stickyContainer.getBoundingClientRect();
+                    let offsetX = e.clientX - rect.left;
+                    // Clamp for final seek
+                    if (offsetX < 0) offsetX = 0;
+                    if (offsetX > rect.width) offsetX = rect.width;
+
+                    const percent = offsetX / rect.width;
+                    const duration = this.audioEngine.getDuration();
+                    if (duration > 0) this.audioEngine.seek(duration * percent);
+
+                    this.isDragging = false;
+                }
+            });
         }
     },
 
@@ -100,7 +142,23 @@ export const ProgressBar = {
             this.elements.mainBar.value = currentTime || 0;
 
             // Background fill hack for range input
-            const percent = duration > 0 ? (currentTime / duration) * 100 : 0;
+            // We need to calculate the gradient percentage to align with the visual center of the thumb
+            const ratio = duration > 0 ? (currentTime / duration) : 0;
+            const thumbWidth = document.body.classList.contains('bockenek-mode') ? 50 : 16;
+
+            // Standard range input logic: Thumb center moves from [thumbWidth/2] to [width - thumbWidth/2]
+            // We use standard 0-100% gradient, but we need to map the ratio to visual position
+            // Estimation: simple ratio is often "good enough" for small thumbs, but for 50px it shows a gap.
+            // Let's try to be precise if we can read width, otherwise fallback to ratio.
+
+            let percent = ratio * 100;
+            const width = this.elements.mainBar.offsetWidth;
+
+            if (width > thumbWidth) {
+                const visualPos = (thumbWidth / 2) + ratio * (width - thumbWidth);
+                percent = (visualPos / width) * 100;
+            }
+
             this.elements.mainBar.style.background = `linear-gradient(to right, var(--accent-gold) ${percent}%, rgba(255, 255, 255, 0.1) ${percent}%)`;
         }
 
