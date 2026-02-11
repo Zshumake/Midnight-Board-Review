@@ -1,8 +1,8 @@
-const CACHE_NAME = 'midnight-review-v2.0.1';
+const CACHE_NAME = 'midnight-review-v2.0.2';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
-    './style.css',
+    './style.v2.0.1.css',
     './site.webmanifest',
     './js/player.js',
     './js/state.js',
