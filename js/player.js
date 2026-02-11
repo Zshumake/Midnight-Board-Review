@@ -123,16 +123,12 @@ async function loadEpisode(index, shouldAutoplay = true) {
     const currentId = activeLoadId;
 
     // 1. Save Previous State
-    if (lastKnownTime > 5) {
-        state.setPosition(episodes[currentIndex].title, lastKnownTime);
-    }
-    lastKnownTime = 0;
-
     // 2. Update Index & UI Loading State
     currentIndex = index;
     state.setLastIndex(index);
     LibraryRenderer.updatePlayStates(currentIndex, false);
     Feedback.setLoading(true);
+    Tracking.reset(); // RESET TRACKING FOR NEW EPISODE
 
     const episode = episodes[index];
 
