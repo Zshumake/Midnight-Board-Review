@@ -251,15 +251,13 @@ button:hover {
   text-align: center;
 }
 
-.progress-container {
-  background: rgba(255, 255, 255, 0.1);
-  height: 3px;
-  flex: 1;
-  /* Take up remaining space */
-  cursor: pointer;
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
+background: transparent;
+width: 100%;
+flex: 1;
+/* Take up remaining space */
+position: relative;
+display: flex;
+align-items: center;
 }
 
 .progress-bar {
