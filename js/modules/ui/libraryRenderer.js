@@ -81,6 +81,19 @@ export const LibraryRenderer = {
         }
     },
 
+    updateProgress(currentTime, duration) {
+        // Find the active row
+        const activeRow = document.querySelector('.episode-item.active');
+        if (activeRow) {
+            // Update fill width
+            const fill = activeRow.querySelector('.episode-progress-fill');
+            if (fill && duration > 0) {
+                const percent = (currentTime / duration) * 100;
+                fill.style.width = `${percent}%`;
+            }
+        }
+    },
+
     updatePlayStates(activeIndex, isPlaying) {
         const allRows = document.querySelectorAll('.episode-item');
         allRows.forEach(row => {

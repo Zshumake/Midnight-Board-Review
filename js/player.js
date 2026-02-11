@@ -278,6 +278,7 @@ function setupEventListeners() {
 
         // 3. Visual Update
         ProgressBar.update(currentTime, duration);
+        LibraryRenderer.updateProgress(currentTime, duration);
 
         // 4. Preload Next
         const timeLeft = duration - currentTime;

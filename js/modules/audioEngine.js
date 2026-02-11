@@ -90,6 +90,22 @@ class AudioEngine {
     /**
      * Pause playback.
      */
+    async pause() {
+        return this._enqueue(async () => {
+            this.audio.pause();
+            this._isPlaying = false;
+            this._updateMediaSessionState();
+        });
+    }
+
+    /**
+     * Get current duration.
+     * Use this instead of direct property access for safety.
+     */
+    getDuration() {
+        return this.audio.duration;
+    }
+
     /**
      * Set playback speed.
      * @param {number} rate - 0.5 to 2.0
