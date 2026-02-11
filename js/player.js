@@ -15,7 +15,7 @@ import { Controls } from './modules/ui/controls.js';
 import { ProgressBar } from './modules/ui/progressBar.js';
 import { Feedback } from './modules/ui/feedback.js';
 import { Metadata } from './modules/ui/metadata.js';
-import { Metadata } from './modules/ui/metadata.js';
+
 import { LibraryRenderer } from './modules/ui/libraryRenderer.js';
 import { SpeedControl } from './modules/ui/speedControl.js';
 
