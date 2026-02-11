@@ -65,7 +65,12 @@ Library.initCategories(episodes, LibraryRenderer, () => {
 });
 
 // 3. Setup Main Player Event Listeners (UI -> Engine)
+// 3. Setup Main Player Event Listeners (UI -> Engine)
 setupEventListeners();
+
+audioEngine.on('error', (msg) => {
+    Feedback.showError(msg || "Playback Error");
+});
 
 // 4. Initial Episode Load (Prep)
 loadEpisode(currentIndex, false); // False = Don't Autoplay

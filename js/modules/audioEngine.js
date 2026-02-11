@@ -222,7 +222,17 @@ class AudioEngine {
 
         this.audio.addEventListener('error', (e) => {
             console.error("AudioEngine: Native Error", e);
-            this._emit('error', this.audio.error);
+            // Translate error code to readable message
+            let msg = 'Unknown Audio Error';
+            if (this.audio.error) {
+                switch (this.audio.error.code) {
+                    case 1: msg = 'Aborted'; break;
+                    case 2: msg = 'Network Error'; break;
+                    case 3: msg = 'Decoding Error'; break;
+                    case 4: msg = 'Source Not Supported'; break;
+                }
+            }
+            this._emit('error', msg); // Send string message
         });
 
         // iOS Visibility Sync

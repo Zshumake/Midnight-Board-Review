@@ -1202,6 +1202,12 @@ button:hover {
     height: 18px;
     color: var(--accent-orange);
     /* Ensure color matches branding */
+    transition: color 0.2s ease;
+  }
+
+  .list-play-btn:hover svg,
+  .list-play-btn:active svg {
+    color: #000000;
   }
 
   .sticky-content {
