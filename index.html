@@ -211,6 +211,8 @@
                 </div>
 
                 <script type="module">
+                    import { FloatingHeads } from './js/modules/ui/floatingHeads.js';
+
                     // Bockenek Mode Easter Egg
                     const bockenekToggle = document.getElementById('bockenek-toggle');
                     const body = document.body;
@@ -219,12 +221,19 @@
                     if (localStorage.getItem('bockenek_mode') === 'true') {
                         body.classList.add('bockenek-mode');
                         bockenekToggle.classList.add('active');
+                        FloatingHeads.init();
                     }
 
                     bockenekToggle.addEventListener('click', () => {
                         const isActive = body.classList.toggle('bockenek-mode');
                         bockenekToggle.classList.toggle('active');
                         localStorage.setItem('bockenek_mode', isActive);
+
+                        if (isActive) {
+                            FloatingHeads.init();
+                        } else {
+                            FloatingHeads.destroy();
+                        }
                     });
                 </script>
         </footer>
