@@ -15,7 +15,9 @@ import { Controls } from './modules/ui/controls.js';
 import { ProgressBar } from './modules/ui/progressBar.js';
 import { Feedback } from './modules/ui/feedback.js';
 import { Metadata } from './modules/ui/metadata.js';
+import { Metadata } from './modules/ui/metadata.js';
 import { LibraryRenderer } from './modules/ui/libraryRenderer.js';
+import { SpeedControl } from './modules/ui/speedControl.js';
 
 // --- State Variables ---
 let currentIndex = 0;
@@ -170,16 +172,7 @@ async function loadEpisode(index, shouldAutoplay = true) {
         Feedback.setLoading(false);
         isPreloading = false;
 
-        // Restore Speed
-        const savedSpeed = state.getSpeed();
-        audioEngine.setSpeed(savedSpeed);
-        // Sync UI for Speed (Ideally Controls/Sticky handles this via state event, but for now manual)
-        const speedSelect = document.getElementById('speed-select');
-        if (speedSelect) speedSelect.value = savedSpeed;
-
-        // Update Sticky Speed UI manually if needed, or rely on event
-        const stickySpeed = document.getElementById('sticky-speed-select');
-        if (stickySpeed) stickySpeed.value = savedSpeed;
+        isPreloading = false;
 
         if (shouldAutoplay) {
             audioEngine.play(); // Auto-play on user-initiated load
@@ -251,18 +244,8 @@ function setupEventListeners() {
         onSearch: (term) => renderLibrary(term)
     });
 
-    // Speed Control (Manual Binding for now, could be in Controls)
-    const speedSelect = document.getElementById('speed-select');
-    const stickySpeed = document.getElementById('sticky-speed-select');
-
-    const handleSpeed = (speed) => {
-        state.setSpeed(speed); // Triggers event for Engine
-        if (speedSelect) speedSelect.value = speed;
-        if (stickySpeed) stickySpeed.value = speed;
-    };
-
-    if (speedSelect) speedSelect.addEventListener('change', () => handleSpeed(parseFloat(speedSelect.value)));
-    if (stickySpeed) stickySpeed.addEventListener('change', () => handleSpeed(parseFloat(stickySpeed.value)));
+    // 4. Init SpeedControl
+    SpeedControl.init(audioEngine);
 
     // Engine -> UI Listeners
     audioEngine.on('play', () => {

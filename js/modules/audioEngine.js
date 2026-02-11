@@ -90,14 +90,25 @@ class AudioEngine {
     /**
      * Pause playback.
      */
-    async pause() {
+    /**
+     * Set playback speed.
+     * @param {number} rate - 0.5 to 2.0
+     */
+    async setSpeed(rate) {
         return this._enqueue(async () => {
-            this.audio.pause();
-            this._isPlaying = false;
+            this._playbackRate = rate;
+            this.audio.playbackRate = rate;
             this._updateMediaSessionState();
+            this._emit('speed', rate);
         });
     }
 
+    /**
+     * Get current playback speed.
+     */
+    getSpeed() {
+        return this._playbackRate;
+    }
     /**
      * Toggle Play/Pause
      */
