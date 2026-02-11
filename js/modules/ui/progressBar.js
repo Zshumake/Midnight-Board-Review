@@ -101,7 +101,7 @@ export const ProgressBar = {
 
             // Background fill hack for range input
             const percent = duration > 0 ? (currentTime / duration) * 100 : 0;
-            this.elements.mainBar.style.background = `linear-gradient(to right, var(--primary-color) ${percent}%, var(--bg-secondary) ${percent}%)`;
+            this.elements.mainBar.style.background = `linear-gradient(to right, var(--accent-gold) ${percent}%, rgba(255, 255, 255, 0.1) ${percent}%)`;
         }
 
         // Update Sticky Bar (Visual only)
