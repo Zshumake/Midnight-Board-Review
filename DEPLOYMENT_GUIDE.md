@@ -1,38 +1,60 @@
 # Deployment & Upload Guide
 
-To keep your website fast and **100% free**, we use a "Hybrid" model: **GitHub** hosts the code, and **Cloudflare R2** hosts the audio.
+This is a Flutter Web app. Audio is hosted on **Cloudflare R2**, the site is served via **GitHub Pages**.
+
+## Architecture
+
+```
+Flutter App (GitHub Pages)  ──▶  Audio Files (Cloudflare R2)
+lib/data/episodes_data.dart       pub-a42279514b124e9085d9969a57978062.r2.dev
+```
 
 ## Step 1: Upload Audio to Cloudflare R2
-Since GitHub has strict file size limits and can be slow for streaming, your audio lives in your Cloudflare bucket.
 
-1.  Log in to your [Cloudflare Dashboard](https://dash.cloudflare.com/).
-2.  Go to **R2** in the sidebar.
-3.  Open your `pmr-review` bucket (or create it if you haven't).
-4.  **Drag and drop** your MP3 files here.
-5.  **CRITICAL**: Make sure the filename exactly matches the URL in `js/episodes.js`.
-    - *Example*: If the file is `Stroke1.mp3`, it should be at `https://media.shuhub.xyz/Stroke1.mp3`.
+1. Log in to your [Cloudflare Dashboard](https://dash.cloudflare.com/).
+2. Go to **R2** in the sidebar.
+3. Open your `pmr-review` bucket.
+4. **Drag and drop** your `.m4a` files.
+5. The filename must match the URL in `lib/data/episodes_data.dart`.
+   - Example: `Stroke_1.m4a` → `https://pub-a42279514b124e9085d9969a57978062.r2.dev/Stroke_1.m4a`
 
-## Step 2: Push Website Code to GitHub
-This is where the interface, the search bar, and the private RSS feed live.
+## Step 2: Build & Deploy the Flutter App
 
-1.  Make sure your local folder has these files:
-    - `index.html`
-    - `style.css`
-    - `cover.jpg`
-    - `js/` (containing `player.js`, `episodes.js`, etc.)
-2.  Use **GitHub Desktop** (easier) or the terminal to push these to your repository.
-3.  Once pushed, your site will be live at `https://shuhub.xyz/` (or your chosen path).
+```bash
+# Build the release web bundle
+flutter build web --release
 
-## Step 3: Updating Episodes
-If you ever record a new episode or change a title:
+# The output is in build/web/ — push this to GitHub Pages
+```
 
-1.  Open `js/episodes.js`.
-2.  Find the relevant category and add/edit the entry:
-    ```javascript
-    { title: "New Episode", url: "https://media.shuhub.xyz/NewFile.mp3", category: "MSK/Sports" }
-    ```
-3.  Upload the new `NewFile.mp3` to Cloudflare R2 (Step 1).
-4.  Push the updated `js/episodes.js` to GitHub (Step 2).
+If using GitHub Pages from the repo root, copy `build/web/*` to the root or configure Pages to serve from `build/web`.
 
-### Pro-Tip: File Names
-Avoid spaces in filenames (e.g., use `Stroke_1.mp3` instead of `Stroke 1.mp3`). This prevents broken links and makes sorting much easier!
+## Step 3: Adding / Editing Episodes
+
+1. Open `lib/data/episodes_data.dart`.
+2. Add or edit an entry in the `allEpisodes` list:
+   ```dart
+   Episode(
+     title: 'New Episode Title',
+     url: 'https://pub-a42279514b124e9085d9969a57978062.r2.dev/NewFile.m4a',
+     category: 'Pain Medicine',
+     description: descriptions['New Episode Title'] ?? '',
+   ),
+   ```
+3. If adding a description, update `lib/data/descriptions_data.dart`.
+4. Upload the audio file to R2 (Step 1).
+5. Rebuild and deploy (Step 2).
+
+## Step 4: Updating the RSS Feed
+
+Run the RSS generator after any episode changes:
+
+```bash
+node generate_rss.cjs
+```
+
+This outputs `feed/v1_8zX9s2_secure.xml`. Commit and push it alongside the web build.
+
+## File Names
+
+Avoid spaces — use underscores (e.g., `Stroke_1.m4a` not `Stroke 1.m4a`).

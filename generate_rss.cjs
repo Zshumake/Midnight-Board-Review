@@ -2,8 +2,13 @@ const fs = require('fs');
 const path = require('path');
 
 /**
- * Utility to escape XML special characters
+ * RSS Feed Generator for Midnight Board Review
+ *
+ * Usage:
+ *   1. dart run scripts/export_episodes_json.dart   (exports Dart data to JSON)
+ *   2. node generate_rss.cjs                        (generates the feed XML)
  */
+
 function escapeXml(unsafe) {
     if (typeof unsafe !== 'string') return '';
     return unsafe
@@ -15,27 +20,38 @@ function escapeXml(unsafe) {
 }
 
 async function generate() {
-    console.log('🚀 Generating Production RSS Feed from JSON...');
+    console.log('🚀 Generating RSS Feed...');
 
-    // 1. Load Data Sources (JSON is much more reliable)
-    const episodes = JSON.parse(fs.readFileSync(path.join(__dirname, 'js', 'modules', 'episodes.json'), 'utf8'));
-    const sizes = JSON.parse(fs.readFileSync(path.join(__dirname, 'js', 'modules', 'mediaSizes.json'), 'utf8'));
+    // Load episode data (exported from Dart via export_episodes_json.dart)
+    const episodesPath = path.join(__dirname, 'scripts', 'episodes.json');
+    if (!fs.existsSync(episodesPath)) {
+        console.error('❌ scripts/episodes.json not found.');
+        console.error('   Run first: dart run scripts/export_episodes_json.dart');
+        process.exit(1);
+    }
 
-    // Modular Config
+    const episodes = JSON.parse(fs.readFileSync(episodesPath, 'utf8'));
+
+    // Load media sizes if available (optional — falls back to estimate)
+    let sizes = {};
+    const sizesPath = path.join(__dirname, 'scripts', 'mediaSizes.json');
+    if (fs.existsSync(sizesPath)) {
+        sizes = JSON.parse(fs.readFileSync(sizesPath, 'utf8'));
+    }
+
     const config = {
         title: "Midnight Board Review (Private)",
-        link: "https://zshumake.github.io/Midnight-Board-Review/",
+        link: "https://zacharyshumaker.github.io/Cuccurullo-Podcast-Hosting-Website/",
         author: "Midnight Review",
-        summary: "A 119-episode podcast covering everything in the PM&R board review.",
+        summary: `A ${episodes.length}-episode podcast covering everything in the PM&R board review.`,
         category: "Health & Fitness",
         subCategory: "Medicine",
         ownerName: "Zachary Shumaker",
         ownerEmail: "zacharyshumaker@gmail.com",
-        coverUrl: "https://zshumake.github.io/Midnight-Board-Review/cover.jpg",
-        feedUrl: "https://zshumake.github.io/Midnight-Board-Review/feed/v1_8zX9s2_secure.xml"
+        coverUrl: "https://zacharyshumaker.github.io/Cuccurullo-Podcast-Hosting-Website/cover.jpg",
+        feedUrl: "https://zacharyshumaker.github.io/Cuccurullo-Podcast-Hosting-Website/feed/v1_8zX9s2_secure.xml"
     };
 
-    // 2. Build XML Header
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
@@ -61,26 +77,15 @@ async function generate() {
         <itunes:email>${escapeXml(config.ownerEmail)}</itunes:email>
     </itunes:owner>\n`;
 
-    // 3. Add Items
-    // We want "Serial" order (Oldest first). 
-    // Episode 1 should be at the top of the list in Apple Podcasts (physically bottom, but logic handles sort).
-    // By setting type=serial, Apple will sort by old->new.
-    // We will ensure dates reflect this: Ep 1 = Oldest Date, Ep 120 = Newest Date.
-
     const totalEpisodes = episodes.length;
     const now = Date.now();
 
-    // Iterate 1..N (Standard Order)
     episodes.forEach((ep, i) => {
         const filename = ep.url.split('/').pop();
         const length = sizes[filename] || "60000000";
-
-        // episodeNumber is 1, 2, 3...
         const episodeNumber = i + 1;
 
-        // Date calculation: 
-        // Ep 1 (i=0) -> Oldest (Now - Total Days)
-        // Ep 120 (i=119) -> Newest (Now - 1 Day)
+        // Serial order: Ep 1 = oldest, Ep N = newest
         const daysAgo = totalEpisodes - i;
         const pubDate = new Date(now - (daysAgo * 86400000)).toUTCString();
 
@@ -102,10 +107,12 @@ async function generate() {
     xml += `  </channel>
 </rss>`;
 
-    // 4. Final Write
-    const targetFile = path.join(__dirname, 'feed', 'v1_8zX9s2_secure.xml');
+    const feedDir = path.join(__dirname, 'feed');
+    if (!fs.existsSync(feedDir)) fs.mkdirSync(feedDir, { recursive: true });
+
+    const targetFile = path.join(feedDir, 'v1_8zX9s2_secure.xml');
     fs.writeFileSync(targetFile, xml);
-    console.log(`✅ Success! Rebuilt feed with ${episodes.length} episodes.`);
+    console.log(`✅ Generated feed with ${episodes.length} episodes → ${targetFile}`);
 }
 
 generate().catch(console.error);
