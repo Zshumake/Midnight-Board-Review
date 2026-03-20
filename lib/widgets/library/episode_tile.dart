@@ -41,7 +41,13 @@ class _EpisodeTileState extends State<EpisodeTile> {
         onExit: (_) => setState(() => _hovering = false),
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
-          onTap: () => audio.loadEpisode(widget.index),
+          onTap: () {
+            if (isActive) {
+              audio.togglePlayPause();
+            } else {
+              audio.loadEpisode(widget.index);
+            }
+          },
           onLongPress: completions > 0
               ? () => _showResetDialog(context, appState)
               : null,
