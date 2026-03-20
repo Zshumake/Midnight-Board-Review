@@ -4,8 +4,15 @@ import '../../providers/audio_provider.dart';
 import '../../utils/theme.dart';
 import '../../utils/formatters.dart';
 
-class ProgressBar extends StatelessWidget {
+class ProgressBar extends StatefulWidget {
   const ProgressBar({super.key});
+
+  @override
+  State<ProgressBar> createState() => _ProgressBarState();
+}
+
+class _ProgressBarState extends State<ProgressBar> {
+  double? _dragValue;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +21,8 @@ class ProgressBar extends StatelessWidget {
         final posMs = audio.position.inMilliseconds.toDouble();
         final durMs = audio.duration.inMilliseconds.toDouble();
         final max = durMs > 0 ? durMs : 1.0;
-        final value = posMs.clamp(0.0, max);
+        // Use drag value while dragging, otherwise use actual position
+        final value = (_dragValue ?? posMs).clamp(0.0, max);
 
         return Semantics(
           label: 'Playback progress',
@@ -26,13 +34,16 @@ class ProgressBar extends StatelessWidget {
               Slider(
                 value: value,
                 max: max,
-                onChangeStart: (_) => audio.setDragging(true),
+                onChangeStart: (_) {
+                  audio.setDragging(true);
+                },
                 onChanged: (val) {
-                  audio.seekTo(Duration(milliseconds: val.toInt()));
+                  setState(() => _dragValue = val);
                 },
                 onChangeEnd: (val) {
                   audio.setDragging(false);
                   audio.seekTo(Duration(milliseconds: val.toInt()));
+                  setState(() => _dragValue = null);
                 },
               ),
               Padding(
@@ -41,7 +52,10 @@ class ProgressBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      formatDuration(audio.position),
+                      _dragValue != null
+                          ? formatDuration(
+                              Duration(milliseconds: _dragValue!.toInt()))
+                          : formatDuration(audio.position),
                       style: AppTypography.mono(context),
                     ),
                     Text(

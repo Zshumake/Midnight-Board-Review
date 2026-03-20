@@ -76,12 +76,16 @@ class PlayControls extends StatelessWidget {
               ),
               const SizedBox(width: Spacing.md),
 
-              // Next — subtle
+              // Next — subtle (disabled on last episode)
               AppIconButton(
                 icon: Icons.skip_next_rounded,
                 size: 26,
-                color: AppColors.textMuted,
-                onPressed: audio.nextEpisode,
+                color: audio.currentIndex >= audio.episodes.length - 1
+                    ? AppColors.textFaint
+                    : AppColors.textMuted,
+                onPressed: audio.currentIndex >= audio.episodes.length - 1
+                    ? null
+                    : audio.nextEpisode,
                 tooltip: 'Next',
               ),
             ],

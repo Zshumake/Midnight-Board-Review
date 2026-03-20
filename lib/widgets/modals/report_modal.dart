@@ -88,7 +88,7 @@ class _ReportModalState extends State<ReportModal> {
 
               // Issue type
               DropdownButtonFormField<String>(
-                initialValue: _issueType,
+                value: _issueType,
                 dropdownColor: AppColors.bgElevated,
                 items: _issueTypes
                     .map((t) => DropdownMenuItem(value: t, child: Text(t)))
@@ -100,7 +100,7 @@ class _ReportModalState extends State<ReportModal> {
 
               // Episode
               DropdownButtonFormField<String>(
-                initialValue: _selectedEpisode,
+                value: _selectedEpisode,
                 dropdownColor: AppColors.bgElevated,
                 isExpanded: true,
                 items: [

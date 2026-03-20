@@ -86,6 +86,7 @@ class AudioProvider extends ChangeNotifier {
       // Apply saved speed
       await _audio.setSpeed(_appState.playbackSpeed);
 
+      _isSourceLoaded = true;
       if (autoPlay) await _audio.play();
     } catch (e) {
       _error = 'Failed to load episode: $e';
@@ -95,9 +96,14 @@ class AudioProvider extends ChangeNotifier {
     }
   }
 
+  bool _isSourceLoaded = false;
+
   Future<void> togglePlayPause() async {
     if (_isPlaying) {
       await _audio.pause();
+    } else if (!_isSourceLoaded) {
+      // First launch — no audio loaded yet, load the current episode
+      await loadEpisode(_currentIndex);
     } else {
       await _audio.play();
     }
@@ -134,6 +140,9 @@ class AudioProvider extends ChangeNotifier {
       await _audio.seek(Duration.zero);
     } else if (_currentIndex > 0) {
       await loadEpisode(_currentIndex - 1);
+    } else {
+      // On first episode within first 3 seconds — restart from beginning
+      await _audio.seek(Duration.zero);
     }
   }
 
