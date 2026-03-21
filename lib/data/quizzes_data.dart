@@ -2536,4 +2536,559 @@ final Map<String, EpisodeQuiz> quizzes = {
       ),
     ],
   ),
+
+  // ── Musculoskeletal: Shoulder 1 ──
+  'Musculoskeletal: Shoulder 1': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Shoulder 1',
+    questions: [
+      QuizQuestion(
+        question: 'The rotator cuff is composed of four muscles. Which muscle is NOT part of the rotator cuff?',
+        options: ['Supraspinatus', 'Infraspinatus', 'Deltoid', 'Teres minor'],
+        correctIndex: 2,
+        explanation: 'The rotator cuff consists of the SITS muscles: Supraspinatus, Infraspinatus, Teres minor, and Subscapularis. The deltoid is the primary shoulder abductor but is not part of the rotator cuff.',
+      ),
+      QuizQuestion(
+        question: 'Which rotator cuff muscle is most commonly torn?',
+        options: ['Subscapularis', 'Infraspinatus', 'Supraspinatus', 'Teres minor'],
+        correctIndex: 2,
+        explanation: 'The supraspinatus is most commonly torn due to its location in the subacromial space and its relatively poor blood supply in the "critical zone" near its insertion on the greater tuberosity.',
+      ),
+      QuizQuestion(
+        question: 'The "empty can" test primarily evaluates which muscle?',
+        options: ['Infraspinatus', 'Subscapularis', 'Supraspinatus', 'Teres minor'],
+        correctIndex: 2,
+        explanation: 'The empty can (Jobe) test: arm at 90° abduction, 30° forward flexion, internally rotated (thumb down). Resist downward pressure. Weakness or pain = supraspinatus pathology.',
+      ),
+      QuizQuestion(
+        question: 'The glenohumeral joint has the greatest range of motion of any joint in the body. What is the primary trade-off?',
+        options: ['Reduced blood supply', 'Inherent instability', 'Limited nerve innervation', 'Decreased muscle attachment points'],
+        correctIndex: 1,
+        explanation: 'The glenohumeral joint sacrifices stability for mobility. The glenoid fossa is shallow (covers only ~25% of the humeral head), making it the most commonly dislocated joint. Stability relies on the labrum, capsule, rotator cuff, and ligaments.',
+      ),
+      QuizQuestion(
+        question: 'Anterior shoulder dislocations most commonly injure which nerve?',
+        options: ['Suprascapular nerve', 'Long thoracic nerve', 'Axillary nerve', 'Musculocutaneous nerve'],
+        correctIndex: 2,
+        explanation: 'The axillary nerve wraps around the surgical neck of the humerus and is most vulnerable during anterior dislocations. Test for deltoid weakness and decreased sensation over the lateral "regimental badge" area. Incidence increases with age.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Shoulder 2 ──
+  'Musculoskeletal: Shoulder 2': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Shoulder 2',
+    questions: [
+      QuizQuestion(
+        question: 'Neer\'s impingement test involves:',
+        options: ['Resisted external rotation at 0° abduction', 'Passive forward flexion with the scapula stabilized', 'Resisted abduction in the empty can position', 'Cross-body adduction'],
+        correctIndex: 1,
+        explanation: 'Neer\'s test: the examiner stabilizes the scapula and passively forward flexes the arm overhead. Pain indicates impingement of the supraspinatus tendon against the anterior acromion.',
+      ),
+      QuizQuestion(
+        question: 'Type III acromion morphology is associated with increased risk of rotator cuff impingement because it is:',
+        options: ['Flat', 'Curved', 'Hooked', 'Absent'],
+        correctIndex: 2,
+        explanation: 'Bigliani classification: Type I = flat, Type II = curved, Type III = hooked. The hooked (Type III) acromion narrows the subacromial space, increasing mechanical impingement of the supraspinatus tendon.',
+      ),
+      QuizQuestion(
+        question: 'The Hawkins-Kennedy test for shoulder impingement is performed by:',
+        options: ['Resisted external rotation at the side', 'Forward flexing the arm to 90° then internally rotating', 'Resisted abduction in the scapular plane', 'Cross-body adduction with the arm at 90°'],
+        correctIndex: 1,
+        explanation: 'Hawkins-Kennedy: flex the arm to 90° then forcefully internally rotate. This drives the supraspinatus tendon against the coracoacromial ligament. Pain = positive for impingement.',
+      ),
+      QuizQuestion(
+        question: 'Scapular winging is most commonly caused by injury to which nerve?',
+        options: ['Axillary nerve', 'Suprascapular nerve', 'Long thoracic nerve', 'Dorsal scapular nerve'],
+        correctIndex: 2,
+        explanation: 'The long thoracic nerve innervates the serratus anterior, which holds the scapula against the chest wall. Injury causes medial winging — the scapula protrudes posteriorly, especially when pushing against a wall.',
+      ),
+      QuizQuestion(
+        question: 'Adhesive capsulitis (frozen shoulder) is characterized by loss of both active AND passive ROM. Which motion is typically lost first?',
+        options: ['Flexion', 'Abduction', 'External rotation', 'Internal rotation'],
+        correctIndex: 2,
+        explanation: 'External rotation is typically lost first and most severely in adhesive capsulitis because the inferior glenohumeral ligament (tightest in external rotation) is the first capsular structure to contract. The capsular pattern is external rotation > abduction > internal rotation.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Shoulder 3 ──
+  'Musculoskeletal: Shoulder 3': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Shoulder 3',
+    questions: [
+      QuizQuestion(
+        question: 'A SLAP lesion involves a tear of the:',
+        options: ['Rotator cuff insertion', 'Superior labrum from anterior to posterior', 'Inferior glenohumeral ligament', 'Coracoacromial ligament'],
+        correctIndex: 1,
+        explanation: 'SLAP = Superior Labrum Anterior to Posterior. It involves the superior labrum at the biceps anchor. Common in overhead athletes and after falls on an outstretched hand. O\'Brien\'s test is used for diagnosis.',
+      ),
+      QuizQuestion(
+        question: 'The Speed\'s test evaluates pathology of which structure?',
+        options: ['Supraspinatus tendon', 'Biceps tendon (long head)', 'Subscapularis tendon', 'Acromioclavicular joint'],
+        correctIndex: 1,
+        explanation: 'Speed\'s test: resist forward flexion with the elbow extended and forearm supinated. Pain at the anterior shoulder/bicipital groove = biceps tendinopathy or SLAP lesion.',
+      ),
+      QuizQuestion(
+        question: 'AC joint pathology is best assessed with which provocative test?',
+        options: ['Neer\'s test', 'Cross-body adduction test', 'Empty can test', 'Apprehension test'],
+        correctIndex: 1,
+        explanation: 'The cross-body adduction (scarf) test: adduct the arm across the chest. Pain at the AC joint = positive for AC joint pathology (arthritis, separation, or distal clavicle osteolysis).',
+      ),
+      QuizQuestion(
+        question: 'The apprehension test is positive for:',
+        options: ['Rotator cuff tear', 'AC joint arthritis', 'Anterior glenohumeral instability', 'Biceps tendinopathy'],
+        correctIndex: 2,
+        explanation: 'The apprehension test: arm at 90° abduction and external rotation. The patient feels a sense of impending dislocation (apprehension, not just pain) = positive for anterior glenohumeral instability. The relocation test (posterior pressure on humeral head) should relieve the apprehension.',
+      ),
+      QuizQuestion(
+        question: 'Suprascapular neuropathy causes weakness of which two muscles?',
+        options: ['Deltoid and teres minor', 'Supraspinatus and infraspinatus', 'Subscapularis and teres major', 'Biceps and brachialis'],
+        correctIndex: 1,
+        explanation: 'The suprascapular nerve innervates the supraspinatus (abduction initiation) and infraspinatus (external rotation). Entrapment at the suprascapular notch affects both; entrapment at the spinoglenoid notch affects only infraspinatus.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Shoulder 4 ──
+  'Musculoskeletal: Shoulder 4': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Shoulder 4',
+    questions: [
+      QuizQuestion(
+        question: 'The lift-off test (Gerber test) evaluates which rotator cuff muscle?',
+        options: ['Supraspinatus', 'Infraspinatus', 'Subscapularis', 'Teres minor'],
+        correctIndex: 2,
+        explanation: 'The lift-off test: hand placed behind the back (internally rotated), patient pushes away from the back. Inability to lift the hand off = subscapularis tear. The belly press test is an alternative for patients who cannot reach behind their back.',
+      ),
+      QuizQuestion(
+        question: 'Calcific tendinitis most commonly affects which rotator cuff tendon?',
+        options: ['Infraspinatus', 'Subscapularis', 'Teres minor', 'Supraspinatus'],
+        correctIndex: 3,
+        explanation: 'Calcific tendinitis most commonly affects the supraspinatus tendon in its critical zone of relative hypovascularity. The resorptive phase is the most painful. Treatment ranges from NSAIDs and PT to needle aspiration or ultrasound-guided barbotage.',
+      ),
+      QuizQuestion(
+        question: 'Thoracic outlet syndrome (TOS) with lower trunk involvement (C8-T1) presents with:',
+        options: ['Deltoid weakness and lateral arm numbness', 'Hand intrinsic weakness and medial forearm/hand numbness', 'Shoulder pain with overhead activities', 'Biceps weakness and lateral forearm numbness'],
+        correctIndex: 1,
+        explanation: 'Neurogenic TOS affecting the lower trunk (C8-T1) presents with hand intrinsic muscle weakness/atrophy and numbness in the medial forearm and hand (ulnar distribution). Upper trunk (C5-C6) involvement is less common and affects shoulder/arm.',
+      ),
+      QuizQuestion(
+        question: 'The Adson test for thoracic outlet syndrome involves:',
+        options: ['Resisted shoulder internal rotation', 'Extending the neck, rotating toward the affected side, and taking a deep breath while palpating the radial pulse', 'Cross-body adduction of the arm', 'Overhead arm elevation for 3 minutes'],
+        correctIndex: 1,
+        explanation: 'Adson\'s test: extend the neck, rotate toward the affected side, deep inspiration — palpate the radial pulse. Diminished pulse or reproduction of symptoms = positive. However, false positive rates are high (~50% of normals).',
+      ),
+      QuizQuestion(
+        question: 'In acromioclavicular joint separations, a Rockwood Type III involves:',
+        options: ['AC ligament sprain only', 'AC ligament tear with CC ligaments intact', 'Complete AC and CC ligament disruption with clavicle elevated 25-100%', 'Posterior dislocation of the clavicle'],
+        correctIndex: 2,
+        explanation: 'Rockwood classification: Type I = AC sprain. Type II = AC torn, CC intact. Type III = both AC and CC disrupted, clavicle elevated 25-100% (controversial for surgical vs conservative). Types IV-VI involve more severe displacement and usually require surgery.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Hand ──
+  'Musculoskeletal: Hand': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Hand',
+    questions: [
+      QuizQuestion(
+        question: 'De Quervain\'s tenosynovitis involves which tendons?',
+        options: ['FDS and FDP', 'EPL and EPB', 'APL and EPB (first dorsal compartment)', 'ECRL and ECRB'],
+        correctIndex: 2,
+        explanation: 'De Quervain\'s involves the first dorsal compartment: abductor pollicis longus (APL) and extensor pollicis brevis (EPB). The Finkelstein test (ulnar deviation with thumb in fist) reproduces pain. Common in new mothers ("mommy thumb").',
+      ),
+      QuizQuestion(
+        question: 'Trigger finger is caused by:',
+        options: ['Tendon rupture', 'Thickening of the A1 pulley with tendon nodule entrapment', 'Dupuytren\'s contracture', 'Joint dislocation'],
+        correctIndex: 1,
+        explanation: 'Trigger finger results from thickening of the A1 pulley and/or nodule formation on the flexor tendon. The tendon catches as it passes through the narrowed pulley, causing clicking, locking, or a fixed flexion contracture.',
+      ),
+      QuizQuestion(
+        question: 'Dupuytren\'s contracture primarily involves:',
+        options: ['The flexor tendons', 'The palmar fascia (palmar aponeurosis)', 'The extensor tendons', 'The joint capsule'],
+        correctIndex: 1,
+        explanation: 'Dupuytren\'s is a fibroproliferative disorder of the palmar fascia causing nodules and cords that progressively flex the MCP and PIP joints. The ring finger is most commonly affected. Risk factors include Northern European descent, diabetes, alcohol use, and smoking.',
+      ),
+      QuizQuestion(
+        question: 'A Gamekeeper\'s (Skier\'s) thumb involves injury to which structure?',
+        options: ['Radial collateral ligament of the thumb MCP', 'Ulnar collateral ligament of the thumb MCP', 'Volar plate of the thumb IP joint', 'Scapholunate ligament'],
+        correctIndex: 1,
+        explanation: 'Gamekeeper\'s thumb is a sprain/tear of the UCL of the thumb MCP joint. Caused by forceful abduction (ski pole falls, breaking a fall). A Stener lesion (adductor aponeurosis interposition) requires surgical repair as it prevents ligament healing.',
+      ),
+      QuizQuestion(
+        question: 'The scaphoid fracture is significant because:',
+        options: ['It is the largest carpal bone', 'Its retrograde blood supply puts it at high risk for avascular necrosis', 'It articulates with no other carpal bones', 'It is always visible on initial X-ray'],
+        correctIndex: 1,
+        explanation: 'The scaphoid has a retrograde blood supply (entering distally via the dorsal ridge). Proximal pole fractures are at highest risk for AVN. Scaphoid fractures may not be visible on initial X-rays — suspect with anatomical snuffbox tenderness and repeat imaging at 2 weeks or get MRI.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Hip 1 ──
+  'Musculoskeletal: Hip 1': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Hip 1',
+    questions: [
+      QuizQuestion(
+        question: 'The blood supply to the femoral head primarily comes from the:',
+        options: ['Foveal artery (ligamentum teres)', 'Medial femoral circumflex artery', 'Obturator artery', 'Superior gluteal artery'],
+        correctIndex: 1,
+        explanation: 'The medial femoral circumflex artery provides the primary blood supply to the femoral head via the retinacular vessels. Femoral neck fractures can disrupt this supply, causing AVN. The foveal artery (via ligamentum teres) provides only a small contribution.',
+      ),
+      QuizQuestion(
+        question: 'A positive Trendelenburg sign indicates weakness of which muscle?',
+        options: ['Iliopsoas', 'Gluteus maximus', 'Gluteus medius', 'Quadriceps femoris'],
+        correctIndex: 2,
+        explanation: 'A positive Trendelenburg sign occurs when the pelvis drops on the unsupported side during single-leg stance, indicating gluteus medius weakness on the stance side. The gluteus medius (L5, superior gluteal nerve) is the primary hip abductor that stabilizes the pelvis during gait.',
+      ),
+      QuizQuestion(
+        question: 'Femoral neck fractures are classified using the Garden classification. Garden Type IV indicates:',
+        options: ['Incomplete/valgus impacted fracture', 'Complete but non-displaced fracture', 'Complete with partial displacement', 'Complete fracture with full displacement'],
+        correctIndex: 3,
+        explanation: 'Garden classification: Type I = incomplete/impacted (good prognosis). Type II = complete, non-displaced. Type III = complete, partially displaced. Type IV = completely displaced (highest AVN risk). Types III and IV typically require arthroplasty rather than fixation.',
+      ),
+      QuizQuestion(
+        question: 'After total hip arthroplasty with a posterior approach, which movement is restricted to prevent dislocation?',
+        options: ['Hip extension and external rotation', 'Hip flexion >90°, adduction, and internal rotation', 'Hip abduction and external rotation', 'Hip flexion <45° and abduction'],
+        correctIndex: 1,
+        explanation: 'Posterior approach hip precautions: avoid flexion >90°, adduction past midline, and internal rotation. These positions stress the posterior capsule repair. An elevated toilet seat, hip abduction pillow, and avoiding low chairs are standard precautions.',
+      ),
+      QuizQuestion(
+        question: 'Avascular necrosis of the femoral head is most commonly associated with which risk factor?',
+        options: ['Diabetes mellitus', 'Corticosteroid use', 'Smoking', 'Osteoarthritis'],
+        correctIndex: 1,
+        explanation: 'Corticosteroid use is the most common non-traumatic cause of femoral head AVN. Other risk factors include alcohol abuse, sickle cell disease, systemic lupus, and femoral neck fractures. Steroid-induced AVN is thought to result from fat emboli and increased intraosseous pressure.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Hip 2 ──
+  'Musculoskeletal: Hip 2': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Hip 2',
+    questions: [
+      QuizQuestion(
+        question: 'Greater trochanteric pain syndrome (formerly trochanteric bursitis) most commonly involves:',
+        options: ['Iliopsoas tendon inflammation', 'Gluteus medius/minimus tendinopathy', 'Hamstring tendon avulsion', 'IT band snapping'],
+        correctIndex: 1,
+        explanation: 'Greater trochanteric pain syndrome is now understood to primarily involve gluteus medius and minimus tendinopathy rather than isolated bursitis. The tendons insert on the greater trochanter and can undergo degenerative changes similar to rotator cuff disease ("rotator cuff of the hip").',
+      ),
+      QuizQuestion(
+        question: 'The FABER (Patrick) test assesses for pathology in which structures?',
+        options: ['Quadriceps tendon and patella', 'Hip joint and sacroiliac joint', 'Lumbar spine and sciatic nerve', 'Knee meniscus and ACL'],
+        correctIndex: 1,
+        explanation: 'FABER = Flexion, ABduction, External Rotation. Pain in the groin = hip joint pathology. Pain in the posterior buttock = sacroiliac joint pathology. This test stresses both structures simultaneously.',
+      ),
+      QuizQuestion(
+        question: 'Femoroacetabular impingement (FAI) of the cam type involves:',
+        options: ['Excessive acetabular coverage (overcoverage)', 'Abnormal bony prominence on the femoral head-neck junction', 'Labral hypertrophy', 'Femoral head AVN'],
+        correctIndex: 1,
+        explanation: 'Cam impingement: abnormal bone on the femoral head-neck junction (loss of normal concavity) that jams into the acetabulum during flexion. Pincer impingement: excessive acetabular coverage. Many patients have mixed (cam + pincer) type.',
+      ),
+      QuizQuestion(
+        question: 'Piriformis syndrome can mimic sciatica because the sciatic nerve:',
+        options: ['Originates from the piriformis muscle', 'Passes through or under the piriformis muscle', 'Is compressed by the piriformis at the knee', 'Is a branch of the piriformis nerve'],
+        correctIndex: 1,
+        explanation: 'The sciatic nerve typically passes beneath the piriformis muscle. In anatomic variants (~15-20% of population), the nerve (or its peroneal division) may pass through or above the piriformis. Spasm or hypertrophy of the piriformis can compress the nerve, causing buttock pain radiating down the leg.',
+      ),
+      QuizQuestion(
+        question: 'Stress fractures of the femoral neck on the tension side (superior/lateral) are important because:',
+        options: ['They always heal with rest alone', 'They are at higher risk of displacement and require surgical fixation', 'They are less painful than compression-side fractures', 'They only occur in elderly patients'],
+        correctIndex: 1,
+        explanation: 'Tension-side (superior) femoral neck stress fractures are at high risk for displacement and completion — they require prophylactic surgical fixation. Compression-side (inferior/medial) fractures are lower risk and can often be managed conservatively with protected weight-bearing.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Hip 3 ──
+  'Musculoskeletal: Hip 3': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Hip 3',
+    questions: [
+      QuizQuestion(
+        question: 'Legg-Calve-Perthes disease is avascular necrosis of the femoral head in which population?',
+        options: ['Elderly women with osteoporosis', 'Adolescent athletes', 'Children ages 4-10 (peak 5-7)', 'Young adults on corticosteroids'],
+        correctIndex: 2,
+        explanation: 'Legg-Calve-Perthes is idiopathic AVN of the femoral head in children ages 4-10, with peak at 5-7 years. It is 5x more common in boys. The child presents with a painless limp and limited hip abduction/internal rotation.',
+      ),
+      QuizQuestion(
+        question: 'Slipped capital femoral epiphysis (SCFE) most commonly presents in which demographic?',
+        options: ['Thin, athletic adolescent girls', 'Overweight adolescent boys (ages 10-16)', 'Toddlers learning to walk', 'Elderly patients after falls'],
+        correctIndex: 1,
+        explanation: 'SCFE occurs in overweight adolescents (10-16 years), more common in boys. The femoral head "slips" posteriorly and inferiorly relative to the femoral neck. Classic presentation: knee or groin pain with a limp. Obligate external rotation with flexion is pathognomonic.',
+      ),
+      QuizQuestion(
+        question: 'Iliotibial band syndrome causes pain at which location?',
+        options: ['Greater trochanter', 'Lateral knee at the femoral epicondyle', 'Medial knee', 'Anterior hip'],
+        correctIndex: 1,
+        explanation: 'IT band syndrome causes lateral knee pain at the femoral epicondyle, where the IT band snaps over the bony prominence during flexion-extension. It is common in runners and cyclists. Ober\'s test assesses IT band tightness.',
+      ),
+      QuizQuestion(
+        question: 'The Thomas test assesses for:',
+        options: ['Hamstring tightness', 'Hip flexion contracture', 'Sacroiliac joint dysfunction', 'Quadriceps weakness'],
+        correctIndex: 1,
+        explanation: 'The Thomas test: supine, flex the contralateral hip to flatten the lumbar lordosis. If the tested leg rises off the table, a hip flexion contracture is present (tight iliopsoas). This is common in wheelchair users and patients with prolonged bed rest.',
+      ),
+      QuizQuestion(
+        question: 'Snapping hip syndrome (coxa saltans) from the iliotibial band involves snapping over which structure?',
+        options: ['The acetabular labrum', 'The greater trochanter (external type)', 'The iliopsoas tendon', 'The femoral head'],
+        correctIndex: 1,
+        explanation: 'External snapping hip: the IT band or gluteus maximus snaps over the greater trochanter. Internal snapping hip: the iliopsoas tendon snaps over the iliopectineal eminence or femoral head. Intra-articular: labral tears or loose bodies.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Knee 1 ──
+  'Musculoskeletal: Knee 1': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Knee 1',
+    questions: [
+      QuizQuestion(
+        question: 'The anterior cruciate ligament (ACL) primarily resists:',
+        options: ['Posterior tibial translation', 'Anterior tibial translation', 'Valgus stress', 'Varus stress'],
+        correctIndex: 1,
+        explanation: 'The ACL prevents anterior translation of the tibia on the femur. It is tested with the Lachman test (most sensitive) and anterior drawer test. ACL tears are common in cutting/pivoting sports and have a female predominance (3-6x higher risk).',
+      ),
+      QuizQuestion(
+        question: 'The Lachman test is considered more sensitive than the anterior drawer test for ACL tears because:',
+        options: ['It tests at full extension', 'At 20-30° flexion, the hamstrings are relaxed and can\'t mask laxity', 'It tests the posterior cruciate ligament simultaneously', 'It requires less examiner skill'],
+        correctIndex: 1,
+        explanation: 'The Lachman test is performed at 20-30° flexion where hamstring guarding is minimized. The anterior drawer (90° flexion) allows the hamstrings to act as ACL synergists, potentially masking a tear. Lachman sensitivity is ~85-95% vs ~60-70% for anterior drawer.',
+      ),
+      QuizQuestion(
+        question: 'The "unhappy triad" (O\'Donoghue triad) involves injury to which three structures?',
+        options: ['ACL, LCL, and lateral meniscus', 'ACL, MCL, and medial meniscus', 'PCL, MCL, and lateral meniscus', 'ACL, PCL, and medial meniscus'],
+        correctIndex: 1,
+        explanation: 'The classic unhappy triad: ACL tear + MCL tear + medial meniscus tear. It results from a valgus force with external rotation (e.g., a lateral blow to the knee). Note: some modern literature shows the lateral meniscus may be more commonly injured than medial.',
+      ),
+      QuizQuestion(
+        question: 'The McMurray test evaluates which knee structure?',
+        options: ['ACL', 'PCL', 'Meniscus', 'MCL'],
+        correctIndex: 2,
+        explanation: 'McMurray\'s test: with the knee flexed, apply valgus + external rotation (medial meniscus) or varus + internal rotation (lateral meniscus) while extending. A pop or click with pain = positive for meniscal tear.',
+      ),
+      QuizQuestion(
+        question: 'The PCL is best tested with which maneuver?',
+        options: ['Lachman test', 'Anterior drawer test', 'Posterior drawer test / posterior sag sign', 'Pivot shift test'],
+        correctIndex: 2,
+        explanation: 'The posterior drawer test: at 90° flexion, push the tibia posteriorly. PCL tears also show a posterior sag sign — with knees flexed at 90°, the tibial plateau sags posteriorly compared to the uninjured side. Dashboard injuries (tibia pushed back) are the classic mechanism.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Knee 2 ──
+  'Musculoskeletal: Knee 2': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Knee 2',
+    questions: [
+      QuizQuestion(
+        question: 'Patellofemoral pain syndrome is the most common cause of anterior knee pain. Which of the following is a key contributing factor?',
+        options: ['ACL deficiency', 'Weak vastus medialis obliquus (VMO)', 'Hamstring overactivity', 'Lateral meniscus tear'],
+        correctIndex: 1,
+        explanation: 'VMO weakness allows the patella to track laterally, increasing patellofemoral contact pressures. VMO strengthening (especially terminal knee extension and isometric quad sets) is central to treatment. Other factors include IT band tightness, increased Q-angle, and femoral anteversion.',
+      ),
+      QuizQuestion(
+        question: 'The Q-angle is measured from the ASIS to the center of the patella to the tibial tubercle. An increased Q-angle is associated with:',
+        options: ['MCL instability', 'Lateral patellar tracking and patellofemoral pain', 'ACL deficiency', 'Posterior knee pain'],
+        correctIndex: 1,
+        explanation: 'An increased Q-angle (normal: ~14° males, ~17° females) creates a lateral vector force on the patella during quadriceps contraction, promoting lateral tracking and patellofemoral pain. Women have larger Q-angles due to wider pelves.',
+      ),
+      QuizQuestion(
+        question: 'Osgood-Schlatter disease involves inflammation at which location?',
+        options: ['Inferior pole of the patella', 'Tibial tubercle apophysis', 'Femoral condyle', 'Popliteal fossa'],
+        correctIndex: 1,
+        explanation: 'Osgood-Schlatter is a traction apophysitis at the tibial tubercle where the patellar tendon inserts. It occurs in active adolescents during growth spurts. Sinding-Larsen-Johansson is the counterpart at the inferior pole of the patella.',
+      ),
+      QuizQuestion(
+        question: 'Baker\'s cyst (popliteal cyst) is a fluid collection that communicates with which structure?',
+        options: ['Infrapatellar bursa', 'Semimembranosus-gastrocnemius bursa (knee joint capsule)', 'Pes anserine bursa', 'Prepatellar bursa'],
+        correctIndex: 1,
+        explanation: 'Baker\'s cysts arise from the semimembranosus-gastrocnemius bursa, which communicates with the knee joint through a one-way valve. They are usually secondary to intra-articular pathology (meniscal tears, arthritis). Rupture can mimic DVT (pseudothrombophlebitis).',
+      ),
+      QuizQuestion(
+        question: 'Pes anserine bursitis causes pain at which location?',
+        options: ['Lateral knee', 'Posterior knee', 'Medial knee, approximately 2 inches below the joint line', 'Anterior knee at the tibial tubercle'],
+        correctIndex: 2,
+        explanation: 'The pes anserinus ("goose foot") is the conjoined tendon insertion of the sartorius, gracilis, and semitendinosus on the medial proximal tibia, ~2 inches below the joint line. Bursitis causes medial knee pain, especially with stair climbing. Common in obese women with knee OA.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Knee 3 ──
+  'Musculoskeletal: Knee 3': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Knee 3',
+    questions: [
+      QuizQuestion(
+        question: 'Total knee arthroplasty is indicated for which of the following?',
+        options: ['Isolated ACL tear', 'Severe tricompartmental osteoarthritis failing conservative management', 'Osgood-Schlatter disease', 'Acute meniscal tear'],
+        correctIndex: 1,
+        explanation: 'TKA is indicated for severe symptomatic OA (typically tricompartmental) that has failed conservative treatment including weight loss, PT, injections, and medications. Unicompartmental (partial) knee replacement may be considered for isolated medial or lateral compartment disease.',
+      ),
+      QuizQuestion(
+        question: 'After total knee arthroplasty, achieving which degree of knee flexion is considered a functional goal?',
+        options: ['60°', '90°', '120°', '135°'],
+        correctIndex: 2,
+        explanation: 'A functional goal of 120° flexion allows patients to perform most daily activities. Minimum needed: 67° for swing phase of gait, 83° for stairs, 93° to rise from a chair, ~105-110° for bathing. 120° is an excellent outcome.',
+      ),
+      QuizQuestion(
+        question: 'Prepatellar bursitis ("housemaid\'s knee") is caused by:',
+        options: ['ACL tear', 'Repeated kneeling on a hard surface', 'Quadriceps tendon rupture', 'Meniscal degeneration'],
+        correctIndex: 1,
+        explanation: 'Prepatellar bursitis results from repetitive friction/pressure over the anterior patella, classically from kneeling (housemaid, roofer, plumber). Septic bursitis must be excluded by aspiration if warmth, erythema, or fever are present.',
+      ),
+      QuizQuestion(
+        question: 'The valgus stress test at the knee evaluates which structure?',
+        options: ['ACL', 'PCL', 'MCL (medial collateral ligament)', 'LCL (lateral collateral ligament)'],
+        correctIndex: 2,
+        explanation: 'Valgus stress test: apply a lateral-to-medial force at the knee (pushing the knee medially). Laxity at 30° flexion = isolated MCL injury. Laxity at full extension = MCL + possible cruciate/capsular involvement (more severe).',
+      ),
+      QuizQuestion(
+        question: 'A locked knee that cannot fully extend is most likely caused by:',
+        options: ['ACL tear', 'MCL sprain', 'Bucket-handle meniscal tear', 'Patellofemoral syndrome'],
+        correctIndex: 2,
+        explanation: 'A bucket-handle meniscal tear is a displaced vertical longitudinal tear that flips into the intercondylar notch, mechanically blocking full extension ("locked knee"). This is a surgical urgency requiring arthroscopic reduction and repair/resection.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Lower Leg ──
+  'Musculoskeletal: Lower Leg': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Lower Leg',
+    questions: [
+      QuizQuestion(
+        question: 'Acute compartment syndrome requires emergent fasciotomy when compartment pressure exceeds:',
+        options: ['10 mmHg', '20 mmHg', '30 mmHg (or within 30 mmHg of diastolic pressure)', '50 mmHg'],
+        correctIndex: 2,
+        explanation: 'Compartment syndrome requires fasciotomy when pressure >30 mmHg or within 30 mmHg of diastolic (delta P <30). The 5 P\'s (pain out of proportion, pain with passive stretch, paresthesias, pallor, pulselessness) are classic but pulselessness is a late and ominous sign.',
+      ),
+      QuizQuestion(
+        question: 'The most reliable early clinical finding of acute compartment syndrome is:',
+        options: ['Pulselessness', 'Paralysis', 'Pain with passive stretch of the affected compartment muscles', 'Pallor'],
+        correctIndex: 2,
+        explanation: 'Pain with passive stretch of the muscles in the affected compartment is the earliest and most reliable clinical sign. For the anterior compartment, passively plantarflexing the foot stretches the tibialis anterior. Waiting for pulselessness means irreversible damage has occurred.',
+      ),
+      QuizQuestion(
+        question: 'Medial tibial stress syndrome (shin splints) involves:',
+        options: ['Anterior compartment syndrome', 'Stress reaction at the posteromedial tibial cortex', 'Achilles tendon rupture', 'Peroneal nerve entrapment'],
+        correctIndex: 1,
+        explanation: 'Medial tibial stress syndrome is a stress reaction/periostitis at the posteromedial tibial border, typically in the distal two-thirds. It is caused by repetitive loading (running on hard surfaces). It exists on a continuum with tibial stress fractures.',
+      ),
+      QuizQuestion(
+        question: 'The anterior compartment of the leg contains which muscles?',
+        options: ['Gastrocnemius and soleus', 'Tibialis posterior and FDL', 'Tibialis anterior, EHL, EDL, and peroneus tertius', 'Peroneus longus and brevis'],
+        correctIndex: 2,
+        explanation: 'The anterior compartment (deep peroneal nerve, anterior tibial artery) contains: tibialis anterior (dorsiflexion/inversion), EHL (great toe extension), EDL (toe extension), and peroneus tertius (dorsiflexion/eversion). Injury causes foot drop.',
+      ),
+      QuizQuestion(
+        question: 'Chronic exertional compartment syndrome differs from acute compartment syndrome in that:',
+        options: ['It requires emergent fasciotomy', 'It causes irreversible muscle necrosis', 'Symptoms resolve with rest and recur with exercise', 'It only affects the posterior compartment'],
+        correctIndex: 2,
+        explanation: 'Chronic exertional compartment syndrome causes exercise-induced pain that resolves with rest (usually within 15-30 minutes). It does not cause permanent damage. Diagnosis requires pre- and post-exercise compartment pressure measurements. Fasciotomy is curative for refractory cases.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Spine 1 ──
+  'Musculoskeletal: Spine 1': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Spine 1',
+    questions: [
+      QuizQuestion(
+        question: 'A posterolateral disc herniation at L4-L5 will most commonly compress which nerve root?',
+        options: ['L3', 'L4', 'L5', 'S1'],
+        correctIndex: 2,
+        explanation: 'In the lumbar spine, posterolateral disc herniations compress the traversing (lower) nerve root. An L4-L5 disc herniates into the L5 nerve root. A far lateral (foraminal) herniation would compress the exiting (upper) root — L4 in this case.',
+      ),
+      QuizQuestion(
+        question: 'The straight leg raise (SLR) test is considered positive when it reproduces radicular symptoms at what angle range?',
+        options: ['0-20°', '30-70°', '80-90°', 'Any angle'],
+        correctIndex: 1,
+        explanation: 'A positive SLR reproduces radicular pain (not just hamstring tightness) between 30-70°. Below 30°, the nerve roots are not yet under tension. Above 70°, pelvic rotation contributes more than nerve root stretch. A positive crossed SLR (contralateral leg raise) is more specific for disc herniation.',
+      ),
+      QuizQuestion(
+        question: 'An L5 radiculopathy presents with weakness of:',
+        options: ['Knee extension and hip flexion', 'Ankle dorsiflexion and great toe extension (EHL)', 'Ankle plantarflexion and knee flexion', 'Hip abduction and knee extension'],
+        correctIndex: 1,
+        explanation: 'L5 radiculopathy: weakness of ankle dorsiflexion (tibialis anterior), great toe extension (EHL), hip abduction, and foot inversion. Sensory loss is on the dorsum of the foot. The L5 reflex is difficult to test (medial hamstring, often unreliable).',
+      ),
+      QuizQuestion(
+        question: 'Cauda equina syndrome is a surgical emergency presenting with:',
+        options: ['Unilateral radiculopathy', 'Bilateral leg pain, saddle anesthesia, and bowel/bladder dysfunction', 'Isolated back pain without neurological deficits', 'Cervical myelopathy'],
+        correctIndex: 1,
+        explanation: 'Cauda equina syndrome: bilateral leg pain/weakness, saddle anesthesia (perineal numbness), and bowel/bladder dysfunction (typically urinary retention). It requires emergent MRI and surgical decompression within 24-48 hours to prevent permanent deficits.',
+      ),
+      QuizQuestion(
+        question: 'The S1 nerve root is tested by which deep tendon reflex?',
+        options: ['Patellar (knee jerk)', 'Achilles (ankle jerk)', 'Biceps', 'Brachioradialis'],
+        correctIndex: 1,
+        explanation: 'S1 = Achilles reflex, ankle plantarflexion, eversion. L4 = patellar reflex, knee extension. S1 radiculopathy is the most common lumbar radiculopathy (L5-S1 disc is the most commonly herniated lumbar disc).',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Spine 2 ──
+  'Musculoskeletal: Spine 2': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Spine 2',
+    questions: [
+      QuizQuestion(
+        question: 'Cervical myelopathy is characterized by which finding?',
+        options: ['Unilateral arm weakness only', 'Upper motor neuron signs in the lower extremities (spasticity, hyperreflexia, Babinski)', 'Isolated neck pain without neurological deficits', 'Normal gait with isolated hand numbness'],
+        correctIndex: 1,
+        explanation: 'Cervical myelopathy compresses the spinal cord, producing UMN signs below the level of compression: spastic gait, hyperreflexia, Babinski sign, Hoffman sign, and clumsiness. It is a surgical condition — progressive myelopathy requires decompression.',
+      ),
+      QuizQuestion(
+        question: 'Lumbar spinal stenosis classically presents with:',
+        options: ['Constant pain unrelated to activity', 'Neurogenic claudication that improves with flexion (shopping cart sign)', 'Acute onset foot drop', 'Pain that worsens with sitting'],
+        correctIndex: 1,
+        explanation: 'Neurogenic claudication: bilateral leg pain/heaviness with walking that improves with flexion (leaning on a shopping cart, sitting). Flexion opens the spinal canal. Extension narrows it. This distinguishes it from vascular claudication (which improves with standing still, not flexion).',
+      ),
+      QuizQuestion(
+        question: 'The Spurling test for cervical radiculopathy involves:',
+        options: ['Flexing the neck while applying axial compression', 'Extending and laterally flexing the neck toward the affected side with axial compression', 'Rotating the neck away from the affected side', 'Applying traction to the neck'],
+        correctIndex: 1,
+        explanation: 'Spurling\'s test: extend, laterally flex toward the symptomatic side, and apply axial compression. This narrows the neural foramen and reproduces radicular symptoms. It has high specificity (~93%) but moderate sensitivity (~40-60%) for cervical radiculopathy.',
+      ),
+      QuizQuestion(
+        question: 'Spondylolisthesis refers to:',
+        options: ['A fracture of the vertebral body', 'Forward slippage of one vertebra on another', 'Disc herniation into the spinal canal', 'Lateral curvature of the spine'],
+        correctIndex: 1,
+        explanation: 'Spondylolisthesis is anterior slippage of a vertebra relative to the one below. It is most common at L5-S1. Graded I-V by percentage of slip (Meyerding classification). Isthmic type (pars defect/spondylolysis) is most common in young athletes. Degenerative type is most common in older adults.',
+      ),
+      QuizQuestion(
+        question: 'Spondylolysis is a defect in which part of the vertebra?',
+        options: ['Vertebral body', 'Spinous process', 'Pars interarticularis', 'Transverse process'],
+        correctIndex: 2,
+        explanation: 'Spondylolysis is a stress fracture/defect of the pars interarticularis, most common at L5. Bilateral pars defects can lead to spondylolisthesis. The "Scotty dog" sign on oblique X-ray shows the pars defect as a collar on the dog. Common in gymnasts, football linemen, and dancers.',
+      ),
+    ],
+  ),
+
+  // ── Musculoskeletal: Spine 3 ──
+  'Musculoskeletal: Spine 3': const EpisodeQuiz(
+    episodeTitle: 'Musculoskeletal: Spine 3',
+    questions: [
+      QuizQuestion(
+        question: 'A C6 radiculopathy presents with weakness of:',
+        options: ['Shoulder abduction and elbow flexion', 'Wrist extension and biceps (elbow flexion)', 'Triceps and wrist flexion', 'Hand intrinsic muscles'],
+        correctIndex: 1,
+        explanation: 'C6 radiculopathy: weakness of wrist extension (ECRL/ECRB) and biceps (elbow flexion). Sensory loss is in the thumb and lateral forearm. The biceps and brachioradialis reflexes are diminished. The most common cause is C5-C6 disc herniation.',
+      ),
+      QuizQuestion(
+        question: 'The Waddell signs are used to identify:',
+        options: ['Cervical myelopathy', 'Non-organic (psychogenic) components of low back pain', 'Cauda equina syndrome', 'Lumbar spinal stenosis'],
+        correctIndex: 1,
+        explanation: 'Waddell signs (5 categories): superficial/non-anatomic tenderness, simulation tests (axial loading, rotation), distraction tests (SLR discrepancy), regional disturbances (non-dermatomal weakness/sensory loss), and overreaction. Three or more positive categories suggest non-organic factors.',
+      ),
+      QuizQuestion(
+        question: 'Ankylosing spondylitis most commonly begins with:',
+        options: ['Cervical spine pain', 'Lumbar disc herniation', 'Sacroiliac joint inflammation (sacroiliitis)', 'Peripheral joint arthritis'],
+        correctIndex: 2,
+        explanation: 'Ankylosing spondylitis (HLA-B27 associated) typically begins with bilateral sacroiliitis in young adults (20-30 years). It progresses cranially with bamboo spine appearance. Morning stiffness >30 minutes that improves with exercise is characteristic. It affects males more than females.',
+      ),
+      QuizQuestion(
+        question: 'The Jefferson fracture involves:',
+        options: ['Dens (odontoid) fracture', 'Burst fracture of the C1 (atlas) ring', 'Hangman\'s fracture of C2', 'Compression fracture of C7'],
+        correctIndex: 1,
+        explanation: 'The Jefferson fracture is a burst fracture of the C1 (atlas) ring from axial loading (diving into shallow water, hitting head on car roof). It typically involves fractures of both anterior and posterior arches. It is usually stable because the ring fragments spread outward.',
+      ),
+      QuizQuestion(
+        question: 'A hangman\'s fracture involves which vertebra?',
+        options: ['C1 (atlas)', 'C2 (axis) — bilateral pars interarticularis fractures', 'C3', 'C7'],
+        correctIndex: 1,
+        explanation: 'A hangman\'s fracture is a bilateral fracture of the C2 pars interarticularis (pedicles) from hyperextension and axial loading. Despite the name, it is now most commonly caused by motor vehicle accidents. It is often neurologically intact because the fracture widens the canal.',
+      ),
+    ],
+  ),
 };
