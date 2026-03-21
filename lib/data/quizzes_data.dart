@@ -1730,4 +1730,810 @@ final Map<String, EpisodeQuiz> quizzes = {
       ),
     ],
   ),
+
+  // ── Electrodiagnostic 3 ──
+  'Electrodiagnostic 3': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 3',
+    questions: [
+      QuizQuestion(
+        question: 'In nerve conduction studies, Ohm\'s law (I = V/R) is important because:',
+        options: [
+          'It determines the speed of nerve conduction',
+          'High skin impedance degrades the recorded signal quality',
+          'It calculates the distance between electrodes',
+          'It measures the safety factor at the NMJ',
+        ],
+        correctIndex: 1,
+        explanation: 'Ohm\'s law explains that high skin resistance (impedance) reduces the recorded signal. Proper skin preparation reduces impedance, improving signal-to-noise ratio. This is why skin abrasion is critical before electrode placement.',
+      ),
+      QuizQuestion(
+        question: 'The ground electrode in nerve conduction studies should be placed:',
+        options: [
+          'On the contralateral limb',
+          'Between the stimulating and recording electrodes',
+          'Directly over the motor point',
+          'As far from the nerve as possible',
+        ],
+        correctIndex: 1,
+        explanation: 'The ground electrode must be placed between the stimulating and recording electrodes to intercept stimulus artifact. Incorrect placement allows artifact to contaminate the recorded signal.',
+      ),
+      QuizQuestion(
+        question: 'A differential amplifier in the EMG machine works by:',
+        options: [
+          'Adding G1 and G2 signals together',
+          'Subtracting G2 from G1 to cancel common noise',
+          'Amplifying only the G1 signal',
+          'Filtering out all signals below 100 Hz',
+        ],
+        correctIndex: 1,
+        explanation: 'The differential amplifier subtracts G2 from G1 (G1 - G2), canceling common-mode noise (60 Hz interference, etc.) while preserving the biological signal. The common mode rejection ratio (CMRR) must be >90 dB.',
+      ),
+      QuizQuestion(
+        question: 'The standard low-frequency filter (LFF) and high-frequency filter (HFF) settings for motor NCS are:',
+        options: [
+          '20 Hz to 2 kHz',
+          '2 Hz to 10 kHz',
+          '20 Hz to 10 kHz',
+          '1 Hz to 5 kHz',
+        ],
+        correctIndex: 1,
+        explanation: 'Motor NCS standard filters: LFF = 2 Hz, HFF = 10 kHz. Sensory NCS uses LFF = 20 Hz, HFF = 10 kHz. Raising the LFF artificially reduces CMAP amplitude; lowering the HFF artificially prolongs latency.',
+      ),
+      QuizQuestion(
+        question: 'Supramaximal stimulation in NCS means stimulating at what intensity above the level that produces maximal response?',
+        options: [
+          '5% above',
+          '10% above',
+          '20% above',
+          '50% above',
+        ],
+        correctIndex: 2,
+        explanation: 'Supramaximal stimulation is 20% above the intensity that produces the maximal CMAP. This ensures all axons are activated and the response is reproducible. Submaximal stimulation underestimates amplitude.',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 4 ──
+  'Electrodiagnostic 4': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 4',
+    questions: [
+      QuizQuestion(
+        question: 'A patient has clinical sensory loss in a dermatomal distribution but normal SNAPs. The lesion is most likely:',
+        options: [
+          'Post-ganglionic (distal to DRG)',
+          'Pre-ganglionic (proximal to DRG)',
+          'At the neuromuscular junction',
+          'In the peripheral nerve trunk',
+        ],
+        correctIndex: 1,
+        explanation: 'Pre-ganglionic lesions (radiculopathy) preserve the SNAP because the sensory neuron cell body in the DRG and its peripheral axon remain intact. Post-ganglionic lesions (plexopathy, peripheral neuropathy) damage the axon distal to the DRG, causing abnormal SNAPs.',
+      ),
+      QuizQuestion(
+        question: 'Conduction block on NCS is defined as a drop in CMAP amplitude of greater than what percentage between distal and proximal stimulation sites?',
+        options: [
+          '25%',
+          '40%',
+          '50%',
+          '75%',
+        ],
+        correctIndex: 2,
+        explanation: 'Conduction block is defined as >50% drop in CMAP amplitude between proximal and distal stimulation sites. It is a hallmark of focal demyelination and indicates that some axons fail to conduct past the lesion site.',
+      ),
+      QuizQuestion(
+        question: 'In the Sunderland classification, which grade involves disruption of the endoneurium with intact perineurium?',
+        options: [
+          'Grade 1 (neuropraxia)',
+          'Grade 2 (axonotmesis)',
+          'Grade 3',
+          'Grade 4',
+        ],
+        correctIndex: 2,
+        explanation: 'Sunderland Grade 3 involves disruption of the endoneurium with intact perineurium. Grade 1 = neuropraxia (myelin only). Grade 2 = axonotmesis (axon damaged, endoneurium intact). Grade 4 = perineurium damaged. Grade 5 = complete transection (neurotmesis).',
+      ),
+      QuizQuestion(
+        question: 'Temporal dispersion on NCS is caused by:',
+        options: [
+          'Axonal loss of large fibers',
+          'Different conduction velocities of demyelinated fibers',
+          'Neuromuscular junction block',
+          'Electrode placement errors',
+        ],
+        correctIndex: 1,
+        explanation: 'Temporal dispersion occurs when different fibers conduct at different speeds due to variable degrees of demyelination. Fast and slow fibers arrive at the recording electrode at different times, spreading out and reducing the CMAP amplitude with a widened, polyphasic waveform.',
+      ),
+      QuizQuestion(
+        question: 'The key NCS finding that distinguishes axonal injury from demyelinating injury is:',
+        options: [
+          'Axonal: slow velocity, normal amplitude',
+          'Demyelinating: low amplitude, normal velocity',
+          'Axonal: low amplitude, normal velocity',
+          'Both show identical findings',
+        ],
+        correctIndex: 2,
+        explanation: 'Axonal injury = reduced amplitude (fewer functioning axons) with normal or near-normal conduction velocity. Demyelinating injury = slow conduction velocity with initially preserved amplitude. This distinction is fundamental to all EDX interpretation.',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 5 ──
+  'Electrodiagnostic 5': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 5',
+    questions: [
+      QuizQuestion(
+        question: 'After a facial nerve injury, prognostic NCS testing should be delayed until at least:',
+        options: [
+          'Day 1',
+          'Day 3',
+          'Day 7',
+          'Day 14',
+        ],
+        correctIndex: 2,
+        explanation: 'The "seven-day rule": the distal nerve stump remains excitable for 3-7 days after injury due to Wallerian degeneration timeline. Testing before day 7 may show falsely normal responses, giving inaccurate prognosis.',
+      ),
+      QuizQuestion(
+        question: 'A facial nerve CMAP amplitude less than 10% of the normal side indicates:',
+        options: [
+          'Excellent prognosis, recovery in weeks',
+          'Good prognosis, recovery in 2 months',
+          'Fair prognosis, recovery in 2-8 months',
+          'Poor prognosis, recovery may take over 1 year',
+        ],
+        correctIndex: 3,
+        explanation: 'Facial nerve prognosis by CMAP amplitude: >30% = good (recovery <2 months), 10-30% = fair (2-8 months), <10% = poor (>1 year recovery). This guides counseling and surgical decision-making.',
+      ),
+      QuizQuestion(
+        question: 'The phrenic nerve is stimulated at which anatomical landmark for NCS?',
+        options: [
+          'Anterior triangle of the neck at the thyroid cartilage',
+          'Posterior border of the SCM, 3 cm above the clavicle',
+          'Suprasternal notch',
+          'Axilla at the level of the second rib',
+        ],
+        correctIndex: 1,
+        explanation: 'The phrenic nerve is stimulated at the posterior border of the sternocleidomastoid (SCM) muscle, approximately 3 cm above the clavicle. Recording is at the xiphoid process with a 16 cm electrode distance.',
+      ),
+      QuizQuestion(
+        question: 'In somatosensory evoked potentials (SSEPs) for the median nerve, the N20 waveform represents arrival at which structure?',
+        options: [
+          'Brachial plexus',
+          'Cervical spinal cord',
+          'Thalamus',
+          'Primary somatosensory cortex',
+        ],
+        correctIndex: 3,
+        explanation: 'Median nerve SSEP checkpoints: N9 = brachial plexus (Erb\'s point), N11 = root entry zone, N13 = cervical cord/medulla, P14 = brainstem, N18 = thalamus, N20 = primary somatosensory cortex. The number roughly corresponds to milliseconds.',
+      ),
+      QuizQuestion(
+        question: 'During intraoperative SSEP monitoring, which anesthetic agents should be avoided because they suppress cortical signals?',
+        options: [
+          'Propofol and narcotics',
+          'Halogenated anesthetics (sevoflurane, isoflurane)',
+          'Ketamine',
+          'Dexmedetomidine',
+        ],
+        correctIndex: 1,
+        explanation: 'Halogenated anesthetics (sevoflurane, isoflurane, desflurane) suppress cortical SSEP signals and can mimic CNS injury. Total intravenous anesthesia (TIVA) with propofol and narcotics is preferred for intraoperative neuromonitoring.',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 6 ──
+  'Electrodiagnostic 6': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 6',
+    questions: [
+      QuizQuestion(
+        question: 'Fibrillation potentials on EMG represent the spontaneous firing of:',
+        options: [
+          'An entire motor unit',
+          'A single muscle fiber',
+          'A group of motor units',
+          'The neuromuscular junction',
+        ],
+        correctIndex: 1,
+        explanation: 'Fibrillations are spontaneous discharges of individual denervated muscle fibers. They are not visible through the skin (unlike fasciculations) and produce a high-pitched ticking sound at 20-200 μV amplitude.',
+      ),
+      QuizQuestion(
+        question: 'How can you distinguish benign fasciculations from pathologic fasciculations on EMG?',
+        options: [
+          'Benign fasciculations fire at higher rates',
+          'Pathologic fasciculations are larger in amplitude',
+          'You cannot — clinical context and the company they keep (fibrillations) are key',
+          'Benign fasciculations occur only at rest',
+        ],
+        correctIndex: 2,
+        explanation: 'Fasciculations cannot be reliably differentiated as benign vs pathologic by EMG waveform alone. The "company they keep" principle: fasciculations accompanied by fibrillation potentials and other signs of denervation suggest pathology (ALS, radiculopathy).',
+      ),
+      QuizQuestion(
+        question: 'Myokymic discharges on EMG produce a characteristic sound described as:',
+        options: [
+          'Rain on a tin roof',
+          'Dive bombers',
+          'Marching soldiers',
+          'Machine gun fire',
+        ],
+        correctIndex: 2,
+        explanation: 'Myokymia produces a "marching soldiers" sound — rhythmic grouped bursts of motor unit potentials. It is classically associated with radiation-induced plexopathy and helps distinguish radiation damage from tumor recurrence.',
+      ),
+      QuizQuestion(
+        question: 'A motor unit action potential (MUAP) with more than 4 phases is described as:',
+        options: [
+          'Simple',
+          'Biphasic',
+          'Triphasic',
+          'Polyphasic',
+        ],
+        correctIndex: 3,
+        explanation: 'Normal MUAPs have 2-4 phases. MUAPs with >4 phases are polyphasic, indicating remodeling of the motor unit — either from reinnervation (neuropathic) or fiber splitting/regeneration (myopathic). Up to 15% polyphasic MUAPs can be normal.',
+      ),
+      QuizQuestion(
+        question: 'MUAP duration on EMG primarily reflects:',
+        options: [
+          'The number of fibers near the needle tip',
+          'The entire territory (spatial extent) of the motor unit',
+          'The conduction velocity of the nerve',
+          'The thickness of the myelin sheath',
+        ],
+        correctIndex: 1,
+        explanation: 'MUAP duration represents the entire motor unit territory — it reflects the timing of all muscle fibers in that motor unit firing. Duration increases in neuropathic conditions (reinnervation creates larger territories) and decreases in myopathies (lost fibers = smaller territory).',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 7 ──
+  'Electrodiagnostic 7': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 7',
+    questions: [
+      QuizQuestion(
+        question: 'To confirm a radiculopathy on EMG, abnormalities should be found in at least:',
+        options: [
+          '1 muscle innervated by the suspected root',
+          '2 muscles innervated by different peripheral nerves sharing the same root',
+          '3 muscles in the same myotome',
+          'All muscles innervated by the root',
+        ],
+        correctIndex: 1,
+        explanation: 'The "two-muscle, two-nerve, one-root rule": abnormalities must be found in at least 2 muscles innervated by different peripheral nerves but sharing the same nerve root. This pattern excludes a single peripheral nerve lesion.',
+      ),
+      QuizQuestion(
+        question: 'In radiculopathy, fibrillation potentials first appear in the paraspinal muscles at approximately:',
+        options: [
+          'Day 1-2',
+          'Day 4-5',
+          'Week 1 (day 7)',
+          'Week 3-4',
+        ],
+        correctIndex: 2,
+        explanation: 'Radiculopathy chronology: Day 0 = decreased recruitment only. Day 4-5 = CMAP amplitude drops. Week 1 = fibrillations in paraspinals first (shortest axons from root). Weeks 2-3 = fibrillations appear in limb muscles. Week 5-6 = early reinnervation potentials.',
+      ),
+      QuizQuestion(
+        question: 'In radiculopathy, SNAPs are characteristically:',
+        options: [
+          'Absent',
+          'Low amplitude',
+          'Normal (preserved)',
+          'Prolonged in latency',
+        ],
+        correctIndex: 2,
+        explanation: 'SNAPs are NORMAL in radiculopathy because the lesion is pre-ganglionic (proximal to the DRG). The sensory neuron cell body and its peripheral axon remain intact. This is the key finding that distinguishes radiculopathy from plexopathy or peripheral neuropathy.',
+      ),
+      QuizQuestion(
+        question: 'Abnormal paraspinal muscles on EMG help localize the lesion to the:',
+        options: [
+          'Peripheral nerve',
+          'Brachial plexus',
+          'Nerve root',
+          'Spinal cord',
+        ],
+        correctIndex: 2,
+        explanation: 'Paraspinal muscles are innervated by the posterior rami, which branch off the nerve root before the plexus. Abnormal paraspinals = root-level lesion. Normal paraspinals with limb abnormalities = plexus or peripheral nerve lesion.',
+      ),
+      QuizQuestion(
+        question: 'The C5 nerve root innervates which key muscles?',
+        options: [
+          'Wrist extensors and triceps',
+          'Deltoid and biceps (shoulder abduction and elbow flexion)',
+          'Hand intrinsics and finger flexors',
+          'Forearm pronators and wrist flexors',
+        ],
+        correctIndex: 1,
+        explanation: 'C5 myotome: deltoid (shoulder abduction) and biceps (elbow flexion). C6 = wrist extension, brachioradialis. C7 = triceps, wrist flexion. C8 = finger flexors. T1 = hand intrinsics. Knowing myotomes is essential for localizing radiculopathies.',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 8 ──
+  'Electrodiagnostic 8': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 8',
+    questions: [
+      QuizQuestion(
+        question: 'Anterior interosseous nerve (AIN) syndrome is characterized by:',
+        options: [
+          'Sensory loss in the thumb and index finger',
+          'Pure motor deficit with inability to form an "OK" sign',
+          'Wrist drop with radial deviation',
+          'Thenar atrophy and thumb opposition weakness',
+        ],
+        correctIndex: 1,
+        explanation: 'AIN syndrome is pure motor — NO sensory findings. It causes weakness of FPL (thumb IP flexion), FDP to digits 2-3 (index/middle DIP flexion), and pronator quadratus. The positive "OK sign" test (can\'t make a circle) is characteristic. Routine median NCS are NORMAL.',
+      ),
+      QuizQuestion(
+        question: 'In carpal tunnel syndrome, sensation at the base of the thumb is typically:',
+        options: [
+          'Absent',
+          'Decreased',
+          'Normal (preserved)',
+          'Hyperesthetic',
+        ],
+        correctIndex: 2,
+        explanation: 'The palmar cutaneous branch of the median nerve exits 5 cm proximal to the wrist and travels OVER the transverse carpal ligament, not through the tunnel. Therefore, thenar eminence/thumb base sensation is preserved in CTS. If numb, suspect a more proximal lesion.',
+      ),
+      QuizQuestion(
+        question: 'The carpal tunnel contains how many tendons plus the median nerve?',
+        options: [
+          '5 tendons + median nerve',
+          '7 tendons + median nerve',
+          '9 tendons + median nerve',
+          '11 tendons + median nerve',
+        ],
+        correctIndex: 2,
+        explanation: 'The "Nine Plus One Rule": 4 FDS tendons + 4 FDP tendons + 1 FPL tendon + 1 median nerve = 10 structures. The FCR tendon runs in its own separate compartment, which is why wrist flexion is preserved in carpal tunnel syndrome.',
+      ),
+      QuizQuestion(
+        question: 'Martin-Gruber anastomosis is a crossover between which two nerves in the forearm?',
+        options: [
+          'Radial to ulnar',
+          'Median to ulnar',
+          'Ulnar to median',
+          'Musculocutaneous to median',
+        ],
+        correctIndex: 1,
+        explanation: 'Martin-Gruber anastomosis (15-20% prevalence) is a median-to-ulnar nerve crossover in the forearm. Motor fibers from the median nerve cross to join the ulnar nerve. This can cause confusing NCS results in carpal tunnel or ulnar neuropathy.',
+      ),
+      QuizQuestion(
+        question: 'Severe carpal tunnel syndrome on NCS is characterized by:',
+        options: [
+          'Prolonged sensory latency with normal amplitude',
+          'Normal sensory and motor studies',
+          'Absent SNAP, prolonged/low motor response, fibrillations in APB',
+          'Prolonged sensory latency only',
+        ],
+        correctIndex: 2,
+        explanation: 'CTS severity grading: Mild = prolonged sensory latency only. Moderate = abnormal sensory + prolonged motor latency. Severe = absent SNAP, low/prolonged motor response, and fibrillation potentials in the abductor pollicis brevis (APB) on EMG.',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 9 ──
+  'Electrodiagnostic 9': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 9',
+    questions: [
+      QuizQuestion(
+        question: 'The dorsal ulnar cutaneous (DUC) nerve branches from the ulnar nerve at what location?',
+        options: [
+          'At Guyon\'s canal',
+          '5-8 cm proximal to the wrist',
+          'At the cubital tunnel',
+          'At the axilla',
+        ],
+        correctIndex: 1,
+        explanation: 'The DUC branches 5-8 cm proximal to the wrist and does NOT travel through Guyon\'s canal. This is a critical landmark: DUC abnormal = lesion at or above the elbow. DUC normal = lesion at wrist (Guyon\'s canal).',
+      ),
+      QuizQuestion(
+        question: 'Froment\'s sign tests for weakness of which muscle?',
+        options: [
+          'First dorsal interosseous',
+          'Adductor pollicis',
+          'Opponens pollicis',
+          'Flexor pollicis longus',
+        ],
+        correctIndex: 1,
+        explanation: 'Froment\'s sign: patient tries to hold paper between thumb and index finger. The adductor pollicis (ulnar nerve) is weak, so the patient compensates by flexing the thumb IP joint using FPL (median nerve). IP flexion during pinch = positive Froment sign = ulnar neuropathy.',
+      ),
+      QuizQuestion(
+        question: 'How do you differentiate radiation-induced brachial plexopathy from tumor recurrence on EMG?',
+        options: [
+          'Radiation causes fasciculations; tumor causes fibrillations',
+          'Radiation shows myokymic discharges; tumor is typically painful with Horner syndrome',
+          'They cannot be differentiated on EMG',
+          'Radiation affects lower trunk; tumor affects upper trunk',
+        ],
+        correctIndex: 1,
+        explanation: 'Key differentiators: Radiation plexopathy = painless, upper trunk predominant, myokymic discharges (marching soldiers on EMG). Tumor recurrence = painful, lower trunk predominant, may have Horner syndrome (ptosis, miosis, anhydrosis). Myokymia is the EMG key.',
+      ),
+      QuizQuestion(
+        question: 'Ulnar claw hand affects primarily which digits?',
+        options: [
+          'Thumb and index finger',
+          'Index and middle fingers',
+          'Ring and little fingers',
+          'All five digits equally',
+        ],
+        correctIndex: 2,
+        explanation: 'Ulnar claw hand primarily affects the 4th and 5th digits. The unopposed EDC hyperextends the MCPs, and passive tension on the flexor tendons curls the PIP/DIP joints. The index and middle fingers are relatively spared because their lumbricals are median-innervated.',
+      ),
+      QuizQuestion(
+        question: 'Wartenberg\'s sign is demonstrated by:',
+        options: [
+          'Inability to cross the fingers',
+          'The small finger drifting into abduction at rest due to weak interossei',
+          'Weakness of thumb opposition',
+          'Inability to extend the wrist',
+        ],
+        correctIndex: 1,
+        explanation: 'Wartenberg\'s sign: the small finger drifts into abduction because the third palmar interosseous (ulnar nerve) is weak and cannot adduct the 5th digit against the unopposed action of EDM. It is a subtle early sign of ulnar neuropathy.',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 10 ──
+  'Electrodiagnostic 10': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 10',
+    questions: [
+      QuizQuestion(
+        question: 'The "short head of biceps femoris" rule helps distinguish between:',
+        options: [
+          'L4 vs L5 radiculopathy',
+          'Common peroneal neuropathy at the fibular head vs sciatic neuropathy',
+          'Tibial vs peroneal nerve injury',
+          'Femoral vs obturator neuropathy',
+        ],
+        correctIndex: 1,
+        explanation: 'The short head of biceps femoris is the only peroneal division muscle above the fibular head. If normal on EMG = lesion at the knee (peroneal neuropathy). If abnormal = lesion above the knee (sciatic neuropathy). This is a critical EMG landmark.',
+      ),
+      QuizQuestion(
+        question: 'In tarsal tunnel syndrome, heel sensation is typically:',
+        options: [
+          'Absent',
+          'Decreased',
+          'Preserved (normal)',
+          'Hyperesthetic',
+        ],
+        correctIndex: 2,
+        explanation: 'Heel sensation is preserved in tarsal tunnel syndrome because the calcaneal branch exits proximal to the tarsal tunnel. If the heel is numb, consider S1 radiculopathy or a more proximal tibial nerve lesion instead.',
+      ),
+      QuizQuestion(
+        question: 'Meralgia paresthetica involves which nerve?',
+        options: [
+          'Femoral nerve',
+          'Obturator nerve',
+          'Lateral femoral cutaneous nerve',
+          'Saphenous nerve',
+        ],
+        correctIndex: 2,
+        explanation: 'Meralgia paresthetica is entrapment of the lateral femoral cutaneous nerve (LFCN) under the inguinal ligament. It is purely sensory — causing numbness/burning on the anterolateral thigh. There is NEVER motor weakness. Common in obesity, pregnancy, tight waistbands.',
+      ),
+      QuizQuestion(
+        question: 'To distinguish femoral neuropathy from an L3/L4 radiculopathy, you should test:',
+        options: [
+          'Ankle dorsiflexion',
+          'Hip abduction',
+          'Hip adduction (obturator nerve)',
+          'Knee extension only',
+        ],
+        correctIndex: 2,
+        explanation: 'Hip adduction is innervated by the obturator nerve (L2-L4). Weak quadriceps + weak adductors = root-level lesion (L3/L4). Weak quadriceps + strong adductors = femoral neuropathy (obturator nerve spared). The adductors are the differentiator.',
+      ),
+      QuizQuestion(
+        question: 'The sciatic nerve is more prone to peroneal division injury because:',
+        options: [
+          'The peroneal division carries more fibers',
+          'The peroneal division is tethered at two points and has fewer fascicles with less connective tissue',
+          'The tibial division is superficial and more exposed',
+          'The peroneal division lacks a blood supply',
+        ],
+        correctIndex: 1,
+        explanation: 'The peroneal division is tethered at the sciatic notch AND the fibular head (two fixed points). It has fewer fascicles and less surrounding connective tissue than the tibial division. This makes it more vulnerable to stretch and compression injuries.',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 11 ──
+  'Electrodiagnostic 11': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 11',
+    questions: [
+      QuizQuestion(
+        question: 'Common peroneal neuropathy at the fibular head is the most common entrapment neuropathy in which region?',
+        options: [
+          'Upper extremity',
+          'Lower extremity',
+          'Trunk',
+          'Neck',
+        ],
+        correctIndex: 1,
+        explanation: 'Common peroneal neuropathy at the fibular head is the most common lower extremity entrapment neuropathy. It causes foot drop with a steppage gait pattern. Risk factors include leg crossing, prolonged bed rest, weight loss, and fibular head fractures.',
+      ),
+      QuizQuestion(
+        question: 'Diabetic amyotrophy (diabetic lumbosacral radiculoplexus neuropathy) is caused by:',
+        options: [
+          'Metabolic damage from chronic hyperglycemia',
+          'Immune-mediated vasculitis of the vasa nervorum',
+          'Direct glucose toxicity to motor neurons',
+          'Compression from diabetic lipohypertrophy',
+        ],
+        correctIndex: 1,
+        explanation: 'Diabetic amyotrophy (DLRPN) is NOT metabolic — it is immune-mediated vasculitis of the vasa nervorum. It causes severe pain followed by proximal weakness, often after weight loss or improved glycemic control. It is multifocal, asymmetric, and can be bilateral.',
+      ),
+      QuizQuestion(
+        question: 'A mononeuritis multiplex pattern on NCS (multifocal, asymmetric, patchy nerve involvement) is most suggestive of:',
+        options: [
+          'Diabetic peripheral neuropathy',
+          'Carpal tunnel syndrome',
+          'Vasculitis',
+          'Hereditary neuropathy',
+        ],
+        correctIndex: 2,
+        explanation: 'Mononeuritis multiplex (multifocal, asymmetric, patchy nerve involvement) is the hallmark pattern of vasculitis affecting the vasa nervorum. Each nerve is hit randomly as its individual blood supply is attacked. This pattern demands workup for systemic vasculitis.',
+      ),
+      QuizQuestion(
+        question: 'Foot drop with a steppage gait is characterized by:',
+        options: [
+          'Circumducting the leg in an arc',
+          'Dropping the opposite hip during stance',
+          'Exaggerated knee flexion to clear the dropping foot',
+          'Waddling side to side',
+        ],
+        correctIndex: 2,
+        explanation: 'Steppage gait: the patient lifts the knee higher than normal during swing phase to clear the dropping foot from the ground. It results from ankle dorsiflexor weakness (peroneal nerve or L5 root). Circumduction = UMN/hip weakness. Trendelenburg = gluteus medius weakness.',
+      ),
+      QuizQuestion(
+        question: 'The sural nerve is most useful in NCS because:',
+        options: [
+          'It is the largest sensory nerve in the body',
+          'It is easily accessible and provides a reliable lower extremity SNAP',
+          'It is purely motor',
+          'It innervates the entire foot',
+        ],
+        correctIndex: 1,
+        explanation: 'The sural nerve (terminal sensory branch of the tibial nerve) is easily accessible at the mid-calf behind the lateral malleolus. It provides a reliable lower extremity SNAP and is routinely tested in neuropathy evaluations. Its absence strongly suggests a generalized neuropathy.',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 12 ──
+  'Electrodiagnostic 12': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 12',
+    questions: [
+      QuizQuestion(
+        question: 'The key NCS distinction between hereditary and acquired demyelinating neuropathies is:',
+        options: [
+          'Hereditary shows conduction block; acquired shows uniform slowing',
+          'Hereditary shows uniform slowing; acquired shows conduction block and temporal dispersion',
+          'There is no electrodiagnostic difference',
+          'Hereditary affects sensory nerves only',
+        ],
+        correctIndex: 1,
+        explanation: 'Hereditary demyelinating neuropathies (CMT1) show uniform slowing across all nerves without conduction block or temporal dispersion. Acquired demyelinating neuropathies (GBS, CIDP) show patchy, non-uniform slowing WITH conduction block and temporal dispersion.',
+      ),
+      QuizQuestion(
+        question: 'Charcot-Marie-Tooth Type 1 is caused by duplication of which gene on chromosome 17?',
+        options: [
+          'SOD1',
+          'Dystrophin',
+          'PMP-22',
+          'SMN1',
+        ],
+        correctIndex: 2,
+        explanation: 'CMT1 (the most common hereditary neuropathy) is caused by PMP-22 gene duplication on chromosome 17. This produces too much peripheral myelin protein, leading to abnormal myelination. Conduction velocities are severely and uniformly slowed (<38 m/s).',
+      ),
+      QuizQuestion(
+        question: 'Hereditary Neuropathy with Liability to Pressure Palsies (HNPP) is caused by:',
+        options: [
+          'PMP-22 duplication',
+          'PMP-22 deletion',
+          'SOD1 mutation',
+          'SMN1 deletion',
+        ],
+        correctIndex: 1,
+        explanation: 'HNPP is caused by PMP-22 deletion — the reciprocal of CMT1 (which is PMP-22 duplication). HNPP patients develop prolonged nerve palsies (weeks-long foot drop or wrist drop) from minor compression that would not affect normal individuals.',
+      ),
+      QuizQuestion(
+        question: 'Guillain-Barré syndrome (GBS) is characterized by which CSF finding?',
+        options: [
+          'Low protein, high white cells',
+          'High protein, normal cell count (albuminocytologic dissociation)',
+          'Normal protein, high white cells',
+          'Low protein, low glucose',
+        ],
+        correctIndex: 1,
+        explanation: 'GBS shows albuminocytologic dissociation: elevated CSF protein with normal cell count. This classic CSF pattern, combined with ascending weakness and areflexia, is highly suggestive of GBS. Treatment is IVIG or plasmapheresis — NOT steroids.',
+      ),
+      QuizQuestion(
+        question: 'The distinction between GBS and CIDP is primarily based on:',
+        options: [
+          'EMG findings',
+          'CSF protein levels',
+          'Time course — GBS peaks by 4 weeks; CIDP continues beyond 8 weeks',
+          'Presence of conduction block',
+        ],
+        correctIndex: 2,
+        explanation: 'GBS is acute — it reaches nadir within 4 weeks. CIDP (Chronic Inflammatory Demyelinating Polyneuropathy) progresses beyond 8 weeks and has a relapsing-remitting or chronic progressive course. Unlike GBS, CIDP responds to steroids.',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 13 ──
+  'Electrodiagnostic 13': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 13',
+    questions: [
+      QuizQuestion(
+        question: 'In myasthenia gravis (MG), the neuromuscular junction defect is:',
+        options: [
+          'Presynaptic — reduced ACh release',
+          'Postsynaptic — antibodies against ACh receptors',
+          'Presynaptic — blocked calcium channels',
+          'Synaptic — excess acetylcholinesterase',
+        ],
+        correctIndex: 1,
+        explanation: 'MG is a postsynaptic disorder — autoantibodies attack ACh receptors, reducing the number of available receptors and simplifying the postsynaptic membrane. Quantum content (release) is normal, but quantum response is reduced.',
+      ),
+      QuizQuestion(
+        question: 'Lambert-Eaton myasthenic syndrome (LEMS) differs from MG in that LEMS shows:',
+        options: [
+          'Weakness that worsens with use and preserved reflexes',
+          'Weakness that improves with exercise and depressed reflexes',
+          'Pure sensory symptoms',
+          'Normal NMJ function on repetitive nerve stimulation',
+        ],
+        correctIndex: 1,
+        explanation: 'LEMS: weakness IMPROVES with exercise (warm-up phenomenon), reflexes are depressed/absent. MG: weakness WORSENS with use, reflexes preserved. LEMS is presynaptic (anti-VGCC antibodies) and associated with small cell lung cancer in ~60% of cases.',
+      ),
+      QuizQuestion(
+        question: 'On repetitive nerve stimulation (RNS), LEMS shows which pattern?',
+        options: [
+          'Decrement at low rate only',
+          'Decrement at low rate with INCREMENT at high rate (post-tetanic potentiation)',
+          'No change at any rate',
+          'Increment at all rates',
+        ],
+        correctIndex: 1,
+        explanation: 'LEMS shows decrement at low-rate stimulation (2-5 Hz) — like MG — but characteristically shows a dramatic INCREMENT (>100% increase) at high-rate stimulation (20-50 Hz) or after brief maximal voluntary contraction. This post-tetanic potentiation is diagnostic for LEMS.',
+      ),
+      QuizQuestion(
+        question: 'Single-fiber EMG (SFEMG) is the most sensitive test for NMJ disorders because it measures:',
+        options: [
+          'Conduction velocity between nodes',
+          'Jitter — the variability in transmission time between nerve and muscle',
+          'CMAP amplitude decline',
+          'F-wave latency',
+        ],
+        correctIndex: 1,
+        explanation: 'SFEMG measures jitter — the variability in neuromuscular transmission time between successive firings. Increased jitter and blocking (intermittent transmission failure) are the earliest and most sensitive findings in NMJ disorders like MG.',
+      ),
+      QuizQuestion(
+        question: 'Botulism toxin causes NMJ dysfunction by blocking:',
+        options: [
+          'ACh receptor binding',
+          'Acetylcholinesterase activity',
+          'SNARE proteins (preventing vesicle exocytosis)',
+          'Voltage-gated calcium channels',
+        ],
+        correctIndex: 2,
+        explanation: 'Botulinum toxin blocks SNARE proteins, the molecular machinery required for synaptic vesicle fusion and ACh release (exocytosis). It is a presynaptic disorder like LEMS, but the mechanism is different — toxin destruction vs autoimmune blockade.',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 14 ──
+  'Electrodiagnostic 14': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 14',
+    questions: [
+      QuizQuestion(
+        question: 'The "reading frame hypothesis" explains the difference between Duchenne and Becker muscular dystrophy as:',
+        options: [
+          'Different genes are affected',
+          'Duchenne has an out-of-frame deletion (no dystrophin); Becker has an in-frame deletion (some dystrophin)',
+          'Duchenne is autosomal dominant; Becker is autosomal recessive',
+          'Duchenne affects Type I fibers; Becker affects Type II fibers',
+        ],
+        correctIndex: 1,
+        explanation: 'Both affect the dystrophin gene on the X chromosome. Duchenne = out-of-frame deletion producing no functional dystrophin (severe, wheelchair by 12, death by 20s). Becker = in-frame deletion producing shortened but partially functional dystrophin (milder, later onset).',
+      ),
+      QuizQuestion(
+        question: 'The classic EMG triad of myopathy includes all EXCEPT:',
+        options: [
+          'Low amplitude MUAPs',
+          'Short duration MUAPs',
+          'Polyphasic MUAPs',
+          'Decreased recruitment (reduced interference pattern)',
+        ],
+        correctIndex: 3,
+        explanation: 'Myopathic EMG triad: low amplitude, short duration, polyphasic MUAPs (sounds like rain on a tin roof). Crucially, recruitment is EARLY — the brain compensates for weak motor units by recruiting more units sooner. Decreased recruitment is a NEUROPATHIC pattern.',
+      ),
+      QuizQuestion(
+        question: 'Gower\'s sign (walking hands up the thighs to stand) is pathognomonic for:',
+        options: [
+          'Myasthenia gravis',
+          'Duchenne muscular dystrophy',
+          'ALS',
+          'Guillain-Barré syndrome',
+        ],
+        correctIndex: 1,
+        explanation: 'Gower\'s sign is pathognomonic for Duchenne MD. The child uses their arms to "climb up" their own legs because proximal hip and thigh muscles are too weak to stand independently. Also characteristic: pseudohypertrophy of calves (fat/fibrosis replacement).',
+      ),
+      QuizQuestion(
+        question: 'Myotonic dystrophy (Steinert disease) is unique among myopathies because it causes:',
+        options: [
+          'Proximal weakness only',
+          'Distal weakness with multisystem involvement',
+          'Pure motor neuron degeneration',
+          'Immune-mediated muscle inflammation',
+        ],
+        correctIndex: 1,
+        explanation: 'Myotonic dystrophy is distinctive for causing DISTAL weakness (opposite of most myopathies), plus multisystem effects: hatchet face, frontal balding, ptosis, cataracts, cardiac conduction defects, diabetes, testicular atrophy. EMG shows dive-bomber myotonic discharges.',
+      ),
+      QuizQuestion(
+        question: 'The characteristic EMG sound in myotonic dystrophy is described as:',
+        options: [
+          'Marching soldiers',
+          'Rain on a tin roof',
+          'Dive bombers',
+          'Machine gun fire',
+        ],
+        correctIndex: 2,
+        explanation: 'Myotonic discharges produce a "dive bomber" sound — a waxing and waning frequency and amplitude pattern. Myotonia is worsened by cold and improved by warm-up (repeated muscle activation). This auditory pattern is one of the most recognizable EMG findings.',
+      ),
+    ],
+  ),
+
+  // ── Electrodiagnostic 15 ──
+  'Electrodiagnostic 15': const EpisodeQuiz(
+    episodeTitle: 'Electrodiagnostic 15',
+    questions: [
+      QuizQuestion(
+        question: 'ALS is characterized by the combination of:',
+        options: [
+          'Upper motor neuron signs only',
+          'Lower motor neuron signs only',
+          'Both upper and lower motor neuron signs in the same patient',
+          'Sensory and motor deficits',
+        ],
+        correctIndex: 2,
+        explanation: 'ALS uniquely combines UMN signs (spasticity, hyperreflexia, Babinski) AND LMN signs (atrophy, fasciculations, fibrillations) in the same patient, often in the same limb. This combination is the hallmark that distinguishes ALS from pure UMN or LMN diseases.',
+      ),
+      QuizQuestion(
+        question: 'Which three systems are characteristically SPARED in ALS?',
+        options: [
+          'Motor, sensory, and autonomic',
+          'Sensation, bowel/bladder, and eye movements',
+          'Cognition, respiration, and swallowing',
+          'Reflexes, coordination, and balance',
+        ],
+        correctIndex: 1,
+        explanation: 'The ALS sparing triad: (1) Sensation — SNAPs are normal, (2) Bowel/bladder — sphincters spared until very late, (3) Eye movements — extraocular muscles spared until end-stage. If any of these are prominently affected early, reconsider the diagnosis.',
+      ),
+      QuizQuestion(
+        question: 'To diagnose ALS using the El Escorial criteria, EMG must show active denervation and chronic reinnervation in at least how many body regions?',
+        options: [
+          '1 of 4 regions',
+          '2 of 4 regions',
+          '3 of 4 regions',
+          'All 4 regions',
+        ],
+        correctIndex: 2,
+        explanation: 'El Escorial criteria require findings in 3 of 4 body segments: (1) bulbar/cranial, (2) cervical, (3) thoracic, (4) lumbosacral. Each region must show both active denervation (fibrillations/PSWs) and chronic reinnervation (large polyphasic MUAPs).',
+      ),
+      QuizQuestion(
+        question: 'Multifocal motor neuropathy (MMN) is an important ALS mimic because it is:',
+        options: [
+          'Always fatal',
+          'Treatable with IVIG and shows conduction block on NCS',
+          'Identical to ALS on EMG',
+          'Associated with sensory loss',
+        ],
+        correctIndex: 1,
+        explanation: 'MMN is treatable with IVIG — making it critical to distinguish from ALS. Key features: conduction block on NCS (ALS has NO conduction block), anti-GM1 antibodies, and pure motor involvement. Unlike ALS, MMN has a normal life expectancy with treatment.',
+      ),
+      QuizQuestion(
+        question: 'Spinal Muscular Atrophy Type I (Werdnig-Hoffmann) presents at what age?',
+        options: [
+          'Birth to 6 months',
+          '6-18 months',
+          'After 18 months',
+          'Adolescence',
+        ],
+        correctIndex: 0,
+        explanation: 'SMA Type I (Werdnig-Hoffmann): onset before 6 months, floppy baby, never achieves sitting, most severe. Type II: 6-18 months, can sit but never walks. Type III (Kugelberg-Welander): after 18 months, walks then loses function. All are autosomal recessive (SMN1 gene).',
+      ),
+    ],
+  ),
 };
