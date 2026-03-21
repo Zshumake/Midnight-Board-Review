@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../models/episode.dart';
 import '../../providers/audio_provider.dart';
 import '../../providers/app_state_provider.dart';
+import '../../data/quizzes_data.dart';
+import '../../screens/quiz_screen.dart';
 import '../../utils/theme.dart';
 import '../../utils/category_colors.dart';
 import 'badge_display.dart';
@@ -161,6 +163,47 @@ class _EpisodeTileState extends State<EpisodeTile> {
                           ],
                         ),
                       ),
+
+                      // Quiz button
+                      if (quizzes.containsKey(widget.episode.title)) ...[
+                        const SizedBox(width: Spacing.xs),
+                        GestureDetector(
+                          onTap: completions > 0
+                              ? () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => QuizScreen(
+                                        quiz: quizzes[widget.episode.title]!,
+                                      ),
+                                    ),
+                                  )
+                              : null,
+                          child: Tooltip(
+                            message: completions > 0
+                                ? 'Take quiz'
+                                : 'Listen first to unlock',
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: completions > 0
+                                    ? AppColors.accentAmber
+                                        .withValues(alpha: 0.12)
+                                    : Colors.transparent,
+                              ),
+                              child: Icon(
+                                completions > 0
+                                    ? Icons.quiz_rounded
+                                    : Icons.lock_rounded,
+                                color: completions > 0
+                                    ? AppColors.accentAmber
+                                    : AppColors.textFaint,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
 
                       // Badges
                       if (completions > 0) ...[
