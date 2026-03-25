@@ -61,7 +61,7 @@ class AppStateProvider extends ChangeNotifier {
       if (!_state.history.contains(key)) {
         _state.history.add(key);
       }
-      _save();
+      _saveImmediate();
       notifyListeners();
       return true;
     }
@@ -86,7 +86,18 @@ class AppStateProvider extends ChangeNotifier {
     }
   }
 
+  /// Merge local state with cloud state on startup.
+  Future<void> mergeWithCloud() async {
+    _state = await _storage.loadAndMerge();
+    notifyListeners();
+  }
+
   void _save() {
     _storage.save(_state);
+  }
+
+  /// Immediate save for high-value events (badge completion).
+  void _saveImmediate() {
+    _storage.saveImmediate(_state);
   }
 }

@@ -1,28 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'data/episodes_data.dart';
 import 'providers/app_state_provider.dart';
 import 'providers/audio_provider.dart';
 import 'providers/library_provider.dart';
 import 'services/audio_service.dart';
 import 'services/storage_service.dart';
+import 'services/firebase_sync_service.dart';
 import 'screens/home_screen.dart';
 import 'utils/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   final storageService = StorageService();
   await storageService.init();
 
+  // Initialize Firebase sync
+  final firebaseSync = FirebaseSyncService();
+  await firebaseSync.init();
+  storageService.setFirebaseSync(firebaseSync);
+
+  // Load local state, then merge with cloud
   final appStateProvider = AppStateProvider(storageService);
+  await appStateProvider.mergeWithCloud();
+
   final audioService = AppAudioService();
 
   runApp(
     MultiProvider(
       providers: [
         Provider<StorageService>.value(value: storageService),
+        ChangeNotifierProvider<FirebaseSyncService>.value(value: firebaseSync),
         ChangeNotifierProvider<AppStateProvider>.value(value: appStateProvider),
         ChangeNotifierProvider<AudioProvider>(
           create: (_) =>

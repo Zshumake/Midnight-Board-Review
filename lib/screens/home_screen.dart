@@ -14,6 +14,7 @@ import '../widgets/library/episode_list.dart';
 import '../widgets/modals/info_modal.dart';
 import '../widgets/modals/report_modal.dart';
 import '../widgets/modals/rss_modal.dart';
+import '../widgets/modals/auth_button.dart';
 
 class HomeScreen extends StatefulWidget {
   final int? initialEpisode;
@@ -134,6 +135,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       centerTitle: true,
                     ),
                     actions: [
+                      const AuthButton(),
+                      const SizedBox(width: Spacing.xs),
                       IconButton(
                         icon: const Icon(Icons.rss_feed_rounded, size: 20),
                         onPressed: () => RssModal.show(context),
