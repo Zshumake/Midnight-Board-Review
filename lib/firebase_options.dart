@@ -8,11 +8,12 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA1QMfy51W65ugHLWo_Jbfm-fm9q9MdMos',
-    authDomain: 'midnight-board-review-d2451.firebaseapp.com',
-    projectId: 'midnight-board-review-d2451',
-    storageBucket: 'midnight-board-review-d2451.firebasestorage.app',
-    messagingSenderId: '831976152972',
-    appId: '1:831976152972:web:c54fa413d0f10443e480a9',
+    apiKey: 'AIzaSyCARdLUq8yF5LmjNFoJPx3-2MLhNhd5q1Y',
+    authDomain: 'midnight-board-review.firebaseapp.com',
+    projectId: 'midnight-board-review',
+    storageBucket: 'midnight-board-review.firebasestorage.app',
+    messagingSenderId: '273298446603',
+    appId: '1:273298446603:web:f95a07af8f2f62764fea0e',
+    measurementId: 'G-134C24Z87B',
   );
 }
