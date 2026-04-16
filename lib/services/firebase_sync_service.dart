@@ -6,14 +6,28 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../models/app_state.dart';
 
 class FirebaseSyncService extends ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth? _auth;
+  final FirebaseFirestore? _db;
+  final GoogleSignIn? _googleSignIn;
+  final bool _disabled;
 
   Timer? _debounceTimer;
   bool _initialized = false;
 
-  User? get user => _auth.currentUser;
+  FirebaseSyncService()
+      : _auth = FirebaseAuth.instance,
+        _db = FirebaseFirestore.instance,
+        _googleSignIn = GoogleSignIn(),
+        _disabled = false;
+
+  /// Fallback instance when Firebase can't initialize. All operations are no-ops.
+  FirebaseSyncService.disabled()
+      : _auth = null,
+        _db = null,
+        _googleSignIn = null,
+        _disabled = true;
+
+  User? get user => _disabled ? null : _auth!.currentUser;
   bool get isSignedInWithGoogle =>
       user != null &&
       user!.providerData.any((p) => p.providerId == 'google.com');
@@ -23,9 +37,10 @@ class FirebaseSyncService extends ChangeNotifier {
 
   /// Initialize: sign in anonymously if not already signed in.
   Future<void> init() async {
+    if (_disabled) return;
     try {
-      if (_auth.currentUser == null) {
-        await _auth.signInAnonymously();
+      if (_auth!.currentUser == null) {
+        await _auth!.signInAnonymously();
       }
       _initialized = true;
       notifyListeners();
@@ -37,8 +52,9 @@ class FirebaseSyncService extends ChangeNotifier {
 
   /// Sign in with Google, linking to existing anonymous account.
   Future<bool> signInWithGoogle() async {
+    if (_disabled) return false;
     try {
-      final googleUser = await _googleSignIn.signIn();
+      final googleUser = await _googleSignIn!.signIn();
       if (googleUser == null) return false; // User cancelled
 
       final googleAuth = await googleUser.authentication;
@@ -55,13 +71,13 @@ class FirebaseSyncService extends ChangeNotifier {
           if (e.code == 'credential-already-in-use') {
             // Google account already linked to another user.
             // Sign in directly — merge data manually.
-            await _auth.signInWithCredential(credential);
+            await _auth!.signInWithCredential(credential);
           } else {
             rethrow;
           }
         }
       } else {
-        await _auth.signInWithCredential(credential);
+        await _auth!.signInWithCredential(credential);
       }
 
       notifyListeners();
@@ -74,11 +90,12 @@ class FirebaseSyncService extends ChangeNotifier {
 
   /// Sign out (reverts to anonymous).
   Future<void> signOut() async {
+    if (_disabled) return;
     try {
-      await _googleSignIn.signOut();
-      await _auth.signOut();
+      await _googleSignIn!.signOut();
+      await _auth!.signOut();
       // Sign in anonymously again so cloud backup continues
-      await _auth.signInAnonymously();
+      await _auth!.signInAnonymously();
       notifyListeners();
     } catch (e) {
       debugPrint('Sign out error: $e');
@@ -87,6 +104,7 @@ class FirebaseSyncService extends ChangeNotifier {
 
   /// Push state to Firestore (debounced — waits 10s after last call).
   void pushStateDebounced(PersistedState state) {
+    if (_disabled) return;
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(seconds: 10), () {
       pushState(state);
@@ -95,9 +113,9 @@ class FirebaseSyncService extends ChangeNotifier {
 
   /// Push state to Firestore immediately.
   Future<void> pushState(PersistedState state) async {
-    if (!_initialized || user == null) return;
+    if (_disabled || !_initialized || user == null) return;
     try {
-      await _db.collection('users').doc(user!.uid).set(
+      await _db!.collection('users').doc(user!.uid).set(
             state.toJson(),
             SetOptions(merge: true),
           );
@@ -108,9 +126,9 @@ class FirebaseSyncService extends ChangeNotifier {
 
   /// Pull state from Firestore.
   Future<PersistedState?> pullState() async {
-    if (!_initialized || user == null) return null;
+    if (_disabled || !_initialized || user == null) return null;
     try {
-      final doc = await _db.collection('users').doc(user!.uid).get();
+      final doc = await _db!.collection('users').doc(user!.uid).get();
       if (doc.exists && doc.data() != null) {
         return PersistedState.fromJson(doc.data()!);
       }

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -21,11 +20,12 @@ void main() async {
   await storageService.init();
 
   // Initialize Firebase + sync (non-blocking — app still works if it fails)
-  final firebaseSync = FirebaseSyncService();
+  FirebaseSyncService? firebaseSync;
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    firebaseSync = FirebaseSyncService();
     await firebaseSync.init();
     storageService.setFirebaseSync(firebaseSync);
   } catch (e) {
@@ -46,7 +46,9 @@ void main() async {
     MultiProvider(
       providers: [
         Provider<StorageService>.value(value: storageService),
-        ChangeNotifierProvider<FirebaseSyncService>.value(value: firebaseSync),
+        ChangeNotifierProvider<FirebaseSyncService>.value(
+          value: firebaseSync ?? FirebaseSyncService.disabled(),
+        ),
         ChangeNotifierProvider<AppStateProvider>.value(value: appStateProvider),
         ChangeNotifierProvider<AudioProvider>(
           create: (_) =>
