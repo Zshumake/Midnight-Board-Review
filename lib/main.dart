@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 import 'data/episodes_data.dart';
 import 'providers/app_state_provider.dart';
 import 'providers/audio_provider.dart';
@@ -19,26 +17,11 @@ void main() async {
   final storageService = StorageService();
   await storageService.init();
 
-  // Initialize Firebase + sync (non-blocking — app still works if it fails)
-  FirebaseSyncService? firebaseSync;
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    firebaseSync = FirebaseSyncService();
-    await firebaseSync.init();
-    storageService.setFirebaseSync(firebaseSync);
-  } catch (e) {
-    debugPrint('Firebase init failed — continuing with local-only storage: $e');
-  }
+  // Firebase cloud sync temporarily disabled — runs in local-only mode.
+  // Will be re-enabled once the config issue is resolved.
+  final firebaseSync = FirebaseSyncService.disabled();
 
-  // Load local state, then merge with cloud (safe if Firebase failed)
   final appStateProvider = AppStateProvider(storageService);
-  try {
-    await appStateProvider.mergeWithCloud();
-  } catch (e) {
-    debugPrint('Cloud merge failed: $e');
-  }
 
   final audioService = AppAudioService();
 
@@ -46,9 +29,7 @@ void main() async {
     MultiProvider(
       providers: [
         Provider<StorageService>.value(value: storageService),
-        ChangeNotifierProvider<FirebaseSyncService>.value(
-          value: firebaseSync ?? FirebaseSyncService.disabled(),
-        ),
+        ChangeNotifierProvider<FirebaseSyncService>.value(value: firebaseSync),
         ChangeNotifierProvider<AppStateProvider>.value(value: appStateProvider),
         ChangeNotifierProvider<AudioProvider>(
           create: (_) =>
