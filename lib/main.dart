@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -16,22 +17,28 @@ import 'utils/theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
   final storageService = StorageService();
   await storageService.init();
 
-  // Initialize Firebase sync
+  // Initialize Firebase + sync (non-blocking — app still works if it fails)
   final firebaseSync = FirebaseSyncService();
-  await firebaseSync.init();
-  storageService.setFirebaseSync(firebaseSync);
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await firebaseSync.init();
+    storageService.setFirebaseSync(firebaseSync);
+  } catch (e) {
+    debugPrint('Firebase init failed — continuing with local-only storage: $e');
+  }
 
-  // Load local state, then merge with cloud
+  // Load local state, then merge with cloud (safe if Firebase failed)
   final appStateProvider = AppStateProvider(storageService);
-  await appStateProvider.mergeWithCloud();
+  try {
+    await appStateProvider.mergeWithCloud();
+  } catch (e) {
+    debugPrint('Cloud merge failed: $e');
+  }
 
   final audioService = AppAudioService();
 
