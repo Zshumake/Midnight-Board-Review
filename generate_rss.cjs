@@ -41,15 +41,15 @@ async function generate() {
 
     const config = {
         title: "Midnight Board Review (Private)",
-        link: "https://zacharyshumaker.github.io/Cuccurullo-Podcast-Hosting-Website/",
+        link: "https://shuhub.xyz/Midnight-Board-Review/",
         author: "Midnight Review",
         summary: `A ${episodes.length}-episode podcast covering everything in the PM&R board review.`,
         category: "Health & Fitness",
         subCategory: "Medicine",
         ownerName: "Zachary Shumaker",
         ownerEmail: "zacharyshumaker@gmail.com",
-        coverUrl: "https://zacharyshumaker.github.io/Cuccurullo-Podcast-Hosting-Website/cover.jpg",
-        feedUrl: "https://zacharyshumaker.github.io/Cuccurullo-Podcast-Hosting-Website/feed/v1_8zX9s2_secure.xml"
+        coverUrl: "https://shuhub.xyz/Midnight-Board-Review/cover.jpg",
+        feedUrl: "https://shuhub.xyz/Midnight-Board-Review/feed/v1_8zX9s2_secure.xml"
     };
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -72,6 +72,7 @@ async function generate() {
         <itunes:category text="${escapeXml(config.subCategory)}" />
     </itunes:category>
     <itunes:type>serial</itunes:type>
+    <itunes:explicit>false</itunes:explicit>
     <itunes:owner>
         <itunes:name>${escapeXml(config.ownerName)}</itunes:name>
         <itunes:email>${escapeXml(config.ownerEmail)}</itunes:email>
@@ -107,12 +108,19 @@ async function generate() {
     xml += `  </channel>
 </rss>`;
 
-    const feedDir = path.join(__dirname, 'feed');
-    if (!fs.existsSync(feedDir)) fs.mkdirSync(feedDir, { recursive: true });
+    // Write both copies. GitHub Pages publishes from docs/, so a feed written
+    // only to feed/ is never actually served — that is how this feed went dark
+    // when the Flutter migration rebuilt docs/ without it.
+    const targets = [
+        path.join(__dirname, 'feed', 'v1_8zX9s2_secure.xml'),
+        path.join(__dirname, 'docs', 'feed', 'v1_8zX9s2_secure.xml'),
+    ];
 
-    const targetFile = path.join(feedDir, 'v1_8zX9s2_secure.xml');
-    fs.writeFileSync(targetFile, xml);
-    console.log(`✅ Generated feed with ${episodes.length} episodes → ${targetFile}`);
+    targets.forEach((targetFile) => {
+        fs.mkdirSync(path.dirname(targetFile), { recursive: true });
+        fs.writeFileSync(targetFile, xml);
+        console.log(`✅ Generated feed with ${episodes.length} episodes → ${targetFile}`);
+    });
 }
 
 generate().catch(console.error);
